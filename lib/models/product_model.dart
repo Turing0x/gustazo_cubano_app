@@ -11,18 +11,22 @@ class Product {
   final String photo;
   final double price;
   final double inStock;
+  final int cantToBuy;
+  final double moreThan;
   final double commission;
-  final Discount discount;
+  final double discount;
 
   Product({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.photo,
-    required this.price,
-    required this.inStock,
-    required this.commission,
-    required this.discount,
+    this.id = '',
+    this.name = '',
+    this.description = '',
+    this.photo = '',
+    this.price = 0,
+    this.inStock = 0,
+    this.commission = 0,
+    this.moreThan = 0,
+    this.discount = 0,
+    this.cantToBuy = 1,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -33,7 +37,8 @@ class Product {
     price: json["price"]?.toDouble(),
     inStock: json["in_stock"]?.toDouble(),
     commission: json["commission"]?.toDouble(),
-    discount: Discount.fromJson(json["discount"]),
+    moreThan: json["more_than"]?.toDouble(),
+    discount: json["discount"]?.toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -44,25 +49,6 @@ class Product {
     "price": price,
     "in_stock": inStock,
     "commission": commission,
-    "discount": discount.toJson(),
-  };
-}
-
-class Discount {
-  final int moreThan;
-  final double discount;
-
-  Discount({
-    required this.moreThan,
-    required this.discount,
-  });
-
-  factory Discount.fromJson(Map<String, dynamic> json) => Discount(
-    moreThan: json["more_than"],
-    discount: json["discount"]?.toDouble(),
-  );
-
-  Map<String, dynamic> toJson() => {
     "more_than": moreThan,
     "discount": discount,
   };

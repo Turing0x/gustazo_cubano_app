@@ -52,6 +52,7 @@ dependencies:
   dio: ^5.4.0
   riverpod: ^2.4.9
   fluttertoast: ^8.2.4
+  url_launcher: ^6.2.2
 
 dev_dependencies:
   flutter_test:

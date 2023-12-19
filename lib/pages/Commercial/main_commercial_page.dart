@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
+import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
-import 'package:gustazo_cubano_app/models/shopping_cart.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
+List<Product> products = [];
 class MainCommercialPage extends ConsumerStatefulWidget {
   const MainCommercialPage({super.key});
 
@@ -18,12 +19,25 @@ class MainCommercialPage extends ConsumerStatefulWidget {
 class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
 
   @override
+  void initState() {
+
+    ProductControllers().getAllProducts().then((value) {
+      if(value.isNotEmpty){
+        for (var element in value) {
+          setState(() {
+            products.add(element);
+          });
+        }
+      }
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-    final watchCant = ref.watch(chCant);
-    final watchMoney = ref.watch(chMoney);
-
-    final watchProductList = ref.watch(chProductList);
+    final rProdList = ShoppingCartProvider();
 
     return Scaffold(
       appBar: showAppBar('Productos en stock', centerTitle: false, actions: [
@@ -33,7 +47,7 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
             color: Colors.transparent,
           )),
           onPressed: () {
-            if(watchProductList.isEmpty) {
+            if(rProdList.isEmpty()) {
               simpleMessageSnackBar(context,
                 texto: 'EL carrito de la compra esta vacío', typeMessage: false);
               return;
@@ -45,15 +59,13 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
           label: dosisText('Carrito', color: Colors.white,)
         ),
       ]),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: (){}, 
-        label: dosisText(
-          '$watchCant Productos - Total: \$${watchMoney.toStringAsFixed(2)}',
-          fontWeight: FontWeight.bold)),
       body: Container(
         margin: const EdgeInsets.only(top: 20),
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: const ShowList()
+        child: (products.isEmpty)
+          ? noData(context, 
+              'Parece que no tenemos productos en stock en este momento')
+          : const ShowList()
       ),
     );
   }
@@ -71,66 +83,43 @@ class _ShowListState extends ConsumerState<ShowList> {
   @override
   Widget build(BuildContext context) {
 
-    ProductControllers productCtrl = ProductControllers();
-    final prod = ShoppingCart();
-
     return Scaffold(
-      body: FutureBuilder(
-        future: productCtrl.getAllProducts(),
-        builder: (context, AsyncSnapshot<List<Product>> snapshot) {
-          
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return noData(context, 
-              'Parece que no tenemos productos en stock en este momento');
-          }
-      
-          final products = snapshot.data;
-      
-          return ListView.builder(
-            itemCount: products!.length,
-            itemBuilder: (context, index) {
-              return Container(
-                height: 100,
-                margin: const EdgeInsets.only(top: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [BoxShadow(
-                    color: Colors.black12,
-                    spreadRadius: 1,
-                    blurRadius: 1
-                  )]
-                ),
-                child: Row(
-                  children: [
+      body: ListView.builder(
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          return Container(
+            height: 100,
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [BoxShadow(
+                color: Colors.black12,
+                spreadRadius: 1,
+                blurRadius: 1
+              )]
+            ),
+            child: Row(
+              children: [
 
-                    (products[index].photo.isEmpty)
-                      ? Image.asset('lib/assets/images/no_image.jpg')
-                      : productPhoto(products[index].photo),
+                Image.asset('lib/assets/images/no_image.jpg'),
 
-                    productInfo(products[index].name, products[index].price.toString()),
+                productInfo(products[index].name, products[index].price.toString()),
 
-                    const Spacer(),
+                const Spacer(),
 
-                    dosisText(prod.getCantOfProduct(products[index].id)),
-                    const SizedBox(width: 5),
+                addBuyBtn(products[index])
 
-                    addBuyBtn(products[index])
+              ],
 
-                  ],
-                ),
-              );
+            ),
 
-            })
-            ;
-          },
+          );
 
-        ),
+        }
+
+      )
 
     );
 
@@ -175,75 +164,41 @@ class _ShowListState extends ConsumerState<ShowList> {
     );
   }
 
-  SizedBox addBuyBtn(Product product) {
+  Container addBuyBtn(Product product) {
 
-    return SizedBox(
-      child: Column(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                final prod = ShoppingCart();
-                prod.addToCar(product.id);
-                prod.showCar();
-              },
-              child: Container(
-                width: 25,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  )
-                ),
-                child: dosisText('+', size: 22, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                final prod = ShoppingCart();
-                prod.lessToCar(product.id);
-                prod.showCar();
-              },
-              child: Container(
-                width: 25,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  )
-                ),
-                child: dosisText('-', size: 22, fontWeight: FontWeight.bold),
-              ),
-            ),
-          )
-        ],
+    final productList = StateNotifierProvider<ShoppingCartProvider, Product>(
+      (ref) => ShoppingCartProvider());
+    final rProdList = ref.read(productList.notifier);
+
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(100),
+        boxShadow: const [BoxShadow(
+          color: Colors.black12,
+          spreadRadius: 1,
+          blurRadius: 1
+        )]
+      ),
+      child: IconButton(
+        onPressed: (){
+          if(!rProdList.isInCart(product.id)){
+            setState(() {
+              rProdList.addProductToList(product);
+            });
+          }else {
+            setState(() {
+              rProdList.removeProductFromList(product.id);
+            });
+          }
+        }, 
+        icon: (rProdList.isInCart(product.id))
+          ? const Icon(Icons.remove_shopping_cart_outlined, color: Colors.red)
+          : const Icon(Icons.add_shopping_cart_outlined, color: Colors.blue)
       )
     );
-  }
-
-  bool isInCar(Product product) {
-    final watchProductList = ref.watch(chProductList);
-    return watchProductList.any((element) => element.id == product.id);
-  }
-
-  void manager(bool type, double price){
-
-    final watchCant = ref.read(chCant.notifier);
-    final watchMoney = ref.read(chMoney.notifier);
-
-    if(type){
-      watchCant.state += 1;
-      watchMoney.state += price;
-    }else{
-      watchCant.state -= 1;
-      watchMoney.state -= price;
-    }
   }
 
 }

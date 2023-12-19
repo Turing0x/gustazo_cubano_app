@@ -35,8 +35,8 @@ class _ProductDetailsState extends State<ProductDetails> {
     priceCtrl.text = widget.product.price.toString();
     commissionCtrl.text = widget.product.commission.toString();
     inStockCtrl.text = widget.product.inStock.toString();
-    discountCtrl.text = widget.product.discount.discount.toString();
-    moreThanCtrl.text = widget.product.discount.moreThan.toString();
+    discountCtrl.text = widget.product.discount.toString();
+    moreThanCtrl.text = widget.product.moreThan.toString();
     photoCtrl.text = widget.product.photo;
     
     super.initState();

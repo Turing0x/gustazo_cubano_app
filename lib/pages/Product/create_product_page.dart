@@ -68,10 +68,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
               'price': price,
               'inStock': inStock,
               'commission': commission,
-              'discount': {
-                'more_than': moreThan,
-                'discount': discount,
-              }
+              'more_than': moreThan,
+              'discount': discount,
             };
 
             productCtrl.saveProducts(product);
