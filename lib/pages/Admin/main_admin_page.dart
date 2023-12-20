@@ -25,6 +25,8 @@ class _MainAdminPageState extends State<MainAdminPage> {
             await LocalStorage.roleDelete();
             await LocalStorage.tokenDelete();
             await LocalStorage.userIdDelete();
+            await LocalStorage.usernameDelete();
+            await LocalStorage.fullNameDelete();
 
             contex.pushNamedAndRemoveUntil(
                 'auth_page', (Route<dynamic> route) => false);
@@ -51,6 +53,13 @@ class _MainAdminPageState extends State<MainAdminPage> {
                 'Equipo de trabajo',
                 'Empleados del negocio',
                 () => Navigator.pushNamed(context, 'commercials_control_page'),
+                true),
+          
+              optListTile(
+                Icons.pending_actions_outlined,
+                'Pedidos',
+                'Ordenes aún pendientes',
+                () => Navigator.pushNamed(context, 'pendings_control_page'),
                 true),
           
             ],

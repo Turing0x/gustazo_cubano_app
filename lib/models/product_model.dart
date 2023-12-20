@@ -53,3 +53,27 @@ class Product {
     "discount": discount,
   };
 }
+
+class ProductCart {
+
+  final String name;
+  final double price;
+  final int cantToBuy;
+
+  ProductCart({
+    this.name = '',
+    this.price = 0,
+    this.cantToBuy = 1,
+  });
+
+  factory ProductCart.fromJson(Map<String, dynamic> json) => ProductCart(
+    name: json["name"],
+    price: json["price"]?.toDouble(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
+    "price": price,
+  };
+
+}

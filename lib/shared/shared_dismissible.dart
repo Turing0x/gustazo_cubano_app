@@ -4,12 +4,14 @@ import 'package:gustazo_cubano_app/shared/widgets.dart';
 class CommonDismissible extends StatelessWidget {
   const CommonDismissible({super.key,
     required this.valueKey,
+    required this.text,
     required this.child,
     required this.onDismissed,
     required this.canDissmis
   });
 
   final String valueKey;
+  final String text;
   final bool canDissmis;
   final Widget child;
   final void Function(DismissDirection)? onDismissed;
@@ -27,11 +29,14 @@ class CommonDismissible extends StatelessWidget {
   Container backgroundContainer() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      color: Colors.red,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.red,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          dosisText('Eliminar comercial', size: 18, 
+          dosisText(text, size: 18, 
             fontWeight: FontWeight.w600, color: Colors.white),
           const Icon(Icons.delete_forever_outlined, color: Colors.white)
         ],

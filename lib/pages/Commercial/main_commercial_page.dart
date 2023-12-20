@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
-import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
+import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-List<Product> products = [];
 class MainCommercialPage extends ConsumerStatefulWidget {
   const MainCommercialPage({super.key});
 
@@ -17,6 +16,8 @@ class MainCommercialPage extends ConsumerStatefulWidget {
 }
 
 class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
+
+  List<Product> products = [];
 
   @override
   void initState() {
@@ -58,6 +59,22 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
           icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white,), 
           label: dosisText('Carrito', color: Colors.white,)
         ),
+        IconButton(
+          onPressed: ()async {
+            final contex = Navigator.of(context);
+
+            await LocalStorage.roleDelete();
+            await LocalStorage.tokenDelete();
+            await LocalStorage.userIdDelete();
+            await LocalStorage.usernameDelete();
+            await LocalStorage.fullNameDelete();
+
+            rProdList.cleanCart();
+
+            contex.pushNamedAndRemoveUntil(
+                'auth_page', (Route<dynamic> route) => false);
+          },
+          icon: const Icon(Icons.logout))
       ]),
       body: Container(
         margin: const EdgeInsets.only(top: 20),
@@ -65,14 +82,18 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
         child: (products.isEmpty)
           ? noData(context, 
               'Parece que no tenemos productos en stock en este momento')
-          : const ShowList()
+          : ShowList(products: products)
       ),
     );
   }
 }
 
 class ShowList extends ConsumerStatefulWidget {
-  const ShowList({super.key});
+  const ShowList({super.key,
+    required this.products  
+  });
+
+  final List<Product> products;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ShowListState();
@@ -85,7 +106,7 @@ class _ShowListState extends ConsumerState<ShowList> {
 
     return Scaffold(
       body: ListView.builder(
-        itemCount: products.length,
+        itemCount: widget.products.length,
         itemBuilder: (context, index) {
           return Container(
             height: 100,
@@ -105,11 +126,11 @@ class _ShowListState extends ConsumerState<ShowList> {
 
                 Image.asset('lib/assets/images/no_image.jpg'),
 
-                productInfo(products[index].name, products[index].price.toString()),
+                productInfo(widget.products[index].name, widget.products[index].price.toString()),
 
                 const Spacer(),
 
-                addBuyBtn(products[index])
+                addBuyBtn(widget.products[index])
 
               ],
 

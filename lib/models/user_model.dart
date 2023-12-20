@@ -8,6 +8,7 @@ class User {
   final String id;
   final bool enable;
   final String username;
+  final String fullName;
   final String password;
   final String role;
   final String referalCode;
@@ -17,6 +18,7 @@ class User {
     required this.id,
     required this.enable,
     required this.username,
+    required this.fullName,
     required this.password,
     required this.role,
     required this.referalCode,
@@ -27,6 +29,7 @@ class User {
     id: json["_id"],
     enable: json["enable"],
     username: json["username"],
+    fullName: json["full_name"],
     password: json["password"],
     role: json["role"],
     referalCode: json["referal_code"],
@@ -37,6 +40,7 @@ class User {
     "_id": id,
     "enable": enable,
     "username": username,
+    "full_name": fullName,
     "password": password,
     "role": role,
     "referal_code": referalCode,

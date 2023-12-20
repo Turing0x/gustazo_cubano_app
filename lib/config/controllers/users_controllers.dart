@@ -57,6 +57,8 @@ class UserControllers {
 
         localStorage.usernameSave(username);
         localStorage.userIdSave(response.data['data']['userID']);
+        localStorage.fullNameSave(response.data['data']['fullName']);
+        localStorage.referalCodeSave(response.data['data']['referalCode']);
         localStorage.tokenSave(response.data['data']['token']);
         localStorage.timeSignSave(DateTime.now().toString());
         localStorage.roleSave(role);

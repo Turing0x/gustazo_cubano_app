@@ -71,6 +71,7 @@ class _ShowListState extends ConsumerState<ShowList> {
                 itemBuilder: (context, index) {
                   return CommonDismissible(
                     canDissmis: true,
+                    text: 'Eliminar producto',
                     valueKey: products[index].id,
                     onDismissed: (direction) {
                       ProductControllers().deleteOne(products[index].id);
@@ -79,7 +80,7 @@ class _ShowListState extends ConsumerState<ShowList> {
                       });
                     },
                     child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),

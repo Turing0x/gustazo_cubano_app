@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
@@ -14,6 +15,29 @@ class ShoppingCartPage extends ConsumerStatefulWidget {
 }
 
 class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
+
+  final ScrollController _controller = ScrollController();
+  bool _visible = true;
+
+  @override
+  void initState() {
+    _controller.addListener(() {
+      if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
+        if (_visible == true) {
+          setState(() {
+            _visible = false;
+          });
+        }
+      } else if (_controller.position.userScrollDirection == ScrollDirection.forward) {
+        if (_visible == false) {
+          setState(() {
+            _visible = true;
+          });
+        }
+      }
+    });
+    super.initState();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -23,13 +47,18 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
     return Scaffold(
       appBar: showAppBar('Carrito de la compra'),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.shopping_cart_checkout_sharp),
-        onPressed: (){
-          
-        }, 
-        label: dosisText('Completar pedido',
-          fontWeight: FontWeight.bold)),
+      floatingActionButton: Visibility(
+        visible: _visible,
+        child: FloatingActionButton.extended(
+          icon: const Icon(Icons.shopping_cart_checkout_sharp),
+          onPressed: (){
+            if(rProdList.products.isNotEmpty){
+              Navigator.pushNamed(context, 'finish_order_page');
+            }
+          }, 
+          label: dosisText('Revisar pedido',
+            fontWeight: FontWeight.bold)),
+      ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -44,8 +73,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
             ( rProdList.products.isEmpty )
               ? emptyCart(size)
-              : Flexible(
-              child: shoppingCartList(rProdList)
+              : Flexible(child: shoppingCartList(rProdList)
 
             )
 
@@ -61,6 +89,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
   ListView shoppingCartList(ShoppingCartProvider rProdList) {
     return ListView.builder(
+      controller: _controller,
       itemCount: rProdList.products.length,
       itemBuilder: (context, index) {
 

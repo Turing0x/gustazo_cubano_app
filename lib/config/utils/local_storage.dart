@@ -23,6 +23,14 @@ class LocalStorage {
     _storage.write(key: 'username', value: username);
   }
 
+  referalCodeSave(String referalCode) async {
+    _storage.write(key: 'referalCode', value: referalCode);
+  }
+
+  fullNameSave(String fullName) async {
+    _storage.write(key: 'full_name', value: fullName);
+  }
+
   timeSignSave(String time) async {
     _storage.write(key: 'lastTime', value: time);
   }
@@ -37,6 +45,16 @@ class LocalStorage {
 
   static Future<String?> getUsername() async {
     final token = await storage.read(key: 'username');
+    return token;
+  }
+
+  static Future<String?> getReferalCode() async {
+    final token = await storage.read(key: 'referalCode');
+    return token;
+  }
+
+  static Future<String?> getFullName() async {
+    final token = await storage.read(key: 'full_name');
     return token;
   }
 
@@ -79,6 +97,14 @@ class LocalStorage {
 
   static Future<void> usernameDelete() async {
     await storage.delete(key: 'username');
+  }
+
+  static Future<void> fullNameDelete() async {
+    await storage.delete(key: 'full_name');
+  }
+
+  static Future<void> referalCodeDelete() async {
+    await storage.delete(key: 'referalCode');
   }
 
   static Future<void> userIdDelete() async {

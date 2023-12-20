@@ -115,6 +115,7 @@ class _ShowListState extends ConsumerState<ShowList> {
             itemCount: users!.length,
             itemBuilder: (context, index) {
               return CommonDismissible(
+                text: 'Eliminar comercial',
                 canDissmis: true,
                 valueKey: users[index].id,
                 onDismissed: (direction) {
