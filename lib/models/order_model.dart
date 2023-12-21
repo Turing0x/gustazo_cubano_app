@@ -46,6 +46,14 @@ class Order {
     "commision": commision,
     "seller": seller.toJson(),
   };
+
+  int get getCantOfProducts {
+    int total = 0;
+    for (var element in productList) {
+      total += element.cantToBuy;
+    }
+    return total;
+  }
 }
 
 class ProductList {

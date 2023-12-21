@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/models/order_model.dart';
+import 'package:gustazo_cubano_app/shared/no_data.dart';
+import 'package:gustazo_cubano_app/shared/widgets.dart';
+
+class PendignsControlPage extends StatefulWidget {
+  const PendignsControlPage({super.key});
+
+  @override
+  State<PendignsControlPage> createState() => _PendignsControlPageState();
+}
+
+class _PendignsControlPageState extends State<PendignsControlPage> {
+
+  List<Order> list = [];
+  bool loading = true;
+
+  @override
+  void initState() {
+    OrderControllers().getAllOrders(false).then((value) {
+      setState(() {
+        list = value;
+        loading = false;
+      });
+    });
+    super.initState();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      appBar: showAppBar('Control de pedidos'),
+      body: ( loading )
+        ? const Center(child: CircularProgressIndicator())
+        : (list.isEmpty)
+          ? noData(context, 
+                'No tenemos pedidos en este momento. Vuelva en otro momento')
+          : showList()
+
+    );
+
+  }
+
+  ListView showList() {
+    return ListView.builder(
+      
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+
+        Order order = list[index];
+        
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 1,
+              blurRadius: 1
+            )]
+          ),
+          child: ListTile(
+            title: dosisText(order.seller.fullName, fontWeight: FontWeight.bold),
+            subtitle: dosisBold('Monto: \$', 
+              order.totalAmount.toStringAsFixed(2), 18),
+            trailing: CircleAvatar(
+              child: dosisText(order.productList.length.toString(),
+              fontWeight: FontWeight.bold)),
+            onTap: () => Navigator.pushNamed(context, 'pending_details_page', arguments: [
+              order
+            ]),
+          ),
+        );
+      },
+    
+    );
+  }
+
+}

@@ -28,11 +28,16 @@ void showToast(String msg, {bool type = false}) => Fluttertoast.showToast(
 );
 
 PreferredSizeWidget? showAppBar(String titulo,
-    {Widget? leading, List<Widget>? actions, bool centerTitle = true}) {
+    {
+      Widget? leading, 
+      List<Widget>? actions, 
+      bool centerTitle = true,
+      Color backgroundColor = const Color.fromARGB(255, 147, 128, 228)
+    }) {
   return AppBar(
     title: dosisText(titulo, size: 24, color: Colors.white),
     iconTheme: const IconThemeData(color: Colors.white),
-    backgroundColor: const Color.fromARGB(255, 147, 128, 228),
+    backgroundColor: backgroundColor,
     elevation: 5,
     centerTitle: centerTitle,
     leading: leading,

@@ -15,11 +15,11 @@ class OrderControllers {
     )
   );
 
-  Future<List<Order>> getAllOrders() async{
+  Future<List<Order>> getAllOrders(bool change) async{
 
     try {
 
-      Response response = await _dio.get('/api/orders');
+      Response response = await _dio.get('/api/${change ? 'orders' : 'orders/pending'}');
 
       if( response.statusCode == 500 ) return [];
 
@@ -53,6 +53,25 @@ class OrderControllers {
       return;
     } on Exception catch (e) {
       showToast(e.toString());
+    }
+  }
+  
+  Future<bool> marckAsDoneOrder(String orderId, String invoiceNumber) async {
+    try {
+
+      Response response = await _dio.put('/api/orders/$orderId/$invoiceNumber');
+
+      if (response.statusCode == 200) {
+        showToast(response.data['api_message'], type: true);
+        return true;
+      }
+
+      showToast(response.data['api_message']);
+      return false;
+
+    } on Exception catch (e) {
+      showToast(e.toString());
+      return false;
     }
   }
 

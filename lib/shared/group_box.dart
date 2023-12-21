@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-Padding customGroupBox(String labelText, List<Widget> widgets) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 30),
+Container customGroupBox(String labelText, List<Widget> widgets) {
+  return Container(
+    padding: const EdgeInsets.only(top: 30),
+    margin: const EdgeInsets.only(bottom: 10),
     child: InputDecorator(
       decoration: InputDecoration(
           labelText: labelText,

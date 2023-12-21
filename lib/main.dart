@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/router/on_generate_route.dart';
 import 'package:gustazo_cubano_app/config/router/routes.dart';
 import 'package:gustazo_cubano_app/config/utils/initial_route.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async{
   await dotenv.load(fileName: '.env');
 
   final rutIni = await initialRoute();
+  initializeDateFormatting();
 
   runApp(ProviderScope(
     child: MyApp(

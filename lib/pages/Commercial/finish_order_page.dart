@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
-import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:intl/intl.dart';
