@@ -15,11 +15,11 @@ class OrderControllers {
     )
   );
 
-  Future<List<Order>> getAllOrders(bool change) async{
+  Future<List<Order>> getAllOrders(bool change, {String date = ''}) async{
 
     try {
 
-      Response response = await _dio.get('/api/${change ? 'orders' : 'orders/pending'}');
+      Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending'}');
 
       if( response.statusCode == 500 ) return [];
 

@@ -110,7 +110,7 @@ class _ShowListState extends ConsumerState<ShowList> {
         itemBuilder: (context, index) {
           return Container(
             height: 100,
-            margin: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.white,

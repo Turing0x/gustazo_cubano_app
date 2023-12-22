@@ -35,6 +35,8 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   bool isInCart(String productId) => _productList.containsKey(productId);
 
   void addProductToList( Product product ){
+    if( product.inStock < product.cantToBuy + 1) return;
+
     if( _productList.containsKey(product.id) ){
       _productList.update(product.id, (value) => Product(
         id: value.id, 

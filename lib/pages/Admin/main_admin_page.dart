@@ -61,15 +61,24 @@ class _MainAdminPageState extends State<MainAdminPage> {
                 'Ordenes aún pendientes',
                 () => Navigator.pushNamed(context, 'pendings_control_page'),
                 true),
+
+              optListTile(
+                Icons.work_history_outlined,
+                'Ordenes',
+                'Historial de ordenes pasadas',
+                () => Navigator.pushNamed(context, 'orders_history_page'),
+                true),
           
             ],
           
           ),
+
         ),
 
       ),
   
     );
+
   }
 
 }

@@ -54,7 +54,7 @@ class _CustomDateSelectState extends ConsumerState<CustomDateSelect> {
 
                         if (pickedDate != null) {
                           String formattedDate =
-                              DateFormat.MMMd('es').format(pickedDate);
+                              DateFormat.MMMd('en').format(pickedDate);
                           janddateM.setCurrentDate(formattedDate);
                         }
                       },

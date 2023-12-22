@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class PendingDetailsPage extends StatefulWidget {
-  const PendingDetailsPage({super.key, required this.order});
+class OrderDetailsPage extends StatefulWidget {
+  const OrderDetailsPage({super.key, required this.order});
 
   final Order order;
 
   @override
-  State<PendingDetailsPage> createState() => _PendingDetailsPageState();
+  State<OrderDetailsPage> createState() => _OrderDetailsPageState();
 }
 
-class _PendingDetailsPageState extends State<PendingDetailsPage> {
+class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +23,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     String fecha = '${o.date.day}/${o.date.month}/${o.date.year} - ${o.date.hour}:${o.date.minute}:${o.date.second}';
 
     return Scaffold(
-      appBar: showAppBar('Detalles del pedido', actions: [
-        popupMenuButton(widget.order)
-      ]),
+      appBar: showAppBar('Detalles de la orden'),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -136,48 +133,5 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
       ),
     );
   }
-
-  PopupMenuButton popupMenuButton( Order order ) {
-
-    final orderCrt = OrderControllers();
-    return PopupMenuButton(
-
-      icon: const Icon(Icons.more_vert, color: Colors.white,),
-      onSelected: (value) {
-        
-        Map<String, void Function()> methods = {
-          
-          'mark_as_ready': () => Navigator.pushNamed(context, 'confirm_pending_page',
-            arguments: [order.id]),
-          
-          'cancel_order': () => {
-            orderCrt.deleteOne(order.id),
-            Navigator.pushReplacementNamed(context, 'pendings_control_page')
-          }
-          
-        };
-
-        methods[value]!.call();
-
-      },
-      itemBuilder: (BuildContext context) => [
-        PopupMenuItem(
-          value: 'mark_as_ready',
-          child: ListTile(
-            title: dosisText('Marcar como entregado', size: 18),
-            leading: const Icon(Icons.done_outline_rounded, color: Colors.green, size: 19),
-          )
-        ),
-        PopupMenuItem(
-          value: 'cancel_order',
-          child: ListTile(
-            title: dosisText('Cancelar pedido', size: 18),
-            leading: const Icon(Icons.cancel_outlined, color: Colors.red, size: 19),
-          )
-        )
-      ],
-    );
-  }
-
 
 }

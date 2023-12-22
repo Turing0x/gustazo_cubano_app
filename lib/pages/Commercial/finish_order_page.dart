@@ -42,12 +42,13 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
       appBar: showAppBar('Revisar pedido', actions: [
         IconButton(
           onPressed: (){
-
+            
             final orderCrtl = OrderControllers();
 
             List list = [];
             rProdList.products.forEach((key, value) {
               list.add({
+                'producId': value.id,
                 'name': value.name,
                 'price': value.price,
                 'cantToBuy': value.cantToBuy,
@@ -67,6 +68,8 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
             };
 
             orderCrtl.saveOrder(order);
+            rProdList.cleanCart();
+            Navigator.pushReplacementNamed(context, 'main_commercial_page');
 
           }, 
           icon: const Icon(Icons.send)

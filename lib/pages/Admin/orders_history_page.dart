@@ -1,25 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
+import 'package:gustazo_cubano_app/shared/Select_date/select_date.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class PendignsControlPage extends StatefulWidget {
-  const PendignsControlPage({super.key});
+class OrdersHistoryPage extends StatefulWidget {
+  const OrdersHistoryPage({super.key});
 
   @override
-  State<PendignsControlPage> createState() => _PendignsControlPageState();
+  State<OrdersHistoryPage> createState() => _OrdersHistoryPageState();
 }
 
-class _PendignsControlPageState extends State<PendignsControlPage> {
+class _OrdersHistoryPageState extends State<OrdersHistoryPage> {
+  
+  @override
+  Widget build(BuildContext context) {
+  
+    return Scaffold(
+      appBar: showAppBar('Historial de ordenes'),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+      
+          children: [
+      
+            CustomDateSelect(),
+
+            Expanded(child: ShowList())
+      
+          ],
+      
+        ),
+      
+      ),
+
+    );
+
+  }
+
+}
+
+class ShowList extends ConsumerStatefulWidget {
+  const ShowList({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ShowListState();
+}
+
+class _ShowListState extends ConsumerState<ShowList> {
 
   @override
   Widget build(BuildContext context) {
 
+    final janddate = ref.watch(janddateR);
+
     return Scaffold(
-      appBar: showAppBar('Control de pedidos'),
       body: FutureBuilder(
-        future: OrderControllers().getAllOrders(false), 
+        future: OrderControllers().getAllOrders(true, date: janddate.currentDate),
         builder: (context, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -51,22 +91,24 @@ class _PendignsControlPageState extends State<PendignsControlPage> {
                 ),
                 child: ListTile(
                   title: dosisText(order.seller.fullName, fontWeight: FontWeight.bold),
-                  subtitle: dosisBold('Monto: \$', 
-                    order.totalAmount.toStringAsFixed(2), 18),
-                  trailing: CircleAvatar(
-                    child: dosisText(order.productList.length.toString(),
-                    fontWeight: FontWeight.bold)),
-                  onTap: () => Navigator.pushNamed(context, 'pending_details_page', arguments: [
+                  subtitle: dosisBold('Factura: ', 
+                    order.invoiceNumber, 18),
+                  trailing: const Icon(Icons.arrow_right_rounded),
+                  onTap: () => Navigator.pushNamed(context, 'order_details_page', arguments: [
                     order
                   ]),
+
                 ),
+
               );
+
             },
           
           );
-
+          
         },
-      )
+
+      ),
 
     );
 

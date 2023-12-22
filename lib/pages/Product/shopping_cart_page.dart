@@ -120,9 +120,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
               
                   productInfo(
                     product.name, 
-                    product.price.toString(),
-                    product.commission.toString()
-                  ),
+                    product.price.toString()),
               
                   const Spacer(),
               
@@ -200,7 +198,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
       ));
   }
   
-  Container productInfo(String name, String price, String commision) {
+  Container productInfo(String name, String price) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
       child: Column(
@@ -208,8 +206,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('Precio: \$$price', color: Colors.blue),
-          dosisText('Comisión: $commision%', color: Colors.red),
+          dosisText('Precio: \$$price', color: Colors.blue)
         ],
       )
     );
