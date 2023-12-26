@@ -26,10 +26,10 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   }
 
   double get totalCommisionMoney {
-    double commisionMoney = 0.0;
+    double commissionMoney = 0.0;
     _productList.forEach((key, value) => 
-      commisionMoney += (value.price * value.cantToBuy) * (value.commission / 100) );
-    return commisionMoney;
+      commissionMoney += (value.price * value.cantToBuy) * (value.commission / 100) );
+    return commissionMoney;
   }
 
   bool isInCart(String productId) => _productList.containsKey(productId);
@@ -54,6 +54,12 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         product.id: product
       });
     }
+  }
+
+  void addProductToListOnEditing( Product product ){
+    _productList.addAll({
+      product.id: product
+    });
   }
 
   void removeProductFromList (String prodId) {

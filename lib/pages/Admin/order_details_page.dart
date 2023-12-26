@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
+import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -34,11 +35,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               customGroupBox('Comercial y montos de la compra', [
                 dosisBold('Comercial: ', o.seller.fullName, 20),
                 dosisBold('Código de referidos: ', o.seller.referalCode, 20),
-                dosisBold('Ganacias por comisión: \$', o.commision.toString(), 18),
+                dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18),
                 const Divider(
                   color: Colors.black,
                 ),
                 dosisBold('Fecha: ', fecha, 18),
+                dosisBold('Número de factura: ', o.invoiceNumber, 18),
                 dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
                 dosisBold('Monto total: \$', o.totalAmount.toString(), 18)
               ]),
@@ -55,12 +57,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   }
 
-  ListView shoppingCartList(List<ProductList> rProdList) {
+  ListView shoppingCartList(List<Product> rProdList) {
     return ListView.builder(
       itemCount: rProdList.length,
       itemBuilder: (context, index) {
 
-        ProductList product = rProdList[index];
+        Product product = rProdList[index];
         return ListTile(
             title: dosisText(product.name, fontWeight: FontWeight.bold),
             subtitle: dosisBold('Precio: \$', product.price.toString(), 18),
@@ -94,7 +96,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       ));
   }
   
-  Container productInfo(String name, String price, String commision) {
+  Container productInfo(String name, String price, String commission) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
       child: Column(
@@ -103,7 +105,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
           dosisText('Precio: \$$price', color: Colors.blue),
-          dosisText('Comisión: $commision%', color: Colors.red),
+          dosisText('Comisión: $commission%', color: Colors.red),
         ],
       )
     );

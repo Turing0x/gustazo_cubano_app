@@ -2,25 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
+import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class ShoppingCartPage extends ConsumerStatefulWidget {
-  const ShoppingCartPage({super.key});
+class EditPendingPage extends ConsumerStatefulWidget {
+  const EditPendingPage({super.key, required this.order});
+
+  final Order order;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ShoppingCartPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _EditPendingPageState();
 }
 
-class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
+class _EditPendingPageState extends ConsumerState<EditPendingPage> {
 
   final ScrollController _controller = ScrollController();
   bool _visible = true;
 
   @override
   void initState() {
+
+    final rProdList = ShoppingCartProvider();
+    for(var order in widget.order.productList){
+      setState(() {
+        rProdList.addProductToListOnEditing(order);
+      });
+    }
+
     _controller.addListener(() {
       if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
         if (_visible == true) {
@@ -46,17 +58,43 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: showAppBar('Carrito de la compra'),
+      appBar: showAppBar('Carrito', centerTitle: false, actions: [
+        OutlinedButton.icon(
+          onPressed: () {
+            final orderCtrl = OrderControllers();
+
+            List<Product> list = [];
+            rProdList.products.forEach((key, value) {
+              list.add(value);
+            });
+
+            Map<String, dynamic> order = {
+              'product_list': list,
+            };
+            
+            orderCtrl.editOrder(widget.order.id, order);
+
+            Navigator.pushReplacementNamed(context, 'pending_details_page', arguments: [
+              widget.order
+            ]);
+          }, 
+          icon: const Icon(Icons.done, color: Colors.white),
+          label: dosisText('Listo', color: Colors.white),
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Colors.transparent)
+          ),
+        )
+      ]),
       floatingActionButton: Visibility(
         visible: _visible,
         child: FloatingActionButton.extended(
-          icon: const Icon(Icons.shopping_cart_checkout_sharp),
+          icon: const Icon(Icons.add_shopping_cart_outlined),
           onPressed: (){
             if(rProdList.products.isNotEmpty){
-              Navigator.pushNamed(context, 'finish_order_page');
+              Navigator.pushNamed(context, 'add_products_on_editing');
             }
           }, 
-          label: dosisText('Revisar pedido',
+          label: dosisText('Añadir productos',
             fontWeight: FontWeight.bold)),
       ),
       body: Container(

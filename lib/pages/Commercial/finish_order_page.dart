@@ -47,20 +47,15 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
 
             List list = [];
             rProdList.products.forEach((key, value) {
-              list.add({
-                'producId': value.id,
-                'name': value.name,
-                'price': value.price,
-                'cantToBuy': value.cantToBuy,
-                'commision': value.commission,
-              });
+              list.add(value);
             });
+
 
             Map<String, dynamic> order = {
               'date': DateTime.now().toString(),
               'product_list': list,
               'total_amount': rProdList.totalAmount,
-              'commision': rProdList.totalCommisionMoney.toStringAsFixed(2),
+              'commission': rProdList.totalCommisionMoney.toStringAsFixed(2),
               'seller': {
                 'fullName': fullname,
                 'referalCode': referalCode,
@@ -112,7 +107,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              dosisBold('Total de artículos: ', rProdList.productsCant.toString(), 20),
+              dosisBold('Total de productos: ', rProdList.productsCant.toString(), 20),
               dosisBold('Monto: \$', rProdList.totalAmount.toStringAsFixed(2), 20)
             ],
           )

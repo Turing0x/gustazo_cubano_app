@@ -30,15 +30,16 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-    id: json["_id"],
-    name: json["name"],
-    description: json["description"],
-    photo: json["photo"],
-    price: json["price"]?.toDouble(),
-    inStock: json["in_stock"]?.toDouble(),
-    commission: json["commission"]?.toDouble(),
-    moreThan: json["more_than"]?.toDouble(),
-    discount: json["discount"]?.toDouble(),
+    id: json["_id"] ?? '',
+    name: json["name"] ?? '',
+    description: json["description"] ?? '',
+    photo: json["photo"] ?? '',
+    price: json["price"]?.toDouble() ?? 0,
+    inStock: json["in_stock"]?.toDouble() ?? 0,
+    commission: json["commission"]?.toDouble() ?? 0,
+    moreThan: json["more_than"]?.toDouble() ?? 0,
+    discount: json["discount"]?.toDouble() ?? 0,
+    cantToBuy: json["cantToBuy"]?.toInt() ?? 1,
   );
 
   Map<String, dynamic> toJson() => {
@@ -51,7 +52,14 @@ class Product {
     "commission": commission,
     "more_than": moreThan,
     "discount": discount,
+    "cantToBuy": cantToBuy,
   };
+
+  @override
+  String toString() {
+    return 'Product: { \nid: $id, \nname: $name, \ndescription: $description, \nphoto: $photo, \nprice: $price, \ninStock: $inStock, \ncantToBuy: $cantToBuy, \nmoreThan: $moreThan, \ncommission: $commission, \ndiscount: $discount}';
+  }
+  
 }
 
 class ProductCart {
@@ -69,11 +77,18 @@ class ProductCart {
   factory ProductCart.fromJson(Map<String, dynamic> json) => ProductCart(
     name: json["name"],
     price: json["price"]?.toDouble(),
+    cantToBuy: json["cantToBuy"]?.toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
     "name": name,
     "price": price,
+    "cantToBuy": cantToBuy,
   };
+
+  @override
+  String toString() {
+    return 'ProductCart: {name: $name, price: $price, cantToBuy: $cantToBuy}';
+  }
 
 }

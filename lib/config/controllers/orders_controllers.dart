@@ -19,10 +19,9 @@ class OrderControllers {
 
     try {
 
-      Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending'}');
+      Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending/:$date'}');
 
       if( response.statusCode == 500 ) return [];
-
       List<Order> list = [];
 
       response.data['data'].forEach((value) {
@@ -37,11 +36,47 @@ class OrderControllers {
     }
 
   }
+  
+  Future<List<Order>> getOrderById(String orderId) async{
+
+    try {
+
+      Response response = await _dio.get('/api/orders/getById/$orderId');
+
+      if( response.statusCode == 500 ) return [];
+
+      Order order = Order.fromJson(response.data['data']);
+
+      return [order];
+      
+    } catch (_) {
+      return [];
+    }
+
+  }
 
   void saveOrder(Map<String, dynamic> order) async {
     try {
 
       Response response = await _dio.post('/api/orders', 
+        data: jsonEncode(order) );
+
+      if (response.statusCode == 200) {
+        showToast(response.data['api_message'], type: true);
+        return;
+      }
+
+      showToast(response.data['api_message']);
+      return;
+    } on Exception catch (e) {
+      showToast(e.toString());
+    }
+  }
+  
+  void editOrder(String orderId, Map<String, dynamic> order) async {
+    try {
+
+      Response response = await _dio.put('/api/orders/$orderId', 
         data: jsonEncode(order) );
 
       if (response.statusCode == 200) {

@@ -54,10 +54,18 @@ dependencies:
   fluttertoast: ^8.2.4
   url_launcher: ^6.2.2
   flutter_multi_formatter: ^2.12.3
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
+  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/assets/images/gustazo.ico"
+  min_sdk_android: 21 # android min sdk min:16, default 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/order_details_page.dart';
-import 'package:gustazo_cubano_app/pages/Product/confirm_pending_page.dart';
-import 'package:gustazo_cubano_app/pages/Product/pending_details_page.dart';
+import 'package:gustazo_cubano_app/pages/Order/confirm_pending_page.dart';
+import 'package:gustazo_cubano_app/pages/Order/edit_pending_page.dart';
+import 'package:gustazo_cubano_app/pages/Order/pending_details_page.dart';
 import 'package:gustazo_cubano_app/pages/Product/product_detail.dart';
 
 MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
@@ -27,6 +28,11 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
     'confirm_pending_page': MaterialPageRoute(
       builder: (_) => ConfirmPendingPage(
         orderId: argumentos[0],
+      )),
+
+    'edit_pending_page': MaterialPageRoute(
+      builder: (_) => EditPendingPage(
+        order: argumentos[0],
       )),
     
   };

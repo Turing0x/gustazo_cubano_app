@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
+import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -19,51 +20,26 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
   @override
   Widget build(BuildContext context) {
 
-    Order o = widget.order;
-
-    String fecha = '${o.date.day}/${o.date.month}/${o.date.year} - ${o.date.hour}:${o.date.minute}:${o.date.second}';
-
     return Scaffold(
       appBar: showAppBar('Detalles del pedido', actions: [
-        popupMenuButton(widget.order)
+        popupMenuButton()
       ]),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-          
-              customGroupBox('Comercial y montos de la compra', [
-                dosisBold('Comercial: ', o.seller.fullName, 20),
-                dosisBold('Código de referidos: ', o.seller.referalCode, 20),
-                dosisBold('Ganacias por comisión: \$', o.commision.toString(), 18),
-                const Divider(
-                  color: Colors.black,
-                ),
-                dosisBold('Fecha: ', fecha, 18),
-                dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
-                dosisBold('Monto total: \$', o.totalAmount.toString(), 18)
-              ]),
-
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.55,
-                child: shoppingCartList(o.productList))
-          
-            ],
-          ),
+          child: pageColumn()
         ),
       ),
     );
 
   }
 
-  ListView shoppingCartList(List<ProductList> rProdList) {
+  ListView shoppingCartList(List<Product> rProdList) {
     return ListView.builder(
       itemCount: rProdList.length,
       itemBuilder: (context, index) {
 
-        ProductList product = rProdList[index];
+        Product product = rProdList[index];
         return ListTile(
             title: dosisText(product.name, fontWeight: FontWeight.bold),
             subtitle: dosisBold('Precio: \$', product.price.toString(), 18),
@@ -90,14 +66,14 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           ),
 
           dosisText(
-            'Acaba de vaciar su carrito. Por favor, regrese al listado de productos', 
+            'Acaba de vaciar su carritorder!. Por favor, regrese al listado de productos', 
             size: 18, maxLines: 3, textAlign: TextAlign.center),
           
         ],
       ));
   }
   
-  Container productInfo(String name, String price, String commision) {
+  Container productInfo(String name, String price, String commission) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
       child: Column(
@@ -106,7 +82,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
           dosisText('Precio: \$$price', color: Colors.blue),
-          dosisText('Comisión: $commision%', color: Colors.red),
+          dosisText('Comisión: $commission%', color: Colors.red),
         ],
       )
     );
@@ -137,7 +113,37 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     );
   }
 
-  PopupMenuButton popupMenuButton( Order order ) {
+  Column pageColumn(){
+
+    final o = widget.order;
+
+    String fecha = '${o.date.day}/${o.date.month}/${o.date.year} - ${o.date.hour}:${o.date.minute}:${o.date.second}';
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+    
+        customGroupBox('Comercial y montos de la compra', [
+          dosisBold('Comercial: ', o.seller.fullName, 20),
+          dosisBold('Código de referidos: ', o.seller.referalCode, 20),
+          dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18),
+          const Divider(
+            color: Colors.black,
+          ),
+          dosisBold('Fecha: ', fecha, 18),
+          dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
+          dosisBold('Monto total: \$', o.totalAmount.toString(), 18)
+        ]),
+    
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.55,
+          child: shoppingCartList(o.productList))
+    
+      ],
+    );
+  }
+
+  PopupMenuButton popupMenuButton() {
 
     final orderCrt = OrderControllers();
     return PopupMenuButton(
@@ -148,10 +154,13 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
         Map<String, void Function()> methods = {
           
           'mark_as_ready': () => Navigator.pushNamed(context, 'confirm_pending_page',
-            arguments: [order.id]),
+            arguments: [widget.order.id]),
+          
+          'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
+            arguments: [widget.order]),
           
           'cancel_order': () => {
-            orderCrt.deleteOne(order.id),
+            orderCrt.deleteOne(widget.order.id),
             Navigator.pushReplacementNamed(context, 'pendings_control_page')
           }
           
@@ -169,6 +178,13 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           )
         ),
         PopupMenuItem(
+          value: 'edit_pending',
+          child: ListTile(
+            title: dosisText('Editar este pedido', size: 18),
+            leading: const Icon(Icons.edit_document, color: Colors.blue, size: 19),
+          )
+        ),
+        PopupMenuItem(
           value: 'cancel_order',
           child: ListTile(
             title: dosisText('Cancelar pedido', size: 18),
@@ -178,6 +194,5 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
       ],
     );
   }
-
 
 }
