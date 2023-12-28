@@ -10,11 +10,11 @@ class Product {
   final String description;
   final String photo;
   final double price;
-  final double inStock;
-  final int cantToBuy;
-  final double moreThan;
   final double commission;
   final double discount;
+  final int inStock;
+  final int cantToBuy;
+  final int moreThan;
 
   Product({
     this.id = '',
@@ -35,10 +35,10 @@ class Product {
     description: json["description"] ?? '',
     photo: json["photo"] ?? '',
     price: json["price"]?.toDouble() ?? 0,
-    inStock: json["in_stock"]?.toDouble() ?? 0,
     commission: json["commission"]?.toDouble() ?? 0,
-    moreThan: json["more_than"]?.toDouble() ?? 0,
     discount: json["discount"]?.toDouble() ?? 0,
+    moreThan: json["more_than"]?.toInt() ?? 0,
+    inStock: json["in_stock"]?.toInt() ?? 0,
     cantToBuy: json["cantToBuy"]?.toInt() ?? 1,
   );
 
@@ -77,7 +77,7 @@ class ProductCart {
   factory ProductCart.fromJson(Map<String, dynamic> json) => ProductCart(
     name: json["name"],
     price: json["price"]?.toDouble(),
-    cantToBuy: json["cantToBuy"]?.toDouble(),
+    cantToBuy: json["cantToBuy"]?.toInt(),
   );
 
   Map<String, dynamic> toJson() => {

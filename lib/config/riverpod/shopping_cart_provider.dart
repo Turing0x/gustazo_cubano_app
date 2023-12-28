@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 
 Map<String, Product> _productList = {};
+Map<String, int> _onEditingCart = {};
 class ShoppingCartProvider extends StateNotifier<Product> {
 
   ShoppingCartProvider() : super(Product());
@@ -82,6 +83,44 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         cantToBuy: value.cantToBuy - 1
       ));
     }
+  }
+  
+  void decreaseTenCantToBuyOfAProduct( String productId ){
+    if(_productList[productId]!.cantToBuy == 1){
+      removeProductFromList(productId);
+    }else if(_productList[productId]!.cantToBuy - 10 < 1) {
+      return;
+    }else {
+      _productList.update(productId, (value) => Product(
+        id: value.id, 
+        name: value.name, 
+        description: value.description, 
+        photo: value.photo, 
+        price: value.price, 
+        inStock: value.inStock, 
+        commission: value.commission, 
+        discount: value.discount,
+        cantToBuy: value.cantToBuy - 10
+      ));
+    }
+  }
+  
+  void addTenCantToBuyOfAProduct( String productId ){
+
+    Product product = _productList[productId]!;
+    if( product.inStock < product.cantToBuy + 10) return;
+
+    _productList.update(product.id, (value) => Product(
+      id: value.id, 
+      name: value.name, 
+      description: value.description, 
+      photo: value.photo, 
+      price: value.price, 
+      inStock: value.inStock, 
+      commission: value.commission, 
+      discount: value.discount,
+      cantToBuy: value.cantToBuy + 1
+    ));
   }
 
   int cantOfAProduct(String productId){

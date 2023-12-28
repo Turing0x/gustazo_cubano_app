@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/orders_history_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/my_orders_history_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/my_pendings_today_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/to_make_shopping_cart_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/pendigns_control_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/finish_order_page.dart';
@@ -28,6 +30,8 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'commercials_control_page': (_) => const CommercialsControlPage(),
   'to_make_shopping_cart_page': (_) => const ToMakeShoppingCartPage(),
   'finish_order_page': (_) => const FinishOrderPage(),
+  'my_pendings_today_page': (_) => const MyPendignsTodayPage(),
+  'my_orders_history_page': (_) => const MyOrdersHistoryPage(),
 
   'stock_control_page': (_) => const StockControlPage(),
   'create_product_page': (_) => const CreateProductPage(),

@@ -21,6 +21,8 @@ class _ToMakeShoppingCartPageState extends ConsumerState<ToMakeShoppingCartPage>
   @override
   void initState() {
 
+    ShoppingCartProvider().cleanCart();
+
     ProductControllers().getAllProducts().then((value) {
       if(value.isNotEmpty){
         for (var element in value) {
@@ -107,9 +109,12 @@ class _ShowListState extends ConsumerState<ShowList> {
             child: Row(
               children: [
 
-                Image.asset('lib/assets/images/no_image.jpg'),
+                Image.asset('lib/assets/images/6720387.jpg'),
 
-                productInfo(widget.products[index].name, widget.products[index].price.toString()),
+                productInfo(
+                  widget.products[index].name, 
+                  widget.products[index].price.toString(),
+                  widget.products[index].inStock.toStringAsFixed(0)),
 
                 const Spacer(),
 
@@ -129,7 +134,7 @@ class _ShowListState extends ConsumerState<ShowList> {
 
   }
 
-  Container productInfo(String name, String price) {
+  Container productInfo(String name, String price, String stock) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
       child: Column(
@@ -137,7 +142,8 @@ class _ShowListState extends ConsumerState<ShowList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('\$$price', color: Colors.blue)
+          dosisText('\$$price', color: Colors.blue),
+          dosisText('Stock: $stock', color: Colors.green),
         ],
       )
     );
@@ -161,7 +167,7 @@ class _ShowListState extends ConsumerState<ShowList> {
               ),
             );
           },errorBuilder: (context, error, stackTrace) {
-            return Image.asset('lib/assets/images/no_image.jpg');
+            return Image.asset('lib/assets/images/6720387.jpg');
           },
         ),
       ),

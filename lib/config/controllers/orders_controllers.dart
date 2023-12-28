@@ -54,6 +54,52 @@ class OrderControllers {
     }
 
   }
+  
+  Future<List<Order>> getMyPendingsToday(String referalCode, String date) async{
+
+    try {
+
+      Response response = await _dio.get('/api/orders/getByComm/$referalCode/$date');
+
+      if( response.statusCode == 500 ) return [];
+
+      List<Order> list = [];
+
+      response.data['data'].forEach((value) {
+        final userTemp = Order.fromJson(value);
+        list.add(userTemp);
+      });
+
+      return list;
+      
+    } catch (_) {
+      return [];
+    }
+
+  }
+  
+  Future<List<Order>> getMyOrders(String referalCode, String date) async{
+
+    try {
+
+      Response response = await _dio.get('/api/orders/getByCommOrder/$referalCode/$date');
+
+      if( response.statusCode == 500 ) return [];
+
+      List<Order> list = [];
+
+      response.data['data'].forEach((value) {
+        final userTemp = Order.fromJson(value);
+        list.add(userTemp);
+      });
+
+      return list;
+      
+    } catch (_) {
+      return [];
+    }
+
+  }
 
   void saveOrder(Map<String, dynamic> order) async {
     try {

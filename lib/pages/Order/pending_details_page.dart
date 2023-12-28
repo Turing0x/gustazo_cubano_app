@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -17,12 +18,25 @@ class PendingDetailsPage extends StatefulWidget {
 
 class _PendingDetailsPageState extends State<PendingDetailsPage> {
 
+  bool visible = false;
+  @override
+  void initState() {
+    LocalStorage.getRole().then((value) {
+      if(value == 'admin'){
+        visible = true;
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: showAppBar('Detalles del pedido', actions: [
-        popupMenuButton()
+        (visible)
+          ? popupMenuButton()
+          : popupMenuButton2()
       ]),
       body: SingleChildScrollView(
         child: Container(
@@ -106,7 +120,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
               ),
             );
           },errorBuilder: (context, error, stackTrace) {
-            return Image.asset('lib/assets/images/no_image.jpg');
+            return Image.asset('lib/assets/images/6720387.jpg');
           },
         ),
       ),
@@ -163,7 +177,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
             orderCrt.deleteOne(widget.order.id),
             Navigator.pushReplacementNamed(context, 'pendings_control_page')
           }
-          
+
         };
 
         methods[value]!.call();
@@ -177,6 +191,48 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
             leading: const Icon(Icons.done_outline_rounded, color: Colors.green, size: 19),
           )
         ),
+        PopupMenuItem(
+          value: 'edit_pending',
+          child: ListTile(
+            title: dosisText('Editar este pedido', size: 18),
+            leading: const Icon(Icons.edit_document, color: Colors.blue, size: 19),
+          )
+        ),
+        PopupMenuItem(
+          value: 'cancel_order',
+          child: ListTile(
+            title: dosisText('Cancelar pedido', size: 18),
+            leading: const Icon(Icons.cancel_outlined, color: Colors.red, size: 19),
+          )
+        )
+      ],
+    );
+  }
+  
+  PopupMenuButton popupMenuButton2() {
+
+    final orderCrt = OrderControllers();
+    return PopupMenuButton(
+
+      icon: const Icon(Icons.more_vert, color: Colors.white,),
+      onSelected: (value) {
+        
+        Map<String, void Function()> methods = {
+          
+          'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
+            arguments: [widget.order]),
+          
+          'cancel_order': () => {
+            orderCrt.deleteOne(widget.order.id),
+            Navigator.pushReplacementNamed(context, 'my_pendings_today_page')
+          }
+
+        };
+
+        methods[value]!.call();
+
+      },
+      itemBuilder: (BuildContext context) => [
         PopupMenuItem(
           value: 'edit_pending',
           child: ListTile(

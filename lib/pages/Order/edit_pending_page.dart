@@ -3,7 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
+import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -21,6 +23,7 @@ class EditPendingPage extends ConsumerStatefulWidget {
 class _EditPendingPageState extends ConsumerState<EditPendingPage> {
 
   final ScrollController _controller = ScrollController();
+  String role = '';
   bool _visible = true;
 
   @override
@@ -32,6 +35,12 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
         rProdList.addProductToListOnEditing(order);
       });
     }
+
+    LocalStorage.getRole().then((value) {
+      setState(() {
+        role = value!;
+      });
+    });
 
     _controller.addListener(() {
       if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
@@ -74,9 +83,8 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
             
             orderCtrl.editOrder(widget.order.id, order);
 
-            Navigator.pushReplacementNamed(context, 'pending_details_page', arguments: [
-              widget.order
-            ]);
+            Navigator.pushReplacementNamed(context, (role != 'admin') 
+              ? 'my_pendings_today_page' : 'pendings_control_page');
           }, 
           icon: const Icon(Icons.done, color: Colors.white),
           label: dosisText('Listo', color: Colors.white),
@@ -111,7 +119,13 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
 
             ( rProdList.products.isEmpty )
               ? emptyCart(size)
-              : Flexible(child: shoppingCartList(rProdList)
+              : Flexible(child: ValueListenableBuilder(
+                  valueListenable: reloadShoppingCart,
+                  builder: (context, value, child) {
+                    return shoppingCartList(rProdList); 
+                  }
+              
+              )
 
             )
 
@@ -154,11 +168,12 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
                   SizedBox(
                     width: 80,
                     height: 80,
-                    child: Image.asset('lib/assets/images/no_image.jpg')),
+                    child: Image.asset('lib/assets/images/6720387.jpg')),
               
                   productInfo(
                     product.name, 
-                    product.price.toString()),
+                    product.price.toString(),
+                    product.inStock.toStringAsFixed(0)),
               
                   const Spacer(),
               
@@ -167,40 +182,71 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
                 ],
               ),const SizedBox(height: 5),
         
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-        
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.black12)
+              Flexible(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.all(0),
+                        side: const BorderSide(color: Colors.transparent)
+                      ),
+                      onPressed: (){
+                        setState(() {
+                          rProdList.removeProductFromList(product.id);
+                        });
+                      }, 
+                      icon: const Icon(Icons.delete_forever_outlined, color: Colors.black, size: 18,), 
+                      label: dosisText('Quitar', size: 18)
                     ),
-                    onPressed: (){rProdList.removeProductFromList(product.id);}, 
-                    icon: const Icon(Icons.delete_forever_outlined, color: Colors.black, size: 18,), 
-                    label: dosisText('Quitar', size: 18)
-                  ),
-        
-                  const Spacer(),
-        
-                  IconButton(
-                    onPressed: (){
-                      setState(() {
-                        rProdList.decreaseCantToBuyOfAProduct(product.id);
-                      });
-                    }, 
-                    icon: const Icon(Icons.remove, color: Colors.red)
-                  ),
-                  IconButton(
-                    onPressed: (){
-                      setState(() {
-                        rProdList.addProductToList(product);
-                      });
-                    }, 
-                    icon: const Icon(Icons.add, color: Colors.green)
-                  ),
-        
-                ],
+                    const SizedBox(width: 50),
 
+                    IconButton(
+                      style: const ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
+                      ),
+                      onPressed: (){
+                        setState(() {
+                          rProdList.decreaseTenCantToBuyOfAProduct(product.id);
+                        });
+                      }, 
+                      icon: dosisText('-10', fontWeight: FontWeight.bold)
+                    ),
+                    IconButton(
+                      style: const ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
+                      ),
+                      onPressed: (){
+                        setState(() {
+                          rProdList.decreaseCantToBuyOfAProduct(product.id);
+                        });
+                      }, 
+                      icon: const Icon(Icons.remove, color: Colors.red)
+                    ),
+                    IconButton(
+                      style: const ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
+                      ),
+                      onPressed: (){
+                        setState(() {
+                          rProdList.addProductToList(product);
+                        });
+                      }, 
+                      icon: const Icon(Icons.add, color: Colors.green)
+                    ),
+                    IconButton(
+                      style: const ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
+                      ),
+                      onPressed: (){
+                        setState(() {
+                          rProdList.addTenCantToBuyOfAProduct(product.id);
+                        });
+                      }, 
+                      icon: dosisText('+10', fontWeight: FontWeight.bold)
+                    ),
+                  ],
+                ),
               )
 
             ],
@@ -236,7 +282,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
       ));
   }
   
-  Container productInfo(String name, String price) {
+  Container productInfo(String name, String price, String stock) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
       child: Column(
@@ -244,7 +290,8 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('Precio: \$$price', color: Colors.blue)
+          dosisText('Precio: \$$price', color: Colors.blue),
+          dosisText('Stock: $stock', color: Colors.green)
         ],
       )
     );
@@ -268,7 +315,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
               ),
             );
           },errorBuilder: (context, error, stackTrace) {
-            return Image.asset('lib/assets/images/no_image.jpg');
+            return Image.asset('lib/assets/images/6720387.jpg');
           },
         ),
       ),

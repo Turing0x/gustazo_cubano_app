@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
@@ -38,7 +39,10 @@ class _AddProductsOnEditingState extends State<AddProductsOnEditing> {
     return Scaffold(
       appBar: showAppBar('Añadir productos', centerTitle: false, actions: [
         OutlinedButton.icon(
-          onPressed: () => Navigator.pop(context), 
+          onPressed: () {
+            reloadShoppingCart.value = !reloadShoppingCart.value;
+            Navigator.pop(context);
+          }, 
           icon: const Icon(Icons.done, color: Colors.white),
           label: dosisText('Listo', color: Colors.white),
           style: OutlinedButton.styleFrom(
@@ -95,7 +99,7 @@ class _ShowListState extends ConsumerState<ShowList> {
             child: Row(
               children: [
 
-                Image.asset('lib/assets/images/no_image.jpg'),
+                Image.asset('lib/assets/images/6720387.jpg'),
 
                 productInfo(widget.products[index].name, widget.products[index].price.toString()),
 
@@ -149,7 +153,7 @@ class _ShowListState extends ConsumerState<ShowList> {
               ),
             );
           },errorBuilder: (context, error, stackTrace) {
-            return Image.asset('lib/assets/images/no_image.jpg');
+            return Image.asset('lib/assets/images/6720387.jpg');
           },
         ),
       ),

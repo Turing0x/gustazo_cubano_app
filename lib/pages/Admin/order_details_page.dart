@@ -129,7 +129,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               ),
             );
           },errorBuilder: (context, error, stackTrace) {
-            return Image.asset('lib/assets/images/no_image.jpg');
+            return Image.asset('lib/assets/images/6720387.jpg');
           },
         ),
       ),

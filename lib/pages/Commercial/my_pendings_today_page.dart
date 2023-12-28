@@ -2,18 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
+import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class PendignsControlPage extends ConsumerStatefulWidget {
-  const PendignsControlPage({super.key});
+class MyPendignsTodayPage extends ConsumerStatefulWidget {
+  const MyPendignsTodayPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PendignsControlPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyPendignsTodayPageState();
 }
 
-class _PendignsControlPageState extends ConsumerState<PendignsControlPage> {
+class _MyPendignsTodayPageState extends ConsumerState<MyPendignsTodayPage> {
+
+  String referalCode = '';
+  @override
+  void initState() {
+    LocalStorage.getReferalCode().then((value) {
+      setState(() {
+        referalCode = value!;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +35,7 @@ class _PendignsControlPageState extends ConsumerState<PendignsControlPage> {
     return Scaffold(
       appBar: showAppBar('Control de pedidos'),
       body: FutureBuilder(
-        future: OrderControllers().getAllOrders(false, date: janddate.currentDate), 
+        future: OrderControllers().getMyPendingsToday( referalCode, janddate.currentDate), 
         builder: (context, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -60,7 +72,7 @@ class _PendignsControlPageState extends ConsumerState<PendignsControlPage> {
                   trailing: CircleAvatar(
                     child: dosisText(order.productList.length.toString(),
                     fontWeight: FontWeight.bold)),
-                  onTap: () => Navigator.pushReplacementNamed(context, 'pending_details_page', arguments: [
+                  onTap: () => Navigator.pushNamed(context, 'pending_details_page', arguments: [
                     order
                   ]),
                 ),

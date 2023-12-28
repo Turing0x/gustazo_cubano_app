@@ -45,7 +45,20 @@ class MainCommercialPage extends StatelessWidget {
                 'LLenar el carrito de la compra',
                 () => Navigator.pushNamed(context, 'to_make_shopping_cart_page'),
                 true),
+          
+              optListTile(
+                Icons.pending_actions_outlined,
+                'Mis pedidos',
+                'Pedidos aun pendientes',
+                () => Navigator.pushNamed(context, 'my_pendings_today_page'),
+                true),
       
+              optListTile(
+                Icons.work_outline_outlined,
+                'Mis Órdenes',
+                'Historial de ordenes pasadas',
+                () => Navigator.pushNamed(context, 'my_orders_history_page'),
+                true),
             ],
           
           ),
