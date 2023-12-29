@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_pending.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoces/pending_invoce.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:open_file/open_file.dart';
 
 class PendingDetailsPage extends StatefulWidget {
   const PendingDetailsPage({super.key, required this.order});
@@ -23,7 +26,9 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
   void initState() {
     LocalStorage.getRole().then((value) {
       if(value == 'admin'){
-        visible = true;
+        setState(() {
+          visible = true;
+        });
       }
     });
     super.initState();
@@ -219,6 +224,8 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
         
         Map<String, void Function()> methods = {
           
+          'make_pdf': () => makePDF(),
+
           'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
             arguments: [widget.order]),
           
@@ -233,6 +240,13 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
 
       },
       itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'make_pdf',
+          child: ListTile(
+            title: dosisText('Hacer PDF', size: 18),
+            leading: const Icon(Icons.picture_as_pdf_outlined, color: Colors.blue, size: 19),
+          )
+        ),
         PopupMenuItem(
           value: 'edit_pending',
           child: ListTile(
@@ -249,6 +263,26 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
         )
       ],
     );
+  }
+
+  void makePDF() async{
+    DateTime date = widget.order.date;
+    String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
+
+    final invoice = PendingInvoce(
+      orderNumber: widget.order.invoiceNumber,
+      orderDate: fecha,
+      productList: widget.order.productList,
+    );
+
+    Map<String, dynamic> itsDone =
+      await GeneratePdfPending.generate(invoice);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
   }
 
 }

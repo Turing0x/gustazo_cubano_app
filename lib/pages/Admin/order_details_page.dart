@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_order.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoces/order_invoce.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:open_file/open_file.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({super.key, required this.order});
@@ -24,7 +27,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     String fecha = '${o.date.day}/${o.date.month}/${o.date.year} - ${o.date.hour}:${o.date.minute}:${o.date.second}';
 
     return Scaffold(
-      appBar: showAppBar('Detalles de la orden'),
+      appBar: showAppBar('Detalles de la orden', actions: [
+        IconButton(
+          onPressed: () => makePDF(), 
+          icon: const Icon(Icons.picture_as_pdf_outlined))
+      ]),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -134,6 +141,28 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         ),
       ),
     );
+  }
+
+  void makePDF() async{
+    DateTime date = widget.order.date;
+    String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
+
+    final invoice = OrderInvoce(
+      invoiceNumber: widget.order.invoiceNumber,
+      invoiceDate: fecha,
+      orderNumber: widget.order.invoiceNumber,
+      orderDate: fecha,
+      productList: widget.order.productList,
+    );
+
+    Map<String, dynamic> itsDone =
+      await GeneratePdfOrder.generate(invoice);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
   }
 
 }

@@ -21,7 +21,7 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: showAppBar('Historial de ordenes'),
+      appBar: showAppBar('Historial de órdenes'),
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(

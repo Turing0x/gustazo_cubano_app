@@ -65,7 +65,7 @@ class _MainAdminPageState extends State<MainAdminPage> {
               optListTile(
                 Icons.work_history_outlined,
                 'Ordenes',
-                'Historial de ordenes pasadas',
+                'Historial de órdenes pasadas',
                 () => Navigator.pushNamed(context, 'orders_history_page'),
                 true),
           

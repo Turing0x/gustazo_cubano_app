@@ -56,7 +56,7 @@ class MainCommercialPage extends StatelessWidget {
               optListTile(
                 Icons.work_outline_outlined,
                 'Mis Órdenes',
-                'Historial de ordenes pasadas',
+                'Historial de órdenes pasadas',
                 () => Navigator.pushNamed(context, 'my_orders_history_page'),
                 true),
             ],
