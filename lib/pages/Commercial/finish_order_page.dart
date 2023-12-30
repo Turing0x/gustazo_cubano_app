@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
@@ -43,8 +42,6 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
         IconButton(
           onPressed: (){
             
-            final orderCrtl = OrderControllers();
-
             List list = [];
             rProdList.products.forEach((key, value) {
               list.add(value);
@@ -62,9 +59,9 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
               }
             };
 
-            orderCrtl.saveOrder(order);
-            rProdList.cleanCart();
-            Navigator.pushReplacementNamed(context, 'main_commercial_page');
+            Navigator.pushNamed(context, 'buyer_info_page', arguments: [
+              order
+            ]);
 
           }, 
           icon: const Icon(Icons.send)

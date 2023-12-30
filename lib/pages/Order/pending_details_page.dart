@@ -271,8 +271,13 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
 
     final invoice = PendingInvoce(
       orderNumber: widget.order.invoiceNumber,
+      pendingNumber: widget.order.pendingNumber,
       orderDate: fecha,
       productList: widget.order.productList,
+      buyerName: widget.order.buyer.fullName,
+      buyerAddress: widget.order.buyer.address,
+      buyerCi: widget.order.buyer.ci,
+      buyerPhone: widget.order.buyer.phoneNumber,
     );
 
     Map<String, dynamic> itsDone =

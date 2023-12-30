@@ -22,7 +22,7 @@ class GeneratePdfPending {
 
       pdf.addPage(multiPage(invoice, image));
 
-      final fileName = 'pedido-${invoice.orderNumber}';
+      final fileName = 'PEDIDO-${invoice.pendingNumber}';
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
       Directory directory =
@@ -92,20 +92,24 @@ class GeneratePdfPending {
   static Row infoRow( PendingInvoce invoice ){
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            pwtextoDosis(invoice.yadira, 25),
-            pwtextoDosis(invoice.email, 25),
-            pwtextoDosis(invoice.phone, 25),
+            pwtextoDosis('Información de comprador', 25, fontWeight: pw.FontWeight.bold),
+            pwboldLabel('Nombre Completo: ', invoice.buyerName, 23),
+            pwboldLabel('Carnet de Identidad: ', invoice.buyerCi, 23),
+            pwboldLabel('Dirección: ', invoice.buyerAddress, 23),
+            pwboldLabel('Teléfono de Contacto: ', invoice.buyerPhone, 23),
           ]
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            pwboldLabel( 'Número de pedido: ', invoice.orderNumber, 25),
-            pwboldLabel( 'Fecha de pedido: ', invoice.orderDate, 25)
+            pwtextoDosis('Información de pedido', 25, fontWeight: pw.FontWeight.bold),
+            pwboldLabel( 'Número: ', invoice.pendingNumber, 23),
+            pwboldLabel( 'Fecha: ', invoice.orderDate, 23)
           ]
         )
       ]

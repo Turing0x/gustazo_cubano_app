@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/users_controllers.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/user_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/shared_dismissible.dart';
@@ -15,6 +16,7 @@ class CommercialsControlPage extends StatefulWidget {
 
 class _CommercialsControlPageState extends State<CommercialsControlPage> {
 
+  TextEditingController fullname = TextEditingController();
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
@@ -34,6 +36,10 @@ class _CommercialsControlPageState extends State<CommercialsControlPage> {
                     children: [
                 
                       dosisText('Registrar comercial', size: 22, fontWeight: FontWeight.bold),
+                      FormTxt(
+                        username: fullname, 
+                        label: 'Nombre Completo', 
+                        obscureText: false),
                       FormTxt(
                         username: username, 
                         label: 'Nombre de Usuario', 
@@ -57,7 +63,9 @@ class _CommercialsControlPageState extends State<CommercialsControlPage> {
                           size: 20, color: Colors.white),
                         onPressed: (){
                           UserControllers userControllers = UserControllers();
-                          userControllers.saveUser(username.text, password.text);
+                          userControllers.saveUser(fullname.text, username.text, password.text);
+                          reloadUsers.value = !reloadUsers.value;
+                          Navigator.pop(context);
                         }
                       )
                     ],
@@ -97,49 +105,54 @@ class _ShowListState extends ConsumerState<ShowList> {
     UserControllers userControllers = UserControllers();
 
     return Scaffold(
-      body: FutureBuilder(
-        future: userControllers.getAllCommercials(),
-        builder: (context, AsyncSnapshot<List<User>> snapshot) {
-          
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return noData(context, 
-              'Parece que aún no tiene comerciales registrado. Para hacerlo, pinche el ícono de la esquina superior derecha');
-          }
-      
-          final users = snapshot.data;
-      
-          return ListView.builder(
-            itemCount: users!.length,
-            itemBuilder: (context, index) {
-              return CommonDismissible(
-                text: 'Eliminar comercial',
-                canDissmis: true,
-                valueKey: users[index].id,
-                onDismissed: (direction) {
-                  UserControllers().deleteOne(users[index].id);
-                  setState(() {
-                    snapshot.data!.remove(users[index]);
-                  });
-                },
-                child: ListTile(
-                  minLeadingWidth: 20,
-                  title: dosisText(users[index].username, size: 18,
-                      fontWeight: FontWeight.bold),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      btnResetPassword(context, users[index].id),
-                      btnEnable(users[index].id, users[index].enable)
-                    ],
+      body: ValueListenableBuilder(
+        valueListenable: reloadUsers,
+        builder: (context, value, child) {
+          return FutureBuilder(
+          future: userControllers.getAllCommercials(),
+          builder: (context, AsyncSnapshot<List<User>> snapshot) {
+            
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return noData(context, 
+                'Parece que aún no tiene comerciales registrado. Para hacerlo, pinche el ícono de la esquina superior derecha');
+            }
+        
+            final users = snapshot.data;
+        
+            return ListView.builder(
+              itemCount: users!.length,
+              itemBuilder: (context, index) {
+                return CommonDismissible(
+                  text: 'Eliminar comercial',
+                  canDissmis: true,
+                  valueKey: users[index].id,
+                  onDismissed: (direction) {
+                    UserControllers().deleteOne(users[index].id);
+                    setState(() {
+                      snapshot.data!.remove(users[index]);
+                    });
+                  },
+                  child: ListTile(
+                    minLeadingWidth: 20,
+                    title: dosisText(users[index].username, size: 18,
+                        fontWeight: FontWeight.bold),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        btnResetPassword(context, users[index].id),
+                        btnEnable(users[index].id, users[index].enable)
+                      ],
+                    ),
                   ),
-                ),
-              );
-            });
-          },
-        ),
+                );
+              });
+            },
+          );
+        }
+      ),
     );
   }
 

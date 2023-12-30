@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 
 Map<String, Product> _productList = {};
-Map<String, int> _onEditingCart = {};
 class ShoppingCartProvider extends StateNotifier<Product> {
 
   ShoppingCartProvider() : super(Product());
@@ -119,7 +118,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
       inStock: value.inStock, 
       commission: value.commission, 
       discount: value.discount,
-      cantToBuy: value.cantToBuy + 1
+      cantToBuy: value.cantToBuy + 10
     ));
   }
 

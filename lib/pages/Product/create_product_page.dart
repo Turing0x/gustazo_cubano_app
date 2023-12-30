@@ -73,6 +73,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
             };
 
             productCtrl.saveProducts(product);
+            Navigator.pop(context, true);
 
           }, 
           icon: const Icon(Icons.done, color: Colors.white,), 

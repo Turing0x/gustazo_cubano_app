@@ -46,19 +46,15 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: showAppBar('Carrito de la compra'),
-      floatingActionButton: Visibility(
-        visible: _visible,
-        child: FloatingActionButton.extended(
-          icon: const Icon(Icons.shopping_cart_checkout_sharp),
+      appBar: showAppBar('Carrito de la compra', actions: [
+        IconButton(
           onPressed: (){
             if(rProdList.products.isNotEmpty){
               Navigator.pushNamed(context, 'finish_order_page');
             }
           }, 
-          label: dosisText('Revisar pedido',
-            fontWeight: FontWeight.bold)),
-      ),
+          icon: const Icon(Icons.shopping_cart_checkout_rounded))
+      ]),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(

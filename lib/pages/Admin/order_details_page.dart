@@ -148,11 +148,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
 
     final invoice = OrderInvoce(
-      invoiceNumber: widget.order.invoiceNumber,
-      invoiceDate: fecha,
       orderNumber: widget.order.invoiceNumber,
+      pendingNumber: widget.order.pendingNumber,
       orderDate: fecha,
+      pendingDate: fecha,
       productList: widget.order.productList,
+      buyerName: widget.order.buyer.fullName,
+      buyerAddress: widget.order.buyer.address,
+      buyerCi: widget.order.buyer.ci,
+      buyerPhone: widget.order.buyer.phoneNumber,
     );
 
     Map<String, dynamic> itsDone =

@@ -4,22 +4,27 @@ class OrderInvoce {
 
   final String title = 'Ventas Kapricho';
   final String address = 'Calle 222 e/ 29 y 31 La Coronela. La Lisa';
-  final String yadira = 'Yadira Sera Perez';
-  final String email = 'yadiras2022@gmail.com';
-  final String phone = '54757636';
-  final String paymentMethod = 'Transferencia bancaria directa';
-  
-  final String invoiceNumber;
-  final String invoiceDate;
 
+  final String buyerName;
+  final String buyerAddress;
+  final String buyerCi;
+  final String buyerPhone;
+  
   final String orderNumber;
   final String orderDate;
+  
+  final String pendingNumber;
+  final String pendingDate;
 
   final List<Product> productList;
 
   OrderInvoce({
-    required this.invoiceNumber, 
-    required this.invoiceDate, 
+    required this.buyerName, 
+    required this.pendingNumber, 
+    required this.pendingDate, 
+    required this.buyerAddress, 
+    required this.buyerCi, 
+    required this.buyerPhone, 
     required this.orderNumber, 
     required this.orderDate, 
     required this.productList

@@ -95,10 +95,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                 'price': price,
                 'inStock': inStock,
                 'commission': commission,
-                'discount': {
-                  'more_than': moreThan,
-                  'discount': discount,
-                }
+                'more_than': moreThan,
+                'discount': discount,
               };
 
               productCtrl.editProducts(product, widget.product.id);

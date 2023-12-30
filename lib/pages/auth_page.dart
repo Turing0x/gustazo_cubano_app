@@ -54,7 +54,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                     dosisText('Olvidaste la contraseña?', color: Colors.black),
                     OutlinedButton.icon(
                       icon: const Icon(Icons.spatial_audio_outlined),
-                      onPressed: (){}, 
+                      onPressed: () => Navigator.pushNamed(context, 'forget_password_page'), 
                       label: dosisText('Informar', color: Colors.black)
                     ),
                     const SizedBox(height: 30),

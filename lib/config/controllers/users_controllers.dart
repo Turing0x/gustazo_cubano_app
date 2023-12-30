@@ -96,11 +96,15 @@ class UserControllers {
     }
   }
 
-  void saveUser(String username, String password) async {
+  void saveUser(String fullName, String username, String password) async {
     try {
 
       Response response = await _dio.post('/api/users', 
-        data: jsonEncode({'username': username, 'password': password}), 
+        data: jsonEncode({
+          'username': username, 
+          'password': password,
+          'full_name': fullName
+        }), 
         options: Options(validateStatus: (status) => true) );
 
       if (response.statusCode == 200) {
@@ -117,7 +121,30 @@ class UserControllers {
   
   void resetPass(String userId) async {
     try {
-      final queryData = {'userId': userId};
+      final queryData = { 'userId': userId };
+
+      Response response = await _dio.post('/api/users/resetpass', 
+        queryParameters: queryData, 
+        options: Options(validateStatus: (status) => true));
+
+      if (response.statusCode == 200) {
+        showToast(response.data['api_message'], type: true);
+        return;
+      }
+
+      showToast(response.data['api_message']);
+      return;
+    } on Exception catch (e) {
+      showToast(e.toString());
+    }
+  }
+  
+  void forgotPassword(String fullname, String referalCode) async {
+    try {
+      final queryData = {
+        'fullname': fullname,
+        'referalCode': referalCode
+      };
 
       Response response = await _dio.post('/api/users/resetpass', 
         queryParameters: queryData, 

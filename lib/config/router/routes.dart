@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/orders_history_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/forget_password_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/my_orders_history_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/my_pendings_today_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/to_make_shopping_cart_page.dart';
@@ -31,6 +32,7 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'to_make_shopping_cart_page': (_) => const ToMakeShoppingCartPage(),
   'finish_order_page': (_) => const FinishOrderPage(),
   'my_pendings_today_page': (_) => const MyPendignsTodayPage(),
+  'forget_password_page': (_) => const ForgetPasswordPage(),
   'my_orders_history_page': (_) => const MyOrdersHistoryPage(),
 
   'stock_control_page': (_) => const StockControlPage(),
