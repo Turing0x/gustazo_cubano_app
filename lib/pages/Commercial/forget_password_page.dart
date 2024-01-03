@@ -27,6 +27,13 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
           child: Column(
             children: [
 
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context), 
+                  icon: const Icon(Icons.arrow_back_ios_new)),
+              ),
+
               Container(
                 height: size.height * 0.35,
                 margin: EdgeInsets.only(
@@ -84,13 +91,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 label: dosisText('Confirmar', fontWeight: FontWeight.bold)
               ),
 
-              const SizedBox(height: 30),
-
-              ElevatedButton.icon(
-                onPressed: () => Navigator.pop(context), 
-                icon: const Icon(Icons.keyboard_arrow_left_outlined, color: Colors.black), 
-                label: dosisText('Atrás', fontWeight: FontWeight.bold)
-              )
+              const SizedBox(height: 30)
 
             ],
           ),

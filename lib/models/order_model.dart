@@ -12,7 +12,7 @@ class Order {
   final String invoiceNumber;
   final DateTime date;
   final List<Product> productList;
-  final int totalAmount;
+  final double totalAmount;
   final double commission;
   final Seller seller;
   final Buyer buyer;
@@ -37,7 +37,7 @@ class Order {
     invoiceNumber: json["invoice_number"],
     date: DateTime.parse(json["date"]),
     productList: List<Product>.from(json["product_list"].map((x) => Product.fromJson(x))),
-    totalAmount: json["total_amount"],
+    totalAmount: json["total_amount"]?.toDouble(),
     commission: json["commission"]?.toDouble(),
     seller: Seller.fromJson(json["seller"]),
     buyer: Buyer.fromJson(json["buyer"]),
@@ -81,10 +81,10 @@ class Buyer {
   });
 
   factory Buyer.fromJson(Map<String, dynamic> json) => Buyer(
-    fullName: json["full_name"],
-    ci: json["ci"],
-    phoneNumber: json["phone_number"],
-    address: json["address"],
+    fullName: json["full_name"] ?? '',
+    ci: json["ci"] ?? '',
+    phoneNumber: json["phone_number"] ?? '',
+    address: json["address"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
@@ -105,8 +105,8 @@ class Seller {
   });
 
   factory Seller.fromJson(Map<String, dynamic> json) => Seller(
-    fullName: json["fullName"],
-    referalCode: json["referalCode"],
+    fullName: json["fullName"] ?? '',
+    referalCode: json["referalCode"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

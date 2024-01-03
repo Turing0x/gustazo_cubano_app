@@ -7,6 +7,7 @@ import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
+import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:open_file/open_file.dart';
 
@@ -229,10 +230,11 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
             arguments: [widget.order]),
           
-          'cancel_order': () => {
-            orderCrt.deleteOne(widget.order.id),
-            Navigator.pushReplacementNamed(context, 'my_pendings_today_page')
-          }
+          'cancel_order': () => actionsSnackBar(context, 'Confirmar eliminación',
+            'Eliminar', (){
+              orderCrt.deleteOne(widget.order.id);
+              Navigator.popAndPushNamed(context, 'my_pendings_today_page');
+          })
 
         };
 

@@ -72,7 +72,7 @@ class _MyPendignsTodayPageState extends ConsumerState<MyPendignsTodayPage> {
                   trailing: CircleAvatar(
                     child: dosisText(order.productList.length.toString(),
                     fontWeight: FontWeight.bold)),
-                  onTap: () => Navigator.pushNamed(context, 'pending_details_page', arguments: [
+                  onTap: () => Navigator.popAndPushNamed(context, 'pending_details_page', arguments: [
                     order
                   ]),
                 ),

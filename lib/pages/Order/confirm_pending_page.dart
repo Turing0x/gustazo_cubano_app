@@ -40,6 +40,13 @@ class _ConfirmPendingPageState extends State<ConfirmPendingPage> {
           child: Column(
             children: [
 
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context), 
+                  icon: const Icon(Icons.arrow_back_ios_new)),
+              ),
+
               Container(
                 height: size.height * 0.35,
                 margin: EdgeInsets.only(
@@ -94,12 +101,6 @@ class _ConfirmPendingPageState extends State<ConfirmPendingPage> {
               ),
 
               const SizedBox(height: 50),
-
-              ElevatedButton.icon(
-                onPressed: () => Navigator.pop(context), 
-                icon: const Icon(Icons.keyboard_arrow_left_outlined, color: Colors.black), 
-                label: dosisText('Atrás', fontWeight: FontWeight.bold)
-              )
 
             ],
           ),

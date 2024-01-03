@@ -20,8 +20,10 @@ class ShoppingCartProvider extends StateNotifier<Product> {
 
   double get totalAmount {
     double totalAmount = 0.0;
-    _productList.forEach((key, value) => 
-      totalAmount += value.price * value.cantToBuy );
+    _productList.forEach((key, value) {
+      double price = value.cantToBuy >= value.moreThan ? value.discount : value.price;
+      totalAmount += price * value.cantToBuy;
+    });
     return totalAmount;
   }
 
@@ -62,7 +64,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
     });
   }
 
-  void removeProductFromList (String prodId) {
+  void removeProductFromList(String prodId) {
     _productList.remove(prodId);
   }
 

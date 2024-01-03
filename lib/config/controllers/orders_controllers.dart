@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -16,142 +17,147 @@ class OrderControllers {
   );
 
   Future<List<Order>> getAllOrders(bool change, {String date = ''}) async{
-
     try {
-
+      EasyLoading.show(status: 'Obteniendo todos los pedidos...');
       Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending/:$date'}');
 
-      if( response.statusCode == 500 ) return [];
+      if( response.statusCode == 500 ) {
+        EasyLoading.showError('No se pudieron obtener los pedidos');
+        return [];
+      }
       List<Order> list = [];
-
       response.data['data'].forEach((value) {
         final userTemp = Order.fromJson(value);
         list.add(userTemp);
       });
-
+      EasyLoading.showSuccess('Pedidos obtenidos correctamente');
       return list;
       
     } catch (_) {
+      EasyLoading.showError('No se pudieron obtener los pedidos');
       return [];
     }
-
   }
   
   Future<List<Order>> getOrderById(String orderId) async{
-
     try {
-
+      EasyLoading.show(status: 'Obteniendo pedido por ID...');
       Response response = await _dio.get('/api/orders/getById/$orderId');
 
-      if( response.statusCode == 500 ) return [];
+      if( response.statusCode == 500 ) {
+        EasyLoading.showError('No se pudo obtener el pedido');
+        return [];
+      }
 
       Order order = Order.fromJson(response.data['data']);
-
+      EasyLoading.showSuccess('Pedido obtenido correctamente');
       return [order];
       
     } catch (_) {
+      EasyLoading.showError('No se pudo obtener el pedido');
       return [];
     }
-
   }
   
   Future<List<Order>> getMyPendingsToday(String referalCode, String date) async{
-
     try {
-
+      EasyLoading.show(status: 'Obteniendo mis pedidos pendientes de hoy...');
       Response response = await _dio.get('/api/orders/getByComm/$referalCode/$date');
 
-      if( response.statusCode == 500 ) return [];
+      if( response.statusCode == 500 ) {
+        EasyLoading.showError('No se pudieron obtener los pedidos pendientes');
+        return [];
+      }
 
       List<Order> list = [];
-
       response.data['data'].forEach((value) {
         final userTemp = Order.fromJson(value);
         list.add(userTemp);
       });
-
+      EasyLoading.showSuccess('Pedidos pendientes obtenidos correctamente');
       return list;
       
     } catch (_) {
+      EasyLoading.showError('No se pudieron obtener los pedidos pendientes');
       return [];
     }
-
   }
   
   Future<List<Order>> getMyOrders(String referalCode, String date) async{
-
     try {
-
+      EasyLoading.show(status: 'Obteniendo mis pedidos...');
       Response response = await _dio.get('/api/orders/getByCommOrder/$referalCode/$date');
 
-      if( response.statusCode == 500 ) return [];
+      if( response.statusCode == 500 ) {
+        EasyLoading.showError('No se pudieron obtener los pedidos');
+        return [];
+      }
 
       List<Order> list = [];
-
       response.data['data'].forEach((value) {
         final userTemp = Order.fromJson(value);
         list.add(userTemp);
       });
-
+      EasyLoading.showSuccess('Pedidos obtenidos correctamente');
       return list;
       
     } catch (_) {
+      EasyLoading.showError('No se pudieron obtener los pedidos');
       return [];
     }
-
   }
 
   void saveOrder(Map<String, dynamic> order) async {
     try {
-
+      EasyLoading.show(status: 'Guardando pedido...');
       Response response = await _dio.post('/api/orders', 
         data: jsonEncode(order) );
 
       if (response.statusCode == 200) {
-        showToast(response.data['api_message'], type: true);
+        EasyLoading.showSuccess('Pedido guardado correctamente');
         return;
       }
 
-      showToast(response.data['api_message']);
+      EasyLoading.showError('No se pudo guardar el pedido');
       return;
-    } on Exception catch (e) {
-      showToast(e.toString());
+    } on Exception catch (_) {
+      EasyLoading.showError('No se pudo guardar el pedido');
     }
   }
   
   void editOrder(String orderId, Map<String, dynamic> order) async {
     try {
-
+      EasyLoading.show(status: 'Editando pedido...');
       Response response = await _dio.put('/api/orders/$orderId', 
         data: jsonEncode(order) );
 
       if (response.statusCode == 200) {
-        showToast(response.data['api_message'], type: true);
+        EasyLoading.showSuccess('Pedido editado correctamente');
         return;
       }
 
-      showToast(response.data['api_message']);
+      EasyLoading.showError('No se pudo editar el pedido');
       return;
-    } on Exception catch (e) {
-      showToast(e.toString());
+    } on Exception catch (_) {
+      EasyLoading.showError('No se pudo editar el pedido');
     }
   }
   
   Future<bool> marckAsDoneOrder(String orderId, String invoiceNumber) async {
     try {
-
+      EasyLoading.show(status: 'Marcando pedido como hecho...');
       Response response = await _dio.put('/api/orders/$orderId/$invoiceNumber');
 
       if (response.statusCode == 200) {
-        showToast(response.data['api_message'], type: true);
+        EasyLoading.showSuccess('Pedido marcado como hecho correctamente');
         return true;
       }
 
-      showToast(response.data['api_message']);
+      EasyLoading.showError('No se pudo marcar el pedido como hecho');
       return false;
 
-    } on Exception catch (e) {
-      showToast(e.toString());
+    } on Exception catch (_) {
+      EasyLoading.showError('No se pudo marcar el pedido como hecho');
       return false;
     }
   }
@@ -159,16 +165,20 @@ class OrderControllers {
   void deleteOne(String orderId) async {
     try {
 
+      EasyLoading.show(status: 'Eliminando el pedido...');
       Response response = await _dio.delete('/api/orders/$orderId');
         
       if (response.statusCode == 200) {
+        EasyLoading.showSuccess('El pedido a sido eliminado correctamente');
         showToast(response.data['api_message'], type: true);
         return;
       }
 
       showToast(response.data['api_message']);
+      EasyLoading.showError('No se ha podido eliminar el pedido');
       return;
-    } catch (e) {
+    } catch (_) {
+      EasyLoading.showError('No se ha podido eliminar el pedido');
       return;
     }
   }
