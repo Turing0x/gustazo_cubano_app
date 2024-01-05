@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/router/on_generate_route.dart';
 import 'package:gustazo_cubano_app/config/router/routes.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
       initialRoute: rutaInicial,
       routes: appRoutes,
       onGenerateRoute: onGenerateRoute,
+      builder: EasyLoading.init(),
     );
   }
 }

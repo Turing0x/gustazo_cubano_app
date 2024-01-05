@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
@@ -73,6 +74,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
             };
 
             productCtrl.saveProducts(product);
+            reloadProducts.value = !reloadProducts.value;
             Navigator.pop(context, true);
 
           }, 

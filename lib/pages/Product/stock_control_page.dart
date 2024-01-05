@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
-import 'package:gustazo_cubano_app/models/product_model.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/shared_dismissible.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
@@ -31,7 +31,6 @@ class _StockControlPageState extends State<StockControlPage> {
   }
 }
 
-
 class ShowList extends ConsumerStatefulWidget {
   const ShowList({super.key});
 
@@ -42,73 +41,67 @@ class ShowList extends ConsumerStatefulWidget {
 
 class _ShowListState extends ConsumerState<ShowList> {
 
-  List<Product> list = [];
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
 
-    getProducts();
-
     return Scaffold(
-      body: (list.isEmpty)
-        ? noData(context, 
-          'Parece que no hay productos en stock. Para añadir uno, pinche el ícono de la esquina superior derecha')   
-        : showList()
+      body: ListenableBuilder(
+        listenable: reloadProducts,
+        builder: (context, child) {
+          return FutureBuilder(
+            future: ProductControllers().getAllProducts(), 
+            builder: (context, snapshot) {
+          
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return noData(context, 
+                  'Parece que aún no tiene comerciales registrado. Para hacerlo, pinche el ícono de la esquina superior derecha');
+              }
+          
+              final list = snapshot.data;
+          
+          
+              return ListView.builder(
+                itemCount: list!.length,
+                itemBuilder: (context, index) {
+                  return CommonDismissible(
+                    canDissmis: true,
+                    text: 'Eliminar producto',
+                    valueKey: list[index].id,
+                    onDismissed: (direction) {
+                      ProductControllers().deleteOne(list[index].id);
+                      reloadProducts.value = !reloadProducts.value;
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            spreadRadius: 1,
+                            blurRadius: 2
+                          )
+                        ]
+                      ),
+                      child: ListTile(
+                        leading: const Icon(Icons.sell_outlined),
+                        title: dosisText(list[index].name, fontWeight: FontWeight.bold),
+                        subtitle: dosisText('En stock: ${list[index].inStock}'),
+                        trailing: const Icon(Icons.arrow_right_rounded),
+                        onTap: () => Navigator.pushNamed(context, 'product_detail_page', arguments: [list[index]]),
+                      )
+                    )
+                  );
+                });
+            },
+          );
+        }
+      )
     );
-  }
-
-  void getProducts(){
-    ProductControllers().getAllProducts().then((value) {
-      if (mounted) {
-        setState(() {
-          list = value;
-        });
-      }
-    });
-  }
-
-  ListView showList(){
-    return ListView.builder(
-      itemCount: list.length,
-      itemBuilder: (context, index) {
-        return CommonDismissible(
-          canDissmis: true,
-          text: 'Eliminar producto',
-          valueKey: list[index].id,
-          onDismissed: (direction) {
-            ProductControllers().deleteOne(list[index].id);
-            setState(() {
-              list.remove(list[index]);
-            });
-          },
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 1,
-                  blurRadius: 2
-                )
-              ]
-            ),
-            child: ListTile(
-              leading: const Icon(Icons.sell_outlined),
-              title: dosisText(list[index].name, fontWeight: FontWeight.bold),
-              subtitle: dosisText('En stock: ${list[index].inStock}'),
-              trailing: const Icon(Icons.arrow_right_rounded),
-              onTap: () => Navigator.pushNamed(context, 'product_detail_page', arguments: [list[index]]),
-            )
-          )
-        );
-      });
   }
 
   Container photoProduct(String urlImage) {
