@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
-import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class ProductControllers {
 
@@ -26,6 +25,11 @@ class ProductControllers {
 
       if( response.statusCode == 500 ) {
         EasyLoading.showError('No se pudo cargar la información');
+        return [];
+      }
+
+      if( response.data['data'].isEmpty ) {
+        EasyLoading.showInfo('Pedidos pendientes obtenidos correctamente');
         return [];
       }
 

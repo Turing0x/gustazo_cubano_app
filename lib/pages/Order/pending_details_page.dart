@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_pending.dart';
 import 'package:gustazo_cubano_app/config/Pdf/invoces/pending_invoce.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -25,7 +25,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
   bool visible = false;
   @override
   void initState() {
-    LocalStorage.getRole().then((value) {
+    LoginDataService().getRole().then((value) {
       if(value == 'admin'){
         setState(() {
           visible = true;

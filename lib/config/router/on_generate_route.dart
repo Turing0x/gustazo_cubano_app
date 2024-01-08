@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/order_details_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/my_orders_history_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/my_pendings_today_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/buyer_info_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/confirm_pending_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/edit_pending_page.dart';
@@ -39,6 +41,16 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
     'buyer_info_page': MaterialPageRoute(
       builder: (_) => BuyerInfoPage(
         dataOrder: argumentos[0],
+      )),
+
+    'my_pendings_today_page': MaterialPageRoute(
+      builder: (_) => MyPendignsTodayPage(
+        referalCode: argumentos[0],
+      )),
+
+    'my_orders_history_page': MaterialPageRoute(
+      builder: (_) => MyOrdersHistoryPage(
+        referalCode: argumentos[0],
       )),
     
   };

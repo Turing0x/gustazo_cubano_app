@@ -18,7 +18,6 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       
-
       body: Stack(
         children: [
           CustomPaint(
@@ -172,7 +171,7 @@ class _AuthFormState extends ConsumerState<AuthForm> {
                   ),
                   icon: const Icon(Icons.login, 
                     color: Colors.white, size: 20,), 
-                  label: dosisText('Acceder', 
+                  label: dosisText((!btnManager) ? 'Acceder' : 'Accediendo...', 
                     fontWeight: FontWeight.w500,
                     size: 20, color: Colors.white),
                   onPressed: (){

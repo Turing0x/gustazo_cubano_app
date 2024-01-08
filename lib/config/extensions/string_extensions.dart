@@ -8,7 +8,7 @@ extension StringExtension on String {
   String rellenarCon0(int maxLength) {
     final resta = maxLength - length;
     if (maxLength == 0 || resta == 0) return this;
-    return '${_generadorDe0(resta)}$this ';
+    return '${_generadorDe0(resta)}$this';
   }
 
   String rellenarCon00(int maxLength) {

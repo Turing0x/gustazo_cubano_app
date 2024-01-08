@@ -6,6 +6,7 @@ ValueNotifier<bool> authStatus = ValueNotifier<bool>(false);
 ValueNotifier<bool> reloadProducts = ValueNotifier<bool>(false);
 ValueNotifier<bool> reloadShoppingCart = ValueNotifier<bool>(false);
 ValueNotifier<bool> reloadUsers = ValueNotifier<bool>(false);
+ValueNotifier<bool> cambioListas = ValueNotifier<bool>(false);
 
 final janddateR = StateNotifierProvider<JAndDateProvider, JAndDateModel>(
     (ref) => JAndDateProvider());

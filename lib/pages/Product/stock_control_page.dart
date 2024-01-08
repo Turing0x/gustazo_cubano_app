@@ -57,11 +57,10 @@ class _ShowListState extends ConsumerState<ShowList> {
               }
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return noData(context, 
-                  'Parece que aún no tiene comerciales registrado. Para hacerlo, pinche el ícono de la esquina superior derecha');
+                  'Sin productos en stock. Para agregar, pinche el ícono de la esquina superior derecha');
               }
           
               final list = snapshot.data;
-          
           
               return ListView.builder(
                 itemCount: list!.length,

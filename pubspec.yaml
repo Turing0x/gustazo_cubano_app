@@ -31,36 +31,38 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  dio: ^5.4.0
   flutter_dotenv: ^5.1.0
+  flutter_easyloading: ^3.0.5
+  flutter_launcher_icons: ^0.13.1
+  flutter_multi_formatter: ^2.12.3
   flutter_riverpod: ^2.4.9
-  flutter_secure_storage: ^9.0.0
   flutter_svg: ^2.0.9
+  fluttertoast: ^8.2.4
   intl: ^0.19.0
+  isar_flutter_libs: 3.1.0+1
+  isar: 3.1.0+1
   number_text_input_formatter: ^1.0.0+7
   open_file: ^3.3.2
   path_provider: ^2.1.1
   pdf: ^3.10.7
   permission_handler: ^11.1.0
-  riverpod_lint: ^2.3.7
+  riverpod_lint: ^2.1.1
+  riverpod: ^2.4.9
   share_extend: ^2.0.0
   shared_preferences: ^2.2.2
   sqflite: ^2.3.0
-  dio: ^5.4.0
-  riverpod: ^2.4.9
-  fluttertoast: ^8.2.4
   url_launcher: ^6.2.2
-  flutter_multi_formatter: ^2.12.3
-  flutter_launcher_icons: ^0.13.1
-  flutter_easyloading: ^3.0.5
 
 dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
+  isar_generator: 3.1.0+1
+  build_runner: any
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -47,6 +47,7 @@ class GeneratePdfOrder {
         pw.Container(
           margin: const EdgeInsets.symmetric(horizontal: 100, vertical: 80),
           child: pw.Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
 
               topRow(invoice.title, invoice.address, image),
@@ -76,16 +77,6 @@ class GeneratePdfOrder {
                 ]
               ),
 
-              pw.Spacer(),
-
-              pw.Divider(
-                color: PdfColors.black,
-                endIndent: 50,
-                indent: 50,
-              ),
-
-              pwtextoDosis(
-                'Ventas Mayoristas, hacemos contrato con EES, Mipyme, etc. Aceptamos pagos por transferencia. No dude en escribirnos le ayudamos con su compra', 25, maxLines: 3)
             ]
           )
         )
@@ -96,9 +87,11 @@ class GeneratePdfOrder {
   static Row topRow( String title, String address, MemoryImage image  ){
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
       children: [
         pw.Image(image),
         pw.Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             pwtextoDosis(title, 28, fontWeight: pw.FontWeight.bold),
             pwtextoDosis(address, 25),
@@ -110,10 +103,12 @@ class GeneratePdfOrder {
   
   static Row infoRow( OrderInvoce invoice ){
     return pw.Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             pwtextoDosis('Información de comprador', 25, fontWeight: pw.FontWeight.bold),
@@ -124,6 +119,7 @@ class GeneratePdfOrder {
           ]
         ),
         Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             pwtextoDosis('Información de pedido', 25, fontWeight: pw.FontWeight.bold),

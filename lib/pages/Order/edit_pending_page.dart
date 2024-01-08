@@ -3,9 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -36,7 +36,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
       });
     }
 
-    LocalStorage.getRole().then((value) {
+    LoginDataService().getRole().then((value) {
       setState(() {
         role = value!;
       });
@@ -68,6 +68,14 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
 
     return Scaffold(
       appBar: showAppBar('Carrito', centerTitle: false, actions: [
+        IconButton(
+          onPressed: () {
+            if(rProdList.products.isNotEmpty){
+              Navigator.pushNamed(context, 'add_products_on_editing');
+            }
+          }, 
+          icon: const Icon(Icons.add_shopping_cart_outlined, color: Colors.white),
+        ),
         OutlinedButton.icon(
           onPressed: () {
             final orderCtrl = OrderControllers();
@@ -84,27 +92,17 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
             orderCtrl.editOrder(widget.order.id, order);
 
             Navigator.pushReplacementNamed(context, (role != 'admin') 
-              ? 'my_pendings_today_page' : 'pendings_control_page');
+              ? 'my_pendings_today_page' : 'pendings_control_page', arguments: [
+                widget.order.seller.referalCode
+              ]);
           }, 
           icon: const Icon(Icons.done, color: Colors.white),
           label: dosisText('Listo', color: Colors.white),
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.transparent)
           ),
-        )
+        ),
       ]),
-      floatingActionButton: Visibility(
-        visible: _visible,
-        child: FloatingActionButton.extended(
-          icon: const Icon(Icons.add_shopping_cart_outlined),
-          onPressed: (){
-            if(rProdList.products.isNotEmpty){
-              Navigator.pushNamed(context, 'add_products_on_editing');
-            }
-          }, 
-          label: dosisText('Añadir productos',
-            fontWeight: FontWeight.bold)),
-      ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(

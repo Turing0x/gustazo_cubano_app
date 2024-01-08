@@ -67,6 +67,7 @@ class _BuyerInfoPageState extends State<BuyerInfoPage> {
                 margin: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
                 child: FormTxt(
                   controller: ci, 
+                  maxLength: 11,
                   keyboardType: TextInputType.number,
                   label: 'Carnet de identidad'),
               ),
@@ -82,7 +83,8 @@ class _BuyerInfoPageState extends State<BuyerInfoPage> {
               Container(
                 margin: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
                 child: FormTxt(
-                  controller: phoneNumber, 
+                  controller: phoneNumber,
+                  maxLength: 8,
                   keyboardType: TextInputType.phone,
                   label: 'Teléfono de contacto'),
               ),
@@ -142,11 +144,13 @@ class FormTxt extends StatelessWidget {
     required this.controller,
     required this.keyboardType,
     required this.label,
+    this.maxLength = 25,
   });
 
   final TextEditingController controller;
   final TextInputType? keyboardType;
   final String label;
+  final int maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -154,6 +158,7 @@ class FormTxt extends StatelessWidget {
       controller: controller,
       textCapitalization: TextCapitalization.words,
       keyboardType: keyboardType,
+      maxLength: maxLength,
       decoration: InputDecoration(
         labelStyle: const TextStyle(
           fontFamily: 'Dosis',

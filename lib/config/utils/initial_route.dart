@@ -1,13 +1,10 @@
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 
 Future<String> initialRoute() async {
-  final role = await LocalStorage.getRole();
-  final lastTime = await LocalStorage.getTimeSign();
+  final role = await LoginDataService().getRole();
 
-  if (role != null &&
-      !excede100Minutos(
-          DateTime.parse(lastTime ?? '2020-01-01T00:00:00.000+00:00'))) {
-    return _initialRouteByRole(role);
+  if (role != '' ) {
+    return _initialRouteByRole(role!);
   }
 
   return 'auth_page';

@@ -162,6 +162,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     Map<String, dynamic> itsDone =
       await GeneratePdfOrder.generate(invoice);
 
+      print(itsDone['path']);
+
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);
     }

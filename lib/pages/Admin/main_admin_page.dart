@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/shared/opt_list_tile.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -22,11 +22,7 @@ class _MainAdminPageState extends State<MainAdminPage> {
           onPressed: ()async {
             final contex = Navigator.of(context);
 
-            await LocalStorage.roleDelete();
-            await LocalStorage.tokenDelete();
-            await LocalStorage.userIdDelete();
-            await LocalStorage.usernameDelete();
-            await LocalStorage.fullNameDelete();
+            LoginDataService().deleteData();
 
             contex.pushNamedAndRemoveUntil(
                 'auth_page', (Route<dynamic> route) => false);
@@ -67,6 +63,13 @@ class _MainAdminPageState extends State<MainAdminPage> {
                 'Ordenes',
                 'Historial de órdenes pasadas',
                 () => Navigator.pushNamed(context, 'orders_history_page'),
+                true),
+
+              optListTile(
+                Icons.document_scanner_outlined,
+                'Mis PDFs',
+                'PDFs Generados de órdenes y pedidos',
+                () => Navigator.pushNamed(context, 'internal_storage_page'),
                 true),
           
             ],

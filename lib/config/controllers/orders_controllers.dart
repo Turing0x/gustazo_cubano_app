@@ -18,34 +18,40 @@ class OrderControllers {
 
   Future<List<Order>> getAllOrders(bool change, {String date = ''}) async{
     try {
-      EasyLoading.show(status: 'Obteniendo todos los pedidos...');
+      EasyLoading.show(status: 'Obteniendo todos las órdenes...');
       Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending/:$date'}');
 
       if( response.statusCode == 500 ) {
-        EasyLoading.showError('No se pudieron obtener los pedidos');
+        EasyLoading.showError('No se pudo obtener las órdenes');
         return [];
       }
+
+      if( response.data['data'].isEmpty ) {
+        EasyLoading.showInfo('Órdenes pendientes obtenidas correctamente');
+        return [];
+      }
+
       List<Order> list = [];
       response.data['data'].forEach((value) {
         final userTemp = Order.fromJson(value);
         list.add(userTemp);
       });
-      EasyLoading.showSuccess('Pedidos obtenidos correctamente');
+      EasyLoading.showSuccess('Órdenes obtenidas correctamente');
       return list;
       
     } catch (_) {
-      EasyLoading.showError('No se pudieron obtener los pedidos');
+      EasyLoading.showError('No se pudo obtener las órdenes');
       return [];
     }
   }
   
   Future<List<Order>> getOrderById(String orderId) async{
     try {
-      EasyLoading.show(status: 'Obteniendo pedido por ID...');
+      EasyLoading.show(status: 'Obteniendo órden por ID...');
       Response response = await _dio.get('/api/orders/getById/$orderId');
 
       if( response.statusCode == 500 ) {
-        EasyLoading.showError('No se pudo obtener el pedido');
+        EasyLoading.showError('No se pudo obtener la órden');
         return [];
       }
 
@@ -54,18 +60,24 @@ class OrderControllers {
       return [order];
       
     } catch (_) {
-      EasyLoading.showError('No se pudo obtener el pedido');
+      EasyLoading.showError('No se pudo obtener la órden');
       return [];
     }
   }
   
   Future<List<Order>> getMyPendingsToday(String referalCode, String date) async{
     try {
+
       EasyLoading.show(status: 'Obteniendo mis pedidos pendientes de hoy...');
       Response response = await _dio.get('/api/orders/getByComm/$referalCode/$date');
 
       if( response.statusCode == 500 ) {
-        EasyLoading.showError('No se pudieron obtener los pedidos pendientes');
+        EasyLoading.showError('No se pudo obtener los pedidos pendientes');
+        return [];
+      }
+
+      if( response.data['data'].isEmpty ) {
+        EasyLoading.showInfo('No hay pedidos para hoy');
         return [];
       }
 
@@ -74,22 +86,28 @@ class OrderControllers {
         final userTemp = Order.fromJson(value);
         list.add(userTemp);
       });
+
       EasyLoading.showSuccess('Pedidos pendientes obtenidos correctamente');
       return list;
       
-    } catch (_) {
-      EasyLoading.showError('No se pudieron obtener los pedidos pendientes');
+    } catch (e) {
+      EasyLoading.showError('No se pudo obtener los pedidos pendientes');
       return [];
     }
   }
   
   Future<List<Order>> getMyOrders(String referalCode, String date) async{
     try {
-      EasyLoading.show(status: 'Obteniendo mis pedidos...');
+      EasyLoading.show(status: 'Obteniendo mis órdenes...');
       Response response = await _dio.get('/api/orders/getByCommOrder/$referalCode/$date');
 
       if( response.statusCode == 500 ) {
-        EasyLoading.showError('No se pudieron obtener los pedidos');
+        EasyLoading.showError('No se pudo obtener las órdenes');
+        return [];
+      }
+
+      if( response.data['data'].isEmpty ) {
+        EasyLoading.showInfo('No hay órdenes para hoy');
         return [];
       }
 
@@ -98,11 +116,11 @@ class OrderControllers {
         final userTemp = Order.fromJson(value);
         list.add(userTemp);
       });
-      EasyLoading.showSuccess('Pedidos obtenidos correctamente');
+      EasyLoading.showSuccess('Órdenes obtenidas correctamente');
       return list;
       
     } catch (_) {
-      EasyLoading.showError('No se pudieron obtener los pedidos');
+      EasyLoading.showError('No se pudo obtener las órdenes');
       return [];
     }
   }

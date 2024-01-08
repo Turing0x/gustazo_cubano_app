@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/user_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -32,6 +33,11 @@ class UserControllers {
         return [];
       }
 
+      if( response.data['data'].isEmpty ) {
+        EasyLoading.showInfo('Pedidos pendientes obtenidos correctamente');
+        return [];
+      }
+
       List<User> list = [];
 
       response.data['data'].forEach((value) {
@@ -53,8 +59,6 @@ class UserControllers {
     authStatus.value = true;
     try {
 
-      final localStorage = LocalStorage();
-
       Response response = await _dio.post('/api/users/signin',
         data: jsonEncode({'username': username, 'password': pass}),
         options: Options(validateStatus: (status) => true));
@@ -62,18 +66,22 @@ class UserControllers {
       authStatus.value = false;
 
       if (response.statusCode == 200) {
-        String role = response.data['data']['role'];
+        String getrole = response.data['data']['role'];
+        String getuserID = response.data['data']['userID'];
+        String getfullName = response.data['data']['fullName'];
+        String getreferalCode = response.data['data']['referalCode'];
+        String gettoken = response.data['data']['token'];
 
-        localStorage.usernameSave(username);
-        localStorage.userIdSave(response.data['data']['userID']);
-        localStorage.fullNameSave(response.data['data']['fullName']);
-        localStorage.referalCodeSave(response.data['data']['referalCode']);
-        localStorage.tokenSave(response.data['data']['token']);
-        localStorage.timeSignSave(DateTime.now().toString());
-        localStorage.roleSave(role);
+        final LoginData loginData = LoginData()
+          ..role = getrole
+          ..userID = getuserID
+          ..fullName = getfullName
+          ..referalCode = getreferalCode
+          ..token = gettoken;
 
-        showToast(response.data['api_message'], type: true);
-        return role;
+        LoginDataService().saveData(loginData);
+
+        return getrole;
       }
 
       showToast(response.data['api_message']);
