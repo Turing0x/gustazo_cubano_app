@@ -9,13 +9,16 @@ class LoginData{
   
   String? role; 
   String? userID; 
-  String? fullName; 
   String? referalCode; 
   String? token; 
+  String? ci; 
+  String? fullName; 
+  String? phone; 
+  String? address; 
 
   @override
   String toString() {
-    return '\nid: $id \nrole: $role \nuserID: $userID \nfullName: $fullName \nreferalCode: $referalCode \ntoken: $token';
+    return '\nid: $id \nrole: $role \nuserID: $userID \nfullName: $fullName \nreferalCode: $referalCode \ntoken: $token \nci: $ci \nphone: $phone \naddress: $address';
   }
 
 }

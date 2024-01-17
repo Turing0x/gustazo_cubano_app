@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/internal_storage_admin.dart';
 import 'package:gustazo_cubano_app/pages/Admin/orders_history_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/create_commercial_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/forget_password_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/to_make_shopping_cart_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/pendigns_control_page.dart';
@@ -27,6 +28,7 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'pendings_control_page': (_) => const PendignsControlPage(),
   'internal_storage_page': (_) => const InternalStoragePage(),
   'orders_history_page': (_) => const OrdersHistoryPage(),
+  'create_commercial_page': (_) => const CreateCommercialPage(),
   
   'commercials_control_page': (_) => const CommercialsControlPage(),
   'to_make_shopping_cart_page': (_) => const ToMakeShoppingCartPage(),

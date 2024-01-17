@@ -18,16 +18,16 @@ class OrderControllers {
 
   Future<List<Order>> getAllOrders(bool change, {String date = ''}) async{
     try {
-      EasyLoading.show(status: 'Obteniendo todos las órdenes...');
+      EasyLoading.show(status: 'Obteniendo todos los pedidos...');
       Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending/:$date'}');
 
       if( response.statusCode == 500 ) {
-        EasyLoading.showError('No se pudo obtener las órdenes');
+        EasyLoading.showError('No se pudo obtener los pedidos');
         return [];
       }
 
       if( response.data['data'].isEmpty ) {
-        EasyLoading.showInfo('Órdenes pendientes obtenidas correctamente');
+        EasyLoading.showInfo('Pedidos pendientes obtenidos correctamente');
         return [];
       }
 
@@ -36,11 +36,11 @@ class OrderControllers {
         final userTemp = Order.fromJson(value);
         list.add(userTemp);
       });
-      EasyLoading.showSuccess('Órdenes obtenidas correctamente');
+      EasyLoading.showSuccess('Pedidos obtenidos correctamente');
       return list;
       
     } catch (_) {
-      EasyLoading.showError('No se pudo obtener las órdenes');
+      EasyLoading.showError('No se pudo obtener los pedidos');
       return [];
     }
   }

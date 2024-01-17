@@ -29,7 +29,7 @@ class ProductControllers {
       }
 
       if( response.data['data'].isEmpty ) {
-        EasyLoading.showInfo('Pedidos pendientes obtenidos correctamente');
+        EasyLoading.showInfo('productos pendientes obtenidos correctamente');
         return [];
       }
 

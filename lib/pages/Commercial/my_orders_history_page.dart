@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gustazo_cubano_app/config/Pdf/commision/pdf_commision.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoces/commision_invoce.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/Select_date/select_date.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:open_file/open_file.dart';
 
 class MyOrdersHistoryPage extends StatefulWidget {
   const MyOrdersHistoryPage({super.key,
@@ -23,7 +26,12 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: showAppBar('Historial de órdenes'),
+      appBar: showAppBar('Historial de órdenes', actions: [
+        IconButton(
+          onPressed: (){}, 
+          icon: const Icon(Icons.picture_as_pdf_outlined)
+        )
+      ]),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -58,6 +66,8 @@ class ShowList extends ConsumerStatefulWidget {
 
 class _ShowListState extends ConsumerState<ShowList> {
 
+  List<Order> listToPdf = [];
+
   @override
   Widget build(BuildContext context) {
 
@@ -76,10 +86,11 @@ class _ShowListState extends ConsumerState<ShowList> {
           }
 
           final list = snapshot.data;
+          listToPdf = list!;
           
           return ListView.builder(
       
-            itemCount: list!.length,
+            itemCount: list.length,
             itemBuilder: (context, index) {
 
               Order order = list[index];
@@ -118,6 +129,26 @@ class _ShowListState extends ConsumerState<ShowList> {
 
     );
 
+  }
+
+  void makePDF() async{
+
+    final invoice = CommisionInvoce(
+      userName: '',
+      userCi: '',
+      userAddress: '',
+      userPhone: '',
+      orderList: listToPdf,
+    );
+
+    Map<String, dynamic> itsDone =
+      await GeneratePdfCommision.generate(invoice);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
   }
 
 }

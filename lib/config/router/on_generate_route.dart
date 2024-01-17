@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/order_details_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/commercial_info_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/my_orders_history_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/my_pendings_today_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/buyer_info_page.dart';
@@ -7,6 +8,7 @@ import 'package:gustazo_cubano_app/pages/Order/confirm_pending_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/edit_pending_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/pending_details_page.dart';
 import 'package:gustazo_cubano_app/pages/Product/product_detail.dart';
+import 'package:gustazo_cubano_app/pages/Product/product_detail_page.dart';
 
 MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
 
@@ -51,6 +53,16 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
     'my_orders_history_page': MaterialPageRoute(
       builder: (_) => MyOrdersHistoryPage(
         referalCode: argumentos[0],
+      )),
+
+    'product_details_page': MaterialPageRoute(
+      builder: (_) => ProductDetailsPage(
+        product: argumentos[0],
+      )),
+
+    'commercial_info_page': MaterialPageRoute(
+      builder: (_) => CommercialInfoPage(
+        commercial: argumentos[0],
       )),
     
   };

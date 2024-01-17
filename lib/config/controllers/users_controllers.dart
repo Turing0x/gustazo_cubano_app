@@ -34,7 +34,7 @@ class UserControllers {
       }
 
       if( response.data['data'].isEmpty ) {
-        EasyLoading.showInfo('Pedidos pendientes obtenidos correctamente');
+        EasyLoading.showInfo('Los usuarios han sido cargados correctamente');
         return [];
       }
 
@@ -68,14 +68,20 @@ class UserControllers {
       if (response.statusCode == 200) {
         String getrole = response.data['data']['role'];
         String getuserID = response.data['data']['userID'];
-        String getfullName = response.data['data']['fullName'];
-        String getreferalCode = response.data['data']['referalCode'];
+        String getreferalCode = response.data['data']['commercialCode'];
+        String getCi = response.data['data']['info']['ci'];
+        String getfullName = response.data['data']['info']['full_name'];
+        String getPhone = response.data['data']['info']['phone'];
+        String getAddress = response.data['data']['info']['address'];
         String gettoken = response.data['data']['token'];
 
         final LoginData loginData = LoginData()
           ..role = getrole
           ..userID = getuserID
+          ..ci = getCi
           ..fullName = getfullName
+          ..phone = getPhone
+          ..address = getAddress
           ..referalCode = getreferalCode
           ..token = gettoken;
 
@@ -114,17 +120,17 @@ class UserControllers {
     }
   }
 
-  void saveUser(String fullName, String username, String password) async {
+  Future<void> saveUser(String fullname, String ci, String address, String phoneNumber) async {
     try {
 
       EasyLoading.show(status: 'Creando usuario...');
       Response response = await _dio.post('/api/users', 
         data: jsonEncode({
-          'username': username, 
-          'password': password,
-          'full_name': fullName
-        }), 
-        options: Options(validateStatus: (status) => true) );
+          'fullname': fullname, 
+          'ci': ci,
+          'address': address,
+          'phoneNumber': phoneNumber
+        }));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El usuario ha sido creado correctamente');
@@ -158,7 +164,7 @@ class UserControllers {
     }
   }
  
-  void deleteOne(String id) async {
+  Future<void> deleteOne(String id) async {
     try {
       
       EasyLoading.show(status: 'Eliminando usuario...');

@@ -93,37 +93,45 @@ class _ShowListState extends ConsumerState<ShowList> {
       body: ListView.builder(
         itemCount: widget.products.length,
         itemBuilder: (context, index) {
-          return Container(
-            height: 100,
-            margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [BoxShadow(
-                color: Colors.black12,
-                spreadRadius: 1,
-                blurRadius: 1
-              )]
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(context, 'product_details_page', arguments: [
+              widget.products[index]
+            ]),
+            child: Container(
+              margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [BoxShadow(
+                  color: Colors.black12,
+                  spreadRadius: 1,
+                  blurRadius: 1
+                )]
+              ),
+              child: SingleChildScrollView(
+                child: Row(
+                  children: [
+                            
+                    SizedBox(
+                      height: 70,
+                      child: productPhoto(widget.products[index].photo),),
+                            
+                    productInfo(
+                      widget.products[index].name, 
+                      widget.products[index].price.toString(),
+                      widget.products[index].inStock.toStringAsFixed(0)),
+                            
+                    const Spacer(),
+                            
+                    addBuyBtn(widget.products[index])
+                            
+                  ],
+                            
+                ),
+              ),
+            
             ),
-            child: Row(
-              children: [
-
-                Image.asset('lib/assets/images/6720387.jpg'),
-
-                productInfo(
-                  widget.products[index].name, 
-                  widget.products[index].price.toString(),
-                  widget.products[index].inStock.toStringAsFixed(0)),
-
-                const Spacer(),
-
-                addBuyBtn(widget.products[index])
-
-              ],
-
-            ),
-
           );
 
         }

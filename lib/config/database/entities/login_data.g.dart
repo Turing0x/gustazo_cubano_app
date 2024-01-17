@@ -1049,13 +1049,13 @@ extension LoginDataQuerySortBy on QueryBuilder<LoginData, LoginData, QSortBy> {
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterSortBy> sortByReferalCode() {
+  QueryBuilder<LoginData, LoginData, QAfterSortBy> sortByCommercialCode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'referalCode', Sort.asc);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterSortBy> sortByReferalCodeDesc() {
+  QueryBuilder<LoginData, LoginData, QAfterSortBy> sortByCommercialCodeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'referalCode', Sort.desc);
     });
@@ -1124,13 +1124,13 @@ extension LoginDataQuerySortThenBy
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterSortBy> thenByReferalCode() {
+  QueryBuilder<LoginData, LoginData, QAfterSortBy> thenByCommercialCode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'referalCode', Sort.asc);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterSortBy> thenByReferalCodeDesc() {
+  QueryBuilder<LoginData, LoginData, QAfterSortBy> thenByCommercialCodeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'referalCode', Sort.desc);
     });
@@ -1182,7 +1182,7 @@ extension LoginDataQueryWhereDistinct
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByReferalCode(
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByCommercialCode(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'referalCode', caseSensitive: caseSensitive);

@@ -24,7 +24,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
         fullname = value!;
       });
     });
-    LoginDataService().getReferalCode().then((value) {
+    LoginDataService().getCommercialCode().then((value) {
       setState(() {
         referalCode = value!;
       });

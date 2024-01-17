@@ -8,42 +8,66 @@ class User {
   final String id;
   final bool enable;
   final String username;
-  final String fullName;
   final String password;
   final String role;
-  final String referalCode;
-  final List<dynamic> shoppingHistory;
+  final String commercialCode;
+  final PersonalInfo personalInfo;
 
   User({
     required this.id,
     required this.enable,
     required this.username,
-    required this.fullName,
     required this.password,
     required this.role,
-    required this.referalCode,
-    required this.shoppingHistory,
+    required this.commercialCode,
+    required this.personalInfo,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json["_id"],
     enable: json["enable"],
     username: json["username"],
-    fullName: json["full_name"],
     password: json["password"],
     role: json["role"],
-    referalCode: json["referal_code"],
-    shoppingHistory: List<dynamic>.from(json["shopping_history"].map((x) => x)),
+    commercialCode: json["commercial_code"],
+    personalInfo: PersonalInfo.fromJson(json["personal_info"]),
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
     "enable": enable,
     "username": username,
-    "full_name": fullName,
     "password": password,
     "role": role,
-    "referal_code": referalCode,
-    "shopping_history": List<dynamic>.from(shoppingHistory.map((x) => x)),
+    "commercial_code": commercialCode,
+    "personal_info": personalInfo.toJson(),
+  };
+}
+
+class PersonalInfo {
+  final String ci;
+  final String fullName;
+  final String address;
+  final String phone;
+
+  PersonalInfo({
+    required this.ci,
+    required this.fullName,
+    required this.address,
+    required this.phone,
+  });
+
+  factory PersonalInfo.fromJson(Map<String, dynamic> json) => PersonalInfo(
+    ci: json["ci"],
+    fullName: json["full_name"],
+    address: json["address"],
+    phone: json["phone"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "ci": ci,
+    "full_name": fullName,
+    "address": address,
+    "phone": phone,
   };
 }

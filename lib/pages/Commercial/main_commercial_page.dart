@@ -16,7 +16,7 @@ class _MainCommercialPageState extends State<MainCommercialPage> {
   String referalCode = '';
   @override
   void initState() {
-    LoginDataService().getReferalCode().then((value) {
+    LoginDataService().getCommercialCode().then((value) {
       setState(() {
         referalCode = value!;
       });

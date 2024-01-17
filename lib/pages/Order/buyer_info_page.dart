@@ -20,6 +20,46 @@ class _BuyerInfoPageState extends State<BuyerInfoPage> {
   TextEditingController address = TextEditingController();
   TextEditingController phoneNumber = TextEditingController();
 
+  String selectedValue = 'Seleccione una de las opciones';
+  List<DropdownMenuItem<String>> get dropdownItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      
+      DropdownMenuItem(
+        value: "Seleccione una de las opciones", 
+        child: dosisText('Seleccione una de las opciones', fontWeight: FontWeight.bold)),
+      
+      DropdownMenuItem(
+        value: "TCP - Trabajador x cta propia", 
+        child: dosisText('TCP - Trabajador x cta propia', fontWeight: FontWeight.bold)),
+      
+      DropdownMenuItem(
+        value: "PDL - Proyecto de Desarrollo Local", 
+        child: dosisText('PDL - Proyecto de Desarrollo Local', fontWeight: FontWeight.bold)),
+      
+      DropdownMenuItem(
+        value: "CNA - Cooperativa No Agropecuaria", 
+        child: dosisText('CNA - Cooperativa No Agropecuaria', fontWeight: FontWeight.bold)),
+      
+      DropdownMenuItem(
+        value: "EES - Empresa Estatal Socialista", 
+        child: dosisText('EES - Empresa Estatal Socialista', fontWeight: FontWeight.bold)),
+      
+      DropdownMenuItem(
+        value: "MPM - Mipyme", 
+        child: dosisText('MPM - Mipyme', fontWeight: FontWeight.bold)),
+      
+      DropdownMenuItem(
+        value: "PN - Persona Natural", 
+        child: dosisText('PN - Persona Natural', fontWeight: FontWeight.bold)),
+      
+      DropdownMenuItem(
+        value: "CCS - Cooperativa de Créditos y Servicios", 
+        child: dosisText('CCS - Cooperativa de Créditos y Servicios', fontWeight: FontWeight.bold)),
+    
+    ];
+    return menuItems;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -53,6 +93,25 @@ class _BuyerInfoPageState extends State<BuyerInfoPage> {
                 child: dosisText(
                   'Necesitamos que nos facilites información acerca del comprador', 
                   size: 18, maxLines: 4, textAlign: TextAlign.center),
+              ),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black26),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                margin: const EdgeInsets.only(bottom: 10, top: 10),
+                child: DropdownButton(
+                  value: selectedValue,
+                  items: dropdownItems,
+                  underline: const SizedBox(),
+                  onChanged: (String? newValue){
+                    setState(() {
+                      selectedValue = newValue!;
+                    });
+                  },
+                ),
               ),
 
               Container(
@@ -100,18 +159,23 @@ class _BuyerInfoPageState extends State<BuyerInfoPage> {
                   String getaddress = address.text;
                   String getphoneNumber = phoneNumber.text;
                   
-                  if( getfullname.isEmpty || 
-                      getci.isEmpty ||
-                      getaddress.isEmpty ||
-                      getphoneNumber.isEmpty){
+                  if( getfullname.isEmpty || getci.isEmpty || getaddress.isEmpty || getphoneNumber.isEmpty ){
                     simpleMessageSnackBar(context, 
-                      texto: 'Ambos campos son obligatorios',
+                      texto: 'Todos los campos son obligatorios',
+                      typeMessage: false);
+                    return;
+                  }
+
+                  if( selectedValue == 'Seleccione una de las opciones' ){
+                    simpleMessageSnackBar(context, 
+                      texto: 'Debe seleccionar su forma de gestión económica',
                       typeMessage: false);
                     return;
                   }
 
                   widget.dataOrder.addAll({
                     'buyer': {
+                      'economic': selectedValue,
                       'full_name': getfullname,
                       'ci': getci,
                       'phone_number': getphoneNumber,

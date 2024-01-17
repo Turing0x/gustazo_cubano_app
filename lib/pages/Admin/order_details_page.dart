@@ -41,13 +41,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           
               customGroupBox('Comercial y montos de la compra', [
                 dosisBold('Comercial: ', o.seller.fullName, 20),
-                dosisBold('Código de referidos: ', o.seller.referalCode, 20),
+                dosisBold('Código de comercial: ', o.seller.referalCode, 20),
                 dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18),
                 const Divider(
                   color: Colors.black,
                 ),
                 dosisBold('Fecha: ', fecha, 18),
-                dosisBold('Número de factura: ', o.invoiceNumber, 18),
+                dosisBold('Número de factura: ', '${o.pendingNumber} - ${o.invoiceNumber}', 18),
                 dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
                 dosisBold('Monto total: \$', o.totalAmount.toString(), 18)
               ]),
@@ -161,8 +161,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
     Map<String, dynamic> itsDone =
       await GeneratePdfOrder.generate(invoice);
-
-      print(itsDone['path']);
 
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);

@@ -16,64 +16,13 @@ class CommercialsControlPage extends StatefulWidget {
 
 class _CommercialsControlPageState extends State<CommercialsControlPage> {
 
-  TextEditingController fullname = TextEditingController();
-  TextEditingController username = TextEditingController();
-  TextEditingController password = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: showAppBar('Equipo de trabajo', actions: [
         IconButton(
-          onPressed: (){
-            showModalBottomSheet(
-              context: context, 
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(30),
-                  child: Column(
-                    children: [
-                
-                      dosisText('Registrar comercial', size: 22, fontWeight: FontWeight.bold),
-                      FormTxt(
-                        username: fullname, 
-                        label: 'Nombre Completo', 
-                        obscureText: false),
-                      FormTxt(
-                        username: username, 
-                        label: 'Nombre de Usuario', 
-                        obscureText: false),
-                      FormTxt(
-                        username: password, 
-                        label: 'Contraseña', 
-                        obscureText: false),
-                
-                      const SizedBox(height: 15),
-                  
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 91, 79, 226),
-                          elevation: 2,
-                        ),
-                        icon: const Icon(Icons.done_outline_rounded, 
-                          color: Colors.white, size: 20,), 
-                        label: dosisText('Registrar', 
-                          fontWeight: FontWeight.w500,
-                          size: 20, color: Colors.white),
-                        onPressed: (){
-                          UserControllers userControllers = UserControllers();
-                          userControllers.saveUser(fullname.text, username.text, password.text);
-                          reloadUsers.value = !reloadUsers.value;
-                          Navigator.pop(context);
-                        }
-                      )
-                    ],
-                  ),
-                );
-              },
-            );
-          }, 
+          onPressed: () => Navigator.pushNamed(context, 'create_commercial_page'),
           icon: const Icon(Icons.person_add_alt_outlined)
         )
       ]),
@@ -146,6 +95,9 @@ class _ShowListState extends ConsumerState<ShowList> {
                         btnEnable(users[index].id, users[index].enable)
                       ],
                     ),
+                    onTap: () => Navigator.pushNamed(context, 'commercial_info_page', arguments: [
+                      users[index]
+                    ]),
                   ),
                 );
               });

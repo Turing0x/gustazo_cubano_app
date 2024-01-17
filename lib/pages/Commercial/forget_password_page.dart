@@ -77,9 +77,9 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     return;
                   }
                   
-                  String text = 'Solicitud de reseteo de contraseña: \n\nNombre completo: ${fullname.text} \nCódigo de comercial: ${referalCode.text}';
+                  String text = '*Solicitud de reseteo de contraseña*: \n\n*Nombre completo*: ${fullname.text} \n*Código de comercial*: ${referalCode.text}';
 
-                  final url = 'https://wa.me/+5358884800?text=$text';
+                  final url = 'https://wa.me/+17866699736?text=$text';
 
                   await launchUrlString(
                     url,

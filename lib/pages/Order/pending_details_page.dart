@@ -145,7 +145,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     
         customGroupBox('Comercial y montos de la compra', [
           dosisBold('Comercial: ', o.seller.fullName, 20),
-          dosisBold('Código de referidos: ', o.seller.referalCode, 20),
+          dosisBold('Código de comercial: ', o.seller.referalCode, 20),
           dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18),
           const Divider(
             color: Colors.black,

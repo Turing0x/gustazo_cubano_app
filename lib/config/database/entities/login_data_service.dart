@@ -42,6 +42,15 @@ class LoginDataService {
     return '';
   }
 
+  Future<String?> getCi() async {
+    final isar = await db;
+    final getter = await isar.loginDatas.where().findAll();
+    if( getter.isNotEmpty && getter[0].ci != null){
+      return getter[0].ci;
+    }
+    return '';
+  }
+
   Future<String?> getFullName() async {
     final isar = await db;
     final getter = await isar.loginDatas.where().findAll();
@@ -51,7 +60,25 @@ class LoginDataService {
     return '';
   }
 
-  Future<String?> getReferalCode() async {
+  Future<String?> getPhone() async {
+    final isar = await db;
+    final getter = await isar.loginDatas.where().findAll();
+    if( getter.isNotEmpty && getter[0].phone != null){
+      return getter[0].phone;
+    }
+    return '';
+  }
+
+  Future<String?> getAddress() async {
+    final isar = await db;
+    final getter = await isar.loginDatas.where().findAll();
+    if( getter.isNotEmpty && getter[0].address != null){
+      return getter[0].address;
+    }
+    return '';
+  }
+
+  Future<String?> getCommercialCode() async {
     final isar = await db;
     final getter = await isar.loginDatas.where().findAll();
     if( getter.isNotEmpty && getter[0].referalCode != null){
