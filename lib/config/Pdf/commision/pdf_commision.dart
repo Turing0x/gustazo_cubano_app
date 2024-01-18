@@ -47,24 +47,18 @@ class GeneratePdfCommision {
         pw.Container(
           margin: const EdgeInsets.symmetric(horizontal: 100, vertical: 80),
           child: pw.Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
 
-              topRow(invoice.title, image),
+              topRow(invoice.title, image, invoice.address),
               
               pw.SizedBox(height: 100),
 
-              pw.Align(
-                alignment: Alignment.centerLeft,
-                child: pwtextoDosis('Datos', 35, fontWeight: pw.FontWeight.bold),
-              ),
-              
               pw.SizedBox(height: 50),
               
               infoRow(invoice),
 
               pw.SizedBox(height: 100),
-              // buildInvoice(invoice),
+              buildInvoice(invoice),
 
               pw.SizedBox(height: 100),
 
@@ -75,18 +69,26 @@ class GeneratePdfCommision {
     );
   }
 
-  static Row topRow( String title, MemoryImage image  ){
+  static Row topRow( String title, MemoryImage image, String address ){
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.min,
       children: [
         pw.Image(image),
-        pwtextoDosis(title, 28, fontWeight: pw.FontWeight.bold),
+        pw.Column(
+          children: [
+            pwtextoDosis(title, 28, fontWeight: pw.FontWeight.bold),
+            pwtextoDosis(address, 25),
+          ]
+        )
       ]
     );
   }
   
   static Row infoRow( CommisionInvoce invoice ){
+
+    double foldedCommision = invoice.orderList.fold(0, 
+      (previousValue, element) => previousValue + element.commission);
+
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,80 +107,44 @@ class GeneratePdfCommision {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             pwtextoDosis('Información de venta', 25, fontWeight: pw.FontWeight.bold),
-            pwboldLabel( 'Ventas logradas: ', '${invoice.userName} - ${invoice.userName}', 23),
-            pwboldLabel( 'Fecha: ', invoice.userName, 23)
+            pwboldLabel( 'Ventas logradas: ', '${invoice.orderList.length}', 23),
+            pwboldLabel( 'Ganancia Total: ', 'CUP ${foldedCommision.toStringAsFixed(2)}', 23)
           ]
         )
       ]
     );
   }
 
-  // static Widget buildInvoice(CommisionInvoce invoice) {
-  //   final headers = [
-  //     'Producto',
-  //     'Cantidad',
-  //     'Precio',
-  //   ];
+  static Widget buildInvoice(CommisionInvoce invoice) {
+    final headers = [
+      'Número de Órden',
+      'Fecha',
+      'Cantidad de Productos',
+      'Monto de la Venta',
+    ];
 
-  //   final data = invoice.productList.map((item) {
+    final data = invoice.orderList.map((item) {
 
-  //     return [
-  //       Container(child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           pwtextoDosis(item.name, 23),
-  //           pwboldLabel('Vendido por: ', "E' Gustazo Cubano S.U.R.L", 20)
-  //         ]
-  //       )),
-  //       Container(child: pwtextoDosis(item.cantToBuy.toString(), 23)),
-  //       Container(child: pwtextoDosis('CUP ${item.price.toString()}', 23)),
-  //     ];
-  //   }).toList();
+      return [
+        Container(child: pwtextoDosis('${item.pendingNumber} - ${item.invoiceNumber}', 23)),
+        Container(child: pwtextoDosis(item.date.toString(), 23)),
+        Container(child: pwtextoDosis('${item.getCantOfProducts}', 23)),
+        Container(child: pwtextoDosis('CUP ${item.totalAmount.toStringAsFixed(2)}', 23)),
+      ];
+    }).toList();
 
-  //   data.add([
-  //     Container(
-  //       child: pwtextoDosis('Totales', 23, 
-  //         fontWeight: FontWeight.bold)), 
-  //     Container(
-  //       child: pwtextoDosis(invoice.productList.fold(0, (previousValue, element) => 
-  //         previousValue + element.cantToBuy).toString(), 23, 
-  //         fontWeight: FontWeight.bold)),
-  //     Container(
-  //       child: pwtextoDosis(invoice.productList.fold(0.0, (previousValue, element) => 
-  //         previousValue + element.price).toStringAsFixed(2), 23,
-  //         fontWeight: FontWeight.bold)),
-  //     ]);
-
-  //   return TableHelper.fromTextArray(
-  //     headers: headers,
-  //     data: data,
-  //     headerStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: PdfColors.white),
-  //     headerDecoration: const BoxDecoration(color: PdfColors.black),
-  //     cellHeight: 30,
-  //     cellAlignments: {
-  //       0: Alignment.centerLeft,
-  //       1: Alignment.centerLeft,
-  //       2: Alignment.centerLeft,
-  //     },
-  //     cellDecoration: (column, dataRow, row) {
-  //       if (row == data.length) {
-  //         return const BoxDecoration(color: PdfColors.grey300);
-  //       } else {
-  //         return const BoxDecoration(color: PdfColors.white);
-  //       }
-  //     },
-  //   );
-  // }
-
-  static Column signatures(String text){
-    return pw.Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        pwtextoDosis('$text por: ', 23, fontWeight: pw.FontWeight.bold),
-        pwtextoDosis('Nombre y Apellido', 23),
-        pwtextoDosis('C.I', 23),
-        pwtextoDosis('Firma', 23),
-      ]
+    return TableHelper.fromTextArray(
+      headers: headers,
+      data: data,
+      headerStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: PdfColors.white),
+      headerDecoration: const BoxDecoration(color: PdfColors.black),
+      cellHeight: 30,
+      cellAlignments: {
+        0: Alignment.centerLeft,
+        1: Alignment.centerLeft,
+        2: Alignment.centerLeft,
+        3: Alignment.centerLeft,
+      },
     );
   }
 

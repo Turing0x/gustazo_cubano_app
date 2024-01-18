@@ -93,7 +93,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
 
             Navigator.pushReplacementNamed(context, (role != 'admin') 
               ? 'my_pendings_today_page' : 'pendings_control_page', arguments: [
-                widget.order.seller.referalCode
+                widget.order.seller.commercialCode
               ]);
           }, 
           icon: const Icon(Icons.done, color: Colors.white),

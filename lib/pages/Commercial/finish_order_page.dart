@@ -14,19 +14,37 @@ class FinishOrderPage extends StatefulWidget {
 
 class _FinishOrderPageState extends State<FinishOrderPage> {
 
-  String fullname = '';
   String referalCode = '';
+  String ci = '';
+  String fullName = '';
+  String phone = '';
+  String address = '';
 
   @override
   void initState() {
-    LoginDataService().getFullName().then((value) {
-      setState(() {
-        fullname = value!;
-      });
-    });
     LoginDataService().getCommercialCode().then((value) {
       setState(() {
         referalCode = value!;
+      });
+    });
+    LoginDataService().getCi().then((value) {
+      setState(() {
+        ci = value!;
+      });
+    });
+    LoginDataService().getFullName().then((value) {
+      setState(() {
+        fullName = value!;
+      });
+    });
+    LoginDataService().getPhone().then((value) {
+      setState(() {
+        phone = value!;
+      });
+    });
+    LoginDataService().getAddress().then((value) {
+      setState(() {
+        address = value!;
       });
     });
     super.initState();
@@ -47,15 +65,17 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
               list.add(value);
             });
 
-
             Map<String, dynamic> order = {
               'date': DateTime.now().toString(),
               'product_list': list,
               'total_amount': rProdList.totalAmount,
               'commission': rProdList.totalCommisionMoney.toStringAsFixed(2),
               'seller': {
-                'fullName': fullname,
-                'referalCode': referalCode,
+                'commercial_code': referalCode,
+                'ci': ci,
+                'full_name': fullName,
+                'phone': phone,
+                'address': address,
               }
             };
 
@@ -99,7 +119,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
         children: [
           dosisText(DateFormat.yMEd().add_jms().format(DateTime.now())),
 
-          dosisText(fullname, size: 20, fontWeight: FontWeight.bold),
+          dosisText(fullName, size: 20, fontWeight: FontWeight.bold),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

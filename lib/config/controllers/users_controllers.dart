@@ -68,7 +68,7 @@ class UserControllers {
       if (response.statusCode == 200) {
         String getrole = response.data['data']['role'];
         String getuserID = response.data['data']['userID'];
-        String getreferalCode = response.data['data']['commercialCode'];
+        String getcommercialCode = response.data['data']['commercialCode'];
         String getCi = response.data['data']['info']['ci'];
         String getfullName = response.data['data']['info']['full_name'];
         String getPhone = response.data['data']['info']['phone'];
@@ -82,7 +82,7 @@ class UserControllers {
           ..fullName = getfullName
           ..phone = getPhone
           ..address = getAddress
-          ..referalCode = getreferalCode
+          ..commercialCode = getcommercialCode
           ..token = gettoken;
 
         LoginDataService().saveData(loginData);

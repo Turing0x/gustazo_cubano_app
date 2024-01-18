@@ -8,9 +8,9 @@ import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class MyPendignsTodayPage extends ConsumerStatefulWidget {
   const MyPendignsTodayPage({super.key,
-    required this.referalCode});
+    required this.commercialCode});
 
-  final String referalCode;
+  final String commercialCode;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MyPendignsTodayPageState();
@@ -26,7 +26,7 @@ class _MyPendignsTodayPageState extends ConsumerState<MyPendignsTodayPage> {
     return Scaffold(
       appBar: showAppBar('Control de pedidos'),
       body: FutureBuilder(
-        future: OrderControllers().getMyPendingsToday(widget.referalCode, janddate.currentDate), 
+        future: OrderControllers().getMyPendingsToday(widget.commercialCode, janddate.currentDate), 
         builder: (context, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {

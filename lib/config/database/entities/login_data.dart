@@ -9,7 +9,7 @@ class LoginData{
   
   String? role; 
   String? userID; 
-  String? referalCode; 
+  String? commercialCode; 
   String? token; 
   String? ci; 
   String? fullName; 
@@ -18,7 +18,7 @@ class LoginData{
 
   @override
   String toString() {
-    return '\nid: $id \nrole: $role \nuserID: $userID \nfullName: $fullName \nreferalCode: $referalCode \ntoken: $token \nci: $ci \nphone: $phone \naddress: $address';
+    return '\nid: $id \nrole: $role \nuserID: $userID \nfullName: $fullName \ncommercialCode: $commercialCode \ntoken: $token \nci: $ci \nphone: $phone \naddress: $address';
   }
 
 }

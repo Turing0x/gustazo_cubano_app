@@ -47,12 +47,12 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
 
     'my_pendings_today_page': MaterialPageRoute(
       builder: (_) => MyPendignsTodayPage(
-        referalCode: argumentos[0],
+        commercialCode: argumentos[0],
       )),
 
     'my_orders_history_page': MaterialPageRoute(
       builder: (_) => MyOrdersHistoryPage(
-        referalCode: argumentos[0],
+        commercialCode: argumentos[0],
       )),
 
     'product_details_page': MaterialPageRoute(

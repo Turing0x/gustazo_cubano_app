@@ -13,7 +13,7 @@ class ForgetPasswordPage extends StatefulWidget {
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
 
   TextEditingController fullname = TextEditingController();
-  TextEditingController referalCode = TextEditingController();
+  TextEditingController commercialCode = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
               Container(
                 margin: const EdgeInsets.only(left: 40, right: 40, bottom: 30),
                 child: FormTxt(
-                  controller: referalCode, 
+                  controller: commercialCode, 
                   label: 'Código de comercial'),
               ),
 
@@ -69,15 +69,15 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 onPressed: () async{
 
                   String getfullname = fullname.text;
-                  String getreferalCode = referalCode.text;
-                  if( getfullname.isEmpty || getreferalCode.isEmpty ){
+                  String getcommercialCode = commercialCode.text;
+                  if( getfullname.isEmpty || getcommercialCode.isEmpty ){
                     simpleMessageSnackBar(context, 
                       texto: 'Ambos campos son obligatorios',
                       typeMessage: false);
                     return;
                   }
                   
-                  String text = '*Solicitud de reseteo de contraseña*: \n\n*Nombre completo*: ${fullname.text} \n*Código de comercial*: ${referalCode.text}';
+                  String text = '*Solicitud de reseteo de contraseña*: \n\n*Nombre completo*: ${fullname.text} \n*Código de comercial*: ${commercialCode.text}';
 
                   final url = 'https://wa.me/+17866699736?text=$text';
 

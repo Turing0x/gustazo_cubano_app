@@ -65,11 +65,11 @@ class OrderControllers {
     }
   }
   
-  Future<List<Order>> getMyPendingsToday(String referalCode, String date) async{
+  Future<List<Order>> getMyPendingsToday(String commercialCode, String date) async{
     try {
 
       EasyLoading.show(status: 'Obteniendo mis pedidos pendientes de hoy...');
-      Response response = await _dio.get('/api/orders/getByComm/$referalCode/$date');
+      Response response = await _dio.get('/api/orders/getByComm/$commercialCode/$date');
 
       if( response.statusCode == 500 ) {
         EasyLoading.showError('No se pudo obtener los pedidos pendientes');
@@ -96,10 +96,10 @@ class OrderControllers {
     }
   }
   
-  Future<List<Order>> getMyOrders(String referalCode, String date) async{
+  Future<List<Order>> getMyOrders(String commercialCode, String date) async{
     try {
       EasyLoading.show(status: 'Obteniendo mis órdenes...');
-      Response response = await _dio.get('/api/orders/getByCommOrder/$referalCode/$date');
+      Response response = await _dio.get('/api/orders/getByCommOrder/$commercialCode/$date');
 
       if( response.statusCode == 500 ) {
         EasyLoading.showError('No se pudo obtener las órdenes');

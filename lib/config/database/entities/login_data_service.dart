@@ -81,8 +81,8 @@ class LoginDataService {
   Future<String?> getCommercialCode() async {
     final isar = await db;
     final getter = await isar.loginDatas.where().findAll();
-    if( getter.isNotEmpty && getter[0].referalCode != null){
-      return getter[0].referalCode;
+    if( getter.isNotEmpty && getter[0].commercialCode != null){
+      return getter[0].commercialCode;
     }
     return '';
   }

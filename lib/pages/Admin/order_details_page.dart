@@ -41,7 +41,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           
               customGroupBox('Comercial y montos de la compra', [
                 dosisBold('Comercial: ', o.seller.fullName, 20),
-                dosisBold('Código de comercial: ', o.seller.referalCode, 20),
+                dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
                 dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18),
                 const Divider(
                   color: Colors.black,

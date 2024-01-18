@@ -13,12 +13,12 @@ class MainCommercialPage extends StatefulWidget {
 
 class _MainCommercialPageState extends State<MainCommercialPage> {
 
-  String referalCode = '';
+  String commercialCode = '';
   @override
   void initState() {
     LoginDataService().getCommercialCode().then((value) {
       setState(() {
-        referalCode = value!;
+        commercialCode = value!;
       });
     });
     super.initState();
@@ -64,7 +64,7 @@ class _MainCommercialPageState extends State<MainCommercialPage> {
                 'Mis pedidos',
                 'Pedidos aun pendientes',
                 () => Navigator.pushNamed(context, 'my_pendings_today_page', arguments: [
-                  referalCode
+                  commercialCode
                 ]),
                 true),
       
@@ -73,7 +73,7 @@ class _MainCommercialPageState extends State<MainCommercialPage> {
                 'Mis Órdenes',
                 'Historial de órdenes pasadas',
                 () => Navigator.pushNamed(context, 'my_orders_history_page', arguments: [
-                  referalCode
+                  commercialCode
                 ]),
                 true),
 
