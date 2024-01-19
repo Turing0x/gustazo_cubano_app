@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/users_controllers.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/user_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/shared_dismissible.dart';
@@ -15,57 +16,13 @@ class CommercialsControlPage extends StatefulWidget {
 
 class _CommercialsControlPageState extends State<CommercialsControlPage> {
 
-  TextEditingController username = TextEditingController();
-  TextEditingController password = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: showAppBar('Equipo de trabajo', actions: [
         IconButton(
-          onPressed: (){
-            showModalBottomSheet(
-              context: context, 
-              builder: (context) {
-                return Container(
-                  padding: const EdgeInsets.all(30),
-                  child: Column(
-                    children: [
-                
-                      dosisText('Registrar comercial', size: 22, fontWeight: FontWeight.bold),
-                      FormTxt(
-                        username: username, 
-                        label: 'Nombre de Usuario', 
-                        obscureText: false),
-                      FormTxt(
-                        username: password, 
-                        label: 'Contraseña', 
-                        obscureText: false),
-                
-                      const SizedBox(height: 15),
-                  
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 91, 79, 226),
-                          elevation: 2,
-                        ),
-                        icon: const Icon(Icons.done_outline_rounded, 
-                          color: Colors.white, size: 20,), 
-                        label: dosisText('Registrar', 
-                          fontWeight: FontWeight.w500,
-                          size: 20, color: Colors.white),
-                        onPressed: (){
-                          UserControllers userControllers = UserControllers();
-                          userControllers.saveUser(username.text, password.text);
-                        }
-                      )
-                    ],
-                  ),
-                );
-              },
-            );
-          }, 
+          onPressed: () => Navigator.pushNamed(context, 'create_commercial_page'),
           icon: const Icon(Icons.person_add_alt_outlined)
         )
       ]),
@@ -97,49 +54,57 @@ class _ShowListState extends ConsumerState<ShowList> {
     UserControllers userControllers = UserControllers();
 
     return Scaffold(
-      body: FutureBuilder(
-        future: userControllers.getAllCommercials(),
-        builder: (context, AsyncSnapshot<List<User>> snapshot) {
-          
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return noData(context, 
-              'Parece que aún no tiene comerciales registrado. Para hacerlo, pinche el ícono de la esquina superior derecha');
-          }
-      
-          final users = snapshot.data;
-      
-          return ListView.builder(
-            itemCount: users!.length,
-            itemBuilder: (context, index) {
-              return CommonDismissible(
-                text: 'Eliminar comercial',
-                canDissmis: true,
-                valueKey: users[index].id,
-                onDismissed: (direction) {
-                  UserControllers().deleteOne(users[index].id);
-                  setState(() {
-                    snapshot.data!.remove(users[index]);
-                  });
-                },
-                child: ListTile(
-                  minLeadingWidth: 20,
-                  title: dosisText(users[index].username, size: 18,
-                      fontWeight: FontWeight.bold),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      btnResetPassword(context, users[index].id),
-                      btnEnable(users[index].id, users[index].enable)
-                    ],
+      body: ValueListenableBuilder(
+        valueListenable: reloadUsers,
+        builder: (context, value, child) {
+          return FutureBuilder(
+          future: userControllers.getAllCommercials(),
+          builder: (context, AsyncSnapshot<List<User>> snapshot) {
+            
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return noData(context, 
+                'Parece que aún no tiene comerciales registrado. Para hacerlo, pinche el ícono de la esquina superior derecha');
+            }
+        
+            final users = snapshot.data;
+        
+            return ListView.builder(
+              itemCount: users!.length,
+              itemBuilder: (context, index) {
+                return CommonDismissible(
+                  text: 'Eliminar comercial',
+                  canDissmis: true,
+                  valueKey: users[index].id,
+                  onDismissed: (direction) async{
+                    await UserControllers().deleteOne(users[index].id);
+                    setState(() {
+                      snapshot.data!.remove(users[index]);
+                    });
+                  },
+                  child: ListTile(
+                    minLeadingWidth: 20,
+                    title: dosisText(users[index].username, size: 18,
+                        fontWeight: FontWeight.bold),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        btnResetPassword(context, users[index].id),
+                        btnEnable(users[index].id, users[index].enable)
+                      ],
+                    ),
+                    onTap: () => Navigator.pushNamed(context, 'commercial_info_page', arguments: [
+                      users[index]
+                    ]),
                   ),
-                ),
-              );
-            });
-          },
-        ),
+                );
+              });
+            },
+          );
+        }
+      ),
     );
   }
 
@@ -150,9 +115,9 @@ class _ShowListState extends ConsumerState<ShowList> {
           Icons.lock_reset_outlined,
           color: Colors.red,
         ),
-        onPressed: (){
+        onPressed: () async{
           UserControllers userControllers = UserControllers();
-          userControllers.resetPass(id);
+          await userControllers.resetPass(id);
         });
   }
 

@@ -8,6 +8,7 @@ class Product {
   final String id;
   final String name;
   final String description;
+  final String provider;
   final String photo;
   final double price;
   final double commission;
@@ -20,6 +21,7 @@ class Product {
     this.id = '',
     this.name = '',
     this.description = '',
+    this.provider = '',
     this.photo = '',
     this.price = 0,
     this.inStock = 0,
@@ -33,6 +35,7 @@ class Product {
     id: json["_id"] ?? '',
     name: json["name"] ?? '',
     description: json["description"] ?? '',
+    provider: json["provider"] ?? '',
     photo: json["photo"] ?? '',
     price: json["price"]?.toDouble() ?? 0,
     commission: json["commission"]?.toDouble() ?? 0,
@@ -46,6 +49,7 @@ class Product {
     "_id": id,
     "name": name,
     "description": description,
+    "provider": provider,
     "photo": photo,
     "price": price,
     "in_stock": inStock,
@@ -57,7 +61,7 @@ class Product {
 
   @override
   String toString() {
-    return 'Product: { \nid: $id, \nname: $name, \ndescription: $description, \nphoto: $photo, \nprice: $price, \ninStock: $inStock, \ncantToBuy: $cantToBuy, \nmoreThan: $moreThan, \ncommission: $commission, \ndiscount: $discount}';
+    return 'Product: { \nid: $id, \nname: $name, \ndescription: $description, \nprovider: $provider, \nphoto: $photo, \nprice: $price, \ninStock: $inStock, \ncantToBuy: $cantToBuy, \nmoreThan: $moreThan, \ncommission: $commission, \ndiscount: $discount}';
   }
   
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_order.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoces/order_invoce.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:open_file/open_file.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({super.key, required this.order});
@@ -24,7 +27,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     String fecha = '${o.date.day}/${o.date.month}/${o.date.year} - ${o.date.hour}:${o.date.minute}:${o.date.second}';
 
     return Scaffold(
-      appBar: showAppBar('Detalles de la orden'),
+      appBar: showAppBar('Detalles de la orden', actions: [
+        IconButton(
+          onPressed: () => makePDF(), 
+          icon: const Icon(Icons.picture_as_pdf_outlined))
+      ]),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -32,15 +39,22 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
           
-              customGroupBox('Comercial y montos de la compra', [
+              customGroupBox('Comercial, cliente y montos de la compra', [
                 dosisBold('Comercial: ', o.seller.fullName, 20),
-                dosisBold('Código de referidos: ', o.seller.referalCode, 20),
-                dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18),
+                dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
+                const Divider(
+                  color: Colors.black,
+                ),
+                dosisBold('Nombre Completo: ', o.buyer.fullName, 20),
+                dosisBold('Carnet de Identidad: ', o.buyer.ci, 20),
+                dosisBold('Gestión Económica: ', o.buyer.economic, 18),
+                dosisBold('Dirección Particular: \$', o.buyer.address, 18),
+                dosisBold('Número de Contacto: \$', o.buyer.phoneNumber, 18),
                 const Divider(
                   color: Colors.black,
                 ),
                 dosisBold('Fecha: ', fecha, 18),
-                dosisBold('Número de factura: ', o.invoiceNumber, 18),
+                dosisBold('Número de factura: ', '${o.pendingNumber} - ${o.invoiceNumber}', 18),
                 dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
                 dosisBold('Monto total: \$', o.totalAmount.toString(), 18)
               ]),
@@ -134,6 +148,33 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         ),
       ),
     );
+  }
+
+  void makePDF() async{
+    DateTime date = widget.order.date;
+    String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
+
+    final invoice = OrderInvoce(
+      orderNumber: widget.order.invoiceNumber,
+      pendingNumber: widget.order.pendingNumber,
+      orderDate: fecha,
+      pendingDate: fecha,
+      productList: widget.order.productList,
+      buyerName: widget.order.buyer.fullName,
+      buyerAddress: widget.order.buyer.address,
+      buyerEconomic: widget.order.buyer.economic,
+      buyerCi: widget.order.buyer.ci,
+      buyerPhone: widget.order.buyer.phoneNumber,
+    );
+
+    Map<String, dynamic> itsDone =
+      await GeneratePdfOrder.generate(invoice);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
   }
 
 }

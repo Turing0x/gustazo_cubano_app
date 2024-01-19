@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -23,8 +24,8 @@ class _ConfirmPendingPageState extends State<ConfirmPendingPage> {
   @override
   void initState() {
     DateTime dateTime = DateTime.now();
-    invoceNumber.text = '${dateTime.day}${dateTime.month}';
-    diames = '${dateTime.day}${dateTime.month}';
+    invoceNumber.text = '${dateTime.day.toString().rellenarCon0(2)}${dateTime.month.toString().rellenarCon0(2)}';
+    diames = '${dateTime.day.toString().rellenarCon0(2)}${dateTime.month.toString().rellenarCon0(2)}';
     super.initState();
   }
 
@@ -39,6 +40,13 @@ class _ConfirmPendingPageState extends State<ConfirmPendingPage> {
         child: SafeArea(
           child: Column(
             children: [
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context), 
+                  icon: const Icon(Icons.arrow_back_ios_new)),
+              ),
 
               Container(
                 height: size.height * 0.35,
@@ -94,12 +102,6 @@ class _ConfirmPendingPageState extends State<ConfirmPendingPage> {
               ),
 
               const SizedBox(height: 50),
-
-              ElevatedButton.icon(
-                onPressed: () => Navigator.pop(context), 
-                icon: const Icon(Icons.keyboard_arrow_left_outlined, color: Colors.black), 
-                label: dosisText('Atrás', fontWeight: FontWeight.bold)
-              )
 
             ],
           ),

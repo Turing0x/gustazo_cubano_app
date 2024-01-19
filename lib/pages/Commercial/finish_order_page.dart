@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:intl/intl.dart';
@@ -15,19 +14,37 @@ class FinishOrderPage extends StatefulWidget {
 
 class _FinishOrderPageState extends State<FinishOrderPage> {
 
-  String fullname = '';
   String referalCode = '';
+  String ci = '';
+  String fullName = '';
+  String phone = '';
+  String address = '';
 
   @override
   void initState() {
-    LocalStorage.getFullName().then((value) {
-      setState(() {
-        fullname = value!;
-      });
-    });
-    LocalStorage.getReferalCode().then((value) {
+    LoginDataService().getCommercialCode().then((value) {
       setState(() {
         referalCode = value!;
+      });
+    });
+    LoginDataService().getCi().then((value) {
+      setState(() {
+        ci = value!;
+      });
+    });
+    LoginDataService().getFullName().then((value) {
+      setState(() {
+        fullName = value!;
+      });
+    });
+    LoginDataService().getPhone().then((value) {
+      setState(() {
+        phone = value!;
+      });
+    });
+    LoginDataService().getAddress().then((value) {
+      setState(() {
+        address = value!;
       });
     });
     super.initState();
@@ -43,13 +60,10 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
         IconButton(
           onPressed: (){
             
-            final orderCrtl = OrderControllers();
-
             List list = [];
             rProdList.products.forEach((key, value) {
               list.add(value);
             });
-
 
             Map<String, dynamic> order = {
               'date': DateTime.now().toString(),
@@ -57,14 +71,17 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
               'total_amount': rProdList.totalAmount,
               'commission': rProdList.totalCommisionMoney.toStringAsFixed(2),
               'seller': {
-                'fullName': fullname,
-                'referalCode': referalCode,
+                'commercial_code': referalCode,
+                'ci': ci,
+                'full_name': fullName,
+                'phone': phone,
+                'address': address,
               }
             };
 
-            orderCrtl.saveOrder(order);
-            rProdList.cleanCart();
-            Navigator.pushReplacementNamed(context, 'main_commercial_page');
+            Navigator.pushNamed(context, 'buyer_info_page', arguments: [
+              order
+            ]);
 
           }, 
           icon: const Icon(Icons.send)
@@ -102,7 +119,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
         children: [
           dosisText(DateFormat.yMEd().add_jms().format(DateTime.now())),
 
-          dosisText(fullname, size: 20, fontWeight: FontWeight.bold),
+          dosisText(fullName, size: 20, fontWeight: FontWeight.bold),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/user_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -12,7 +14,8 @@ class UserControllers {
   final _dio = Dio(
     BaseOptions(
       baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      validateStatus: (status) => true
     )
   );
 
@@ -20,10 +23,20 @@ class UserControllers {
 
     try {
 
+      EasyLoading.show(status: 'Procesando información...');
+
       Response response = await _dio.get('/api/users',
         options: Options(validateStatus: (status) => true));
 
-      if( response.statusCode == 500 ) return [];
+      if( response.statusCode == 500 ) {
+        EasyLoading.showInfo('No se pudo cargar la información de los usuarios');
+        return [];
+      }
+
+      if( response.data['data'].isEmpty ) {
+        EasyLoading.showInfo('Los usuarios han sido cargados correctamente');
+        return [];
+      }
 
       List<User> list = [];
 
@@ -32,9 +45,11 @@ class UserControllers {
         list.add(userTemp);
       });
 
+      EasyLoading.showSuccess('Los usuarios han sido cargados correctamente');
       return list;
       
     } catch (_) {
+      EasyLoading.showError('No se pudo cargar la información de los usuarios');
       return [];
     }
 
@@ -44,8 +59,6 @@ class UserControllers {
     authStatus.value = true;
     try {
 
-      final localStorage = LocalStorage();
-
       Response response = await _dio.post('/api/users/signin',
         data: jsonEncode({'username': username, 'password': pass}),
         options: Options(validateStatus: (status) => true));
@@ -53,18 +66,28 @@ class UserControllers {
       authStatus.value = false;
 
       if (response.statusCode == 200) {
-        String role = response.data['data']['role'];
+        String getrole = response.data['data']['role'];
+        String getuserID = response.data['data']['userID'];
+        String getcommercialCode = response.data['data']['commercialCode'];
+        String getCi = response.data['data']['info']['ci'];
+        String getfullName = response.data['data']['info']['full_name'];
+        String getPhone = response.data['data']['info']['phone'];
+        String getAddress = response.data['data']['info']['address'];
+        String gettoken = response.data['data']['token'];
 
-        localStorage.usernameSave(username);
-        localStorage.userIdSave(response.data['data']['userID']);
-        localStorage.fullNameSave(response.data['data']['fullName']);
-        localStorage.referalCodeSave(response.data['data']['referalCode']);
-        localStorage.tokenSave(response.data['data']['token']);
-        localStorage.timeSignSave(DateTime.now().toString());
-        localStorage.roleSave(role);
+        final LoginData loginData = LoginData()
+          ..role = getrole
+          ..userID = getuserID
+          ..ci = getCi
+          ..fullName = getfullName
+          ..phone = getPhone
+          ..address = getAddress
+          ..commercialCode = getcommercialCode
+          ..token = gettoken;
 
-        showToast(response.data['api_message'], type: true);
-        return role;
+        LoginDataService().saveData(loginData);
+
+        return getrole;
       }
 
       showToast(response.data['api_message']);
@@ -79,45 +102,51 @@ class UserControllers {
   Future<bool> changeEnable(String id, bool enable) async {
     try {
 
+      EasyLoading.show(status: 'Cambiando el acceso...');
       Response response = await _dio.put('/api/users/changeEnable/$id',
         data: jsonEncode({ 'enable': enable }),
         options: Options(validateStatus: (status) => true));
 
       if (response.statusCode == 200) {
-        showToast(response.data['api_message'], type: true);
+        EasyLoading.showSuccess('El cambio a sido aplicado correctamente');
         return true;
       }
 
-      showToast(response.data['api_message']);
+      EasyLoading.showError('No se pudo aplicar el cambio al usuario seleccionado');
       return false;
     } catch (e) {
-      showToast('Ha ocrrido un error grave');
+      EasyLoading.showError('No se pudo aplicar el cambio al usuario seleccionado');
       return false;
     }
   }
 
-  void saveUser(String username, String password) async {
+  Future<void> saveUser(String fullname, String ci, String address, String phoneNumber) async {
     try {
 
+      EasyLoading.show(status: 'Creando usuario...');
       Response response = await _dio.post('/api/users', 
-        data: jsonEncode({'username': username, 'password': password}), 
-        options: Options(validateStatus: (status) => true) );
+        data: jsonEncode({
+          'fullname': fullname, 
+          'ci': ci,
+          'address': address,
+          'phoneNumber': phoneNumber
+        }));
 
       if (response.statusCode == 200) {
-        showToast(response.data['api_message'], type: true);
+        EasyLoading.showSuccess('El usuario ha sido creado correctamente');
         return;
       }
 
-      showToast(response.data['api_message']);
+      EasyLoading.showError('No se pudo crear el usuario con la información proporcionada');
       return;
-    } on Exception catch (e) {
-      showToast(e.toString());
+    } on Exception catch (_) {
+      EasyLoading.showError('No se pudo crear el usuario con la información proporcionada');
     }
   }
   
-  void resetPass(String userId) async {
+  Future<void> resetPass(String userId) async {
     try {
-      final queryData = {'userId': userId};
+      final queryData = { 'userId': userId };
 
       Response response = await _dio.post('/api/users/resetpass', 
         queryParameters: queryData, 
@@ -134,21 +163,23 @@ class UserControllers {
       showToast(e.toString());
     }
   }
-
-  void deleteOne(String id) async {
+ 
+  Future<void> deleteOne(String id) async {
     try {
-
+      
+      EasyLoading.show(status: 'Eliminando usuario...');
       Response response = await _dio.delete('/api/users/$id', 
         options: Options(validateStatus: (status) => true));
         
       if (response.statusCode == 200) {
-        showToast(response.data['api_message'], type: true);
+        EasyLoading.showSuccess('El usuario ha sido eliminado correctamente');
         return;
       }
 
-      showToast(response.data['api_message']);
+      EasyLoading.showError('No se pudo eliminar el usuario seleccionado');
       return;
     } catch (e) {
+      EasyLoading.showError('No se pudo eliminar el usuario seleccionado');
       return;
     }
   }

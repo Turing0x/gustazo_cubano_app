@@ -2,30 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class MyPendignsTodayPage extends ConsumerStatefulWidget {
-  const MyPendignsTodayPage({super.key});
+  const MyPendignsTodayPage({super.key,
+    required this.commercialCode});
+
+  final String commercialCode;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MyPendignsTodayPageState();
 }
 
 class _MyPendignsTodayPageState extends ConsumerState<MyPendignsTodayPage> {
-
-  String referalCode = '';
-  @override
-  void initState() {
-    LocalStorage.getReferalCode().then((value) {
-      setState(() {
-        referalCode = value!;
-      });
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +26,7 @@ class _MyPendignsTodayPageState extends ConsumerState<MyPendignsTodayPage> {
     return Scaffold(
       appBar: showAppBar('Control de pedidos'),
       body: FutureBuilder(
-        future: OrderControllers().getMyPendingsToday( referalCode, janddate.currentDate), 
+        future: OrderControllers().getMyPendingsToday(widget.commercialCode, janddate.currentDate), 
         builder: (context, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -72,7 +63,7 @@ class _MyPendignsTodayPageState extends ConsumerState<MyPendignsTodayPage> {
                   trailing: CircleAvatar(
                     child: dosisText(order.productList.length.toString(),
                     fontWeight: FontWeight.bold)),
-                  onTap: () => Navigator.pushNamed(context, 'pending_details_page', arguments: [
+                  onTap: () => Navigator.popAndPushNamed(context, 'pending_details_page', arguments: [
                     order
                   ]),
                 ),

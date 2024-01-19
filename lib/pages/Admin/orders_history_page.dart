@@ -1,26 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gustazo_cubano_app/config/Pdf/Commision/admin_pdf_commision.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/Select_date/select_date.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:open_file/open_file.dart';
 
-class OrdersHistoryPage extends StatefulWidget {
+List<Order> listToPdf = [];
+
+class OrdersHistoryPage extends ConsumerStatefulWidget {
   const OrdersHistoryPage({super.key});
 
   @override
-  State<OrdersHistoryPage> createState() => _OrdersHistoryPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _OrdersHistoryPageState();
 }
 
-class _OrdersHistoryPageState extends State<OrdersHistoryPage> {
-  
+class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
+
+  bool show = false;
+
+  @override
+  void initState() {
+    LoginDataService().getRole().then((value) {
+      if(value == 'admin'){
+        setState(() {show = true;});
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-  
+
     return Scaffold(
-      appBar: showAppBar('Historial de ordenes'),
+      appBar: showAppBar('Historial de órdenes', actions: [
+        Visibility(
+          visible: show,
+          child: IconButton(
+            onPressed: () => makePDF(),
+            icon: const Icon(Icons.picture_as_pdf_outlined)
+          ),
+        )
+      ]),
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -39,6 +64,20 @@ class _OrdersHistoryPageState extends State<OrdersHistoryPage> {
 
     );
 
+  }
+
+  void makePDF() async{
+
+    DateTime date = listToPdf[0].date;
+    String fecha = '${date.day}/${date.month}/${date.year}';
+    Map<String, dynamic> itsDone =
+      await GenerateAdminPdfCommision.generate(listToPdf, fecha);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
   }
 
 }
@@ -70,10 +109,11 @@ class _ShowListState extends ConsumerState<ShowList> {
           }
 
           final list = snapshot.data;
+          listToPdf = list!;
           
           return ListView.builder(
       
-            itemCount: list!.length,
+            itemCount: list.length,
             itemBuilder: (context, index) {
 
               Order order = list[index];

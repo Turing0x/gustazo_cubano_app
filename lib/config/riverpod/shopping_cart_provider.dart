@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 
 Map<String, Product> _productList = {};
-Map<String, int> _onEditingCart = {};
 class ShoppingCartProvider extends StateNotifier<Product> {
 
   ShoppingCartProvider() : super(Product());
@@ -21,15 +20,17 @@ class ShoppingCartProvider extends StateNotifier<Product> {
 
   double get totalAmount {
     double totalAmount = 0.0;
-    _productList.forEach((key, value) => 
-      totalAmount += value.price * value.cantToBuy );
+    _productList.forEach((key, value) {
+      double price = value.cantToBuy >= value.moreThan ? value.discount : value.price;
+      totalAmount += price * value.cantToBuy;
+    });
     return totalAmount;
   }
 
   double get totalCommisionMoney {
     double commissionMoney = 0.0;
     _productList.forEach((key, value) => 
-      commissionMoney += (value.price * value.cantToBuy) * (value.commission / 100) );
+      commissionMoney += value.cantToBuy * value.commission );
     return commissionMoney;
   }
 
@@ -63,7 +64,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
     });
   }
 
-  void removeProductFromList (String prodId) {
+  void removeProductFromList(String prodId) {
     _productList.remove(prodId);
   }
 
@@ -119,7 +120,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
       inStock: value.inStock, 
       commission: value.commission, 
       discount: value.discount,
-      cantToBuy: value.cantToBuy + 1
+      cantToBuy: value.cantToBuy + 10
     ));
   }
 

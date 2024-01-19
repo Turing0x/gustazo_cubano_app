@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/router/on_generate_route.dart';
 import 'package:gustazo_cubano_app/config/router/routes.dart';
@@ -7,10 +8,11 @@ import 'package:gustazo_cubano_app/config/utils/initial_route.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting();
   await dotenv.load(fileName: '.env');
 
   final rutIni = await initialRoute();
-  initializeDateFormatting();
 
   runApp(ProviderScope(
     child: MyApp(
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
       initialRoute: rutaInicial,
       routes: appRoutes,
       onGenerateRoute: onGenerateRoute,
+      builder: EasyLoading.init(),
     );
   }
 }

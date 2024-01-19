@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_pending.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoces/pending_invoce.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
+import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:open_file/open_file.dart';
 
 class PendingDetailsPage extends StatefulWidget {
   const PendingDetailsPage({super.key, required this.order});
@@ -21,9 +25,11 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
   bool visible = false;
   @override
   void initState() {
-    LocalStorage.getRole().then((value) {
+    LoginDataService().getRole().then((value) {
       if(value == 'admin'){
-        visible = true;
+        setState(() {
+          visible = true;
+        });
       }
     });
     super.initState();
@@ -137,10 +143,17 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
     
-        customGroupBox('Comercial y montos de la compra', [
+        customGroupBox('Comercial, cliente y montos de la compra', [
           dosisBold('Comercial: ', o.seller.fullName, 20),
-          dosisBold('Código de referidos: ', o.seller.referalCode, 20),
-          dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18),
+          dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
+          const Divider(
+            color: Colors.black,
+          ),
+          dosisBold('Cliente: ', o.buyer.fullName, 20),
+          dosisBold('Carnet de Identidad: ', o.buyer.ci, 20),
+          dosisBold('Gestión Económica: ', o.buyer.economic, 18),
+          dosisBold('Dirección Particular: \$', o.buyer.address, 18),
+          dosisBold('Número de Contacto: \$', o.buyer.phoneNumber, 18),
           const Divider(
             color: Colors.black,
           ),
@@ -219,13 +232,16 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
         
         Map<String, void Function()> methods = {
           
+          'make_pdf': () => makePDF(),
+
           'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
             arguments: [widget.order]),
           
-          'cancel_order': () => {
-            orderCrt.deleteOne(widget.order.id),
-            Navigator.pushReplacementNamed(context, 'my_pendings_today_page')
-          }
+          'cancel_order': () => actionsSnackBar(context, 'Confirmar eliminación',
+            'Eliminar', (){
+              orderCrt.deleteOne(widget.order.id);
+              Navigator.popAndPushNamed(context, 'my_pendings_today_page');
+          })
 
         };
 
@@ -233,6 +249,13 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
 
       },
       itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'make_pdf',
+          child: ListTile(
+            title: dosisText('Hacer PDF', size: 18),
+            leading: const Icon(Icons.picture_as_pdf_outlined, color: Colors.blue, size: 19),
+          )
+        ),
         PopupMenuItem(
           value: 'edit_pending',
           child: ListTile(
@@ -249,6 +272,32 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
         )
       ],
     );
+  }
+
+  void makePDF() async{
+    DateTime date = widget.order.date;
+    String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
+
+    final invoice = PendingInvoce(
+      orderNumber: widget.order.invoiceNumber,
+      pendingNumber: widget.order.pendingNumber,
+      orderDate: fecha,
+      productList: widget.order.productList,
+      buyerName: widget.order.buyer.fullName,
+      buyerEconomic: widget.order.buyer.economic,
+      buyerAddress: widget.order.buyer.address,
+      buyerCi: widget.order.buyer.ci,
+      buyerPhone: widget.order.buyer.phoneNumber,
+    );
+
+    Map<String, dynamic> itsDone =
+      await GeneratePdfPending.generate(invoice);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
   }
 
 }

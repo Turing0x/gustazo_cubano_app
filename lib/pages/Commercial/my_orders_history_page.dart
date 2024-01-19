@@ -1,36 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gustazo_cubano_app/config/Pdf/Commision/pdf_commision.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoces/commision_invoce.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
-import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/Select_date/select_date.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:open_file/open_file.dart';
+
+List<Order> listToPdf = [];
 
 class MyOrdersHistoryPage extends StatefulWidget {
-  const MyOrdersHistoryPage({super.key});
+  const MyOrdersHistoryPage({super.key,
+    required this.commercialCode});
+
+  final String commercialCode;
 
   @override
   State<MyOrdersHistoryPage> createState() => _MyOrdersHistoryPageState();
 }
 
 class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
+
+  String ci = '';
+  String fullName = '';
+  String phone = '';
+  String address = '';
+
+  @override
+  void initState() {
+    LoginDataService().getCi().then((value) {
+      setState(() {
+        ci = value!;
+      });
+    });
+    LoginDataService().getFullName().then((value) {
+      setState(() {
+        fullName = value!;
+      });
+    });
+    LoginDataService().getPhone().then((value) {
+      setState(() {
+        phone = value!;
+      });
+    });
+    LoginDataService().getAddress().then((value) {
+      setState(() {
+        address = value!;
+      });
+    });
+    super.initState();
+  }
   
   @override
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: showAppBar('Historial de ordenes'),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+      appBar: showAppBar('Historial de órdenes', actions: [
+        IconButton(
+          onPressed: () => makePDF(),
+          icon: const Icon(Icons.picture_as_pdf_outlined)
+        )
+      ]),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
       
           children: [
       
-            CustomDateSelect(),
+            const CustomDateSelect(),
 
-            Expanded(child: ShowList())
+            Expanded(child: ShowList(commercialCode: widget.commercialCode,))
       
           ],
       
@@ -42,28 +85,39 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
 
   }
 
+  void makePDF() async{
+
+    final invoice = CommisionInvoce(
+      userCi: ci,
+      userName: fullName,
+      userPhone: phone,
+      userAddress: address,
+      orderList: listToPdf,
+    );
+
+    Map<String, dynamic> itsDone =
+      await GeneratePdfCommision.generate(invoice);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
+  }
+
 }
 
 class ShowList extends ConsumerStatefulWidget {
-  const ShowList({super.key});
+  const ShowList({super.key,
+    required this.commercialCode});
+
+  final String commercialCode;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ShowListState();
 }
 
 class _ShowListState extends ConsumerState<ShowList> {
-
-  String referalCode = '';
-  @override
-  void initState() {
-    LocalStorage.getReferalCode().then((value) {
-      setState(() {
-        referalCode = value!;
-      });
-    });
-    super.initState();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +126,7 @@ class _ShowListState extends ConsumerState<ShowList> {
 
     return Scaffold(
       body: FutureBuilder(
-        future: OrderControllers().getMyOrders( referalCode, janddate.currentDate),
+        future: OrderControllers().getMyOrders( widget.commercialCode, janddate.currentDate),
         builder: (context, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -83,10 +137,11 @@ class _ShowListState extends ConsumerState<ShowList> {
           }
 
           final list = snapshot.data;
+          listToPdf = list!;
           
           return ListView.builder(
       
-            itemCount: list!.length,
+            itemCount: list.length,
             itemBuilder: (context, index) {
 
               Order order = list[index];
