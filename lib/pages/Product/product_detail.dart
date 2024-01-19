@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
@@ -27,9 +28,16 @@ class _ProductDetailsState extends State<ProductDetails> {
   TextEditingController photoCtrl = TextEditingController();
 
   bool allowEdit = true;
+  bool show = false;
 
   @override
   void initState() {
+
+    LoginDataService().getRole().then((value) {
+      if(value == 'admin'){
+        setState(() {show = true;});
+      }
+    });
 
     nameCtrl.text = widget.product.name;
     descriptionCtrl.text = widget.product.description;
@@ -162,12 +170,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                   keyboardType: TextInputType.number, 
                   label: 'Cantidad de unidades'),
 
-                FormTxt(
-                  suffixIcon: Icons.attach_money_outlined,
-                  readOnly: allowEdit,
-                  controller: commissionCtrl,
-                  keyboardType: TextInputType.number, 
-                  label: 'Comisión de ganancia'),
+                Visibility(
+                  visible: show,
+                  child: FormTxt(
+                    suffixIcon: Icons.attach_money_outlined,
+                    readOnly: allowEdit,
+                    controller: commissionCtrl,
+                    keyboardType: TextInputType.number, 
+                    label: 'Comisión de ganancia'),
+                ),
 
                 customGroupBox('Oferta a compra mayorista', [
                   FormTxt(

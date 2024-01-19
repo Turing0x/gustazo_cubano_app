@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
@@ -23,6 +24,18 @@ class _CreateProductPageState extends State<CreateProductPage> {
   TextEditingController discountCtrl = TextEditingController();
   TextEditingController moreThanCtrl = TextEditingController();
   TextEditingController photoCtrl = TextEditingController();
+
+  bool show = false;
+
+  @override
+  void initState() {
+    LoginDataService().getRole().then((value) {
+      if(value == 'admin'){
+        setState(() {show = true;});
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +68,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                   moreThanCtrl.text.isEmpty || 
                   moreThanCtrl.text == '0'){
                 simpleMessageSnackBar(context, 
-                  texto: 'Parte de la información es incorrecta, por favor revise los campos',
+                  texto: 'Rellene todos los campos por favor',
                   typeMessage: false);
                 return;
               }
@@ -138,11 +151,14 @@ class _CreateProductPageState extends State<CreateProductPage> {
                     keyboardType: TextInputType.number, 
                     label: 'Cantidad de unidades'),
       
-                  FormTxt(
-                    suffixIcon: Icons.attach_money_outlined,
-                    controller: commissionCtrl,
-                    keyboardType: TextInputType.number, 
-                    label: 'Comisión de ganancia'),
+                  Visibility(
+                    visible: show,
+                    child: FormTxt(
+                      suffixIcon: Icons.attach_money_outlined,
+                      controller: commissionCtrl,
+                      keyboardType: TextInputType.number, 
+                      label: 'Comisión de ganancia'),
+                  ),
       
                   customGroupBox('Oferta a compra mayorista', [
                     FormTxt(

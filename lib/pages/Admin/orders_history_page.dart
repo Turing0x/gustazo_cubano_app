@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/Pdf/Commision/admin_pdf_commision.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/Select_date/select_date.dart';
@@ -19,15 +20,30 @@ class OrdersHistoryPage extends ConsumerStatefulWidget {
 }
 
 class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
-  
+
+  bool show = false;
+
+  @override
+  void initState() {
+    LoginDataService().getRole().then((value) {
+      if(value == 'admin'){
+        setState(() {show = true;});
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: showAppBar('Historial de órdenes', actions: [
-        IconButton(
-          onPressed: () => makePDF(),
-          icon: const Icon(Icons.picture_as_pdf_outlined)
+        Visibility(
+          visible: show,
+          child: IconButton(
+            onPressed: () => makePDF(),
+            icon: const Icon(Icons.picture_as_pdf_outlined)
+          ),
         )
       ]),
       body: const Padding(
