@@ -69,8 +69,8 @@ class _ShowListState extends ConsumerState<ShowList> {
                     canDissmis: true,
                     text: 'Eliminar producto',
                     valueKey: list[index].id,
-                    onDismissed: (direction) {
-                      ProductControllers().deleteOne(list[index].id);
+                    onDismissed: (direction) async{
+                      await ProductControllers().deleteOne(list[index].id);
                       reloadProducts.value = !reloadProducts.value;
                     },
                     child: Container(

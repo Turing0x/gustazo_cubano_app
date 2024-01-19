@@ -50,7 +50,7 @@ class ProductControllers {
 
   }
 
-  void saveProducts(Map<String, dynamic> product) async {
+  Future<void> saveProducts(Map<String, dynamic> product) async {
     try {
 
       EasyLoading.show(status: 'Añadiendo producto al stock...');
@@ -70,7 +70,7 @@ class ProductControllers {
     }
   }
 
-  void editProducts(Map<String, dynamic> product, String id) async {
+  Future<void> editProducts(Map<String, dynamic> product, String id) async {
     try {
 
       EasyLoading.show(status: 'Editando información del producto...');
@@ -90,7 +90,7 @@ class ProductControllers {
     }
   }
 
-  void deleteOne(String id) async {
+  Future<void> deleteOne(String id) async {
     try {
 
       EasyLoading.show(status: 'Eliminando producto del stock...');

@@ -78,8 +78,8 @@ class _ShowListState extends ConsumerState<ShowList> {
                   text: 'Eliminar comercial',
                   canDissmis: true,
                   valueKey: users[index].id,
-                  onDismissed: (direction) {
-                    UserControllers().deleteOne(users[index].id);
+                  onDismissed: (direction) async{
+                    await UserControllers().deleteOne(users[index].id);
                     setState(() {
                       snapshot.data!.remove(users[index]);
                     });
@@ -115,9 +115,9 @@ class _ShowListState extends ConsumerState<ShowList> {
           Icons.lock_reset_outlined,
           color: Colors.red,
         ),
-        onPressed: (){
+        onPressed: () async{
           UserControllers userControllers = UserControllers();
-          userControllers.resetPass(id);
+          await userControllers.resetPass(id);
         });
   }
 

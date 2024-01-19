@@ -125,7 +125,7 @@ class OrderControllers {
     }
   }
 
-  void saveOrder(Map<String, dynamic> order) async {
+  Future<void> saveOrder(Map<String, dynamic> order) async {
     try {
       EasyLoading.show(status: 'Guardando pedido...');
       Response response = await _dio.post('/api/orders', 
@@ -143,7 +143,7 @@ class OrderControllers {
     }
   }
   
-  void editOrder(String orderId, Map<String, dynamic> order) async {
+  Future<void> editOrder(String orderId, Map<String, dynamic> order) async {
     try {
       EasyLoading.show(status: 'Editando pedido...');
       Response response = await _dio.put('/api/orders/$orderId', 
@@ -180,7 +180,7 @@ class OrderControllers {
     }
   }
 
-  void deleteOne(String orderId) async {
+  Future<void> deleteOne(String orderId) async {
     try {
 
       EasyLoading.show(status: 'Eliminando el pedido...');

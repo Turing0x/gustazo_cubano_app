@@ -139,7 +139,7 @@ class GeneratePdfOrder {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             pwtextoDosis(item.name, 23),
-            pwboldLabel('Vendido por: ', "E' Gustazo Cubano S.U.R.L", 20)
+            pwboldLabel('Vendido por: ', item.provider, 20)
           ]
         )),
         Container(child: pwtextoDosis(item.cantToBuy.toString(), 23)),

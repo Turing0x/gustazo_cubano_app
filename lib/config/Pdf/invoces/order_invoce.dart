@@ -4,7 +4,7 @@ class OrderInvoce {
 
   final String title = 'Ventas Kapricho';
   final String address = 'Calle 222 e/ 29 y 31 La Coronela. La Lisa';
-
+  
   final String buyerName;
   final String buyerAddress;
   final String buyerCi;

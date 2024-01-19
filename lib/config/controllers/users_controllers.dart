@@ -144,7 +144,7 @@ class UserControllers {
     }
   }
   
-  void resetPass(String userId) async {
+  Future<void> resetPass(String userId) async {
     try {
       final queryData = { 'userId': userId };
 

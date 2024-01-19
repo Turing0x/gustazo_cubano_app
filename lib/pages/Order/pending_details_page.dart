@@ -150,6 +150,15 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           const Divider(
             color: Colors.black,
           ),
+          dosisBold('Nombre Completo: ', o.buyer.fullName, 20),
+          dosisBold('Carnet de Identidad: ', o.buyer.ci, 20),
+          dosisBold('Gestión Económica: ', o.buyer.economic, 18),
+          dosisBold('Ganacias por Comisión: \$', o.commission.toString(), 18),
+          dosisBold('Dirección Particular: \$', o.buyer.address, 18),
+          dosisBold('Número de Contacto: \$', o.buyer.phoneNumber, 18),
+          const Divider(
+            color: Colors.black,
+          ),
           dosisBold('Fecha: ', fecha, 18),
           dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
           dosisBold('Monto total: \$', o.totalAmount.toString(), 18)

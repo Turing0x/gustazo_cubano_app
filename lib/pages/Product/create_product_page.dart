@@ -15,6 +15,7 @@ class CreateProductPage extends StatefulWidget {
 class _CreateProductPageState extends State<CreateProductPage> {
 
   TextEditingController nameCtrl = TextEditingController();
+  TextEditingController providerCtrl = TextEditingController();
   TextEditingController descriptionCtrl = TextEditingController();
   TextEditingController priceCtrl = TextEditingController();
   TextEditingController commissionCtrl = TextEditingController();
@@ -44,6 +45,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
               if( nameCtrl.text.isEmpty || 
                   priceCtrl.text.isEmpty || 
                   priceCtrl.text == '0' || 
+                  providerCtrl.text.isEmpty || 
                   commissionCtrl.text.isEmpty || 
                   commissionCtrl.text == '0' || 
                   inStockCtrl.text.isEmpty || 
@@ -60,6 +62,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
       
               String name = nameCtrl.text;
               String description = descriptionCtrl.text;
+              String provider = providerCtrl.text;
               String photo = photoCtrl.text;
               double price = double.parse(priceCtrl.text);
               double inStock = double.parse(inStockCtrl.text);
@@ -70,6 +73,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
               Map<String, dynamic> product = {
                 'name': name,
                 'description': description,
+                'provider': provider,
                 'photo': photo,
                 'price': price,
                 'inStock': inStock,
@@ -82,6 +86,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
       
               nameCtrl.text = '';
               descriptionCtrl.text = '';
+              providerCtrl.text = '';
               priceCtrl.text = '';
               commissionCtrl.text = '';
               inStockCtrl.text = '';
@@ -110,6 +115,11 @@ class _CreateProductPageState extends State<CreateProductPage> {
                     suffixIcon: Icons.text_fields_outlined,
                     controller: nameCtrl, 
                     label: 'Nombre del producto'),
+
+                  FormTxt(
+                    suffixIcon: Icons.text_fields_outlined,
+                    controller: providerCtrl, 
+                    label: 'Proveedor del producto'),
                   
                   FormTxt(
                     suffixIcon: Icons.text_fields_outlined,
@@ -117,7 +127,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                     label: 'Breve descripción'),
                   
                   FormTxt(
-                    suffixIcon: Icons.numbers_outlined,
+                    suffixIcon: Icons.attach_money_outlined,
                     controller: priceCtrl, 
                     keyboardType: TextInputType.number,
                     label: 'Precio por unidad'),
@@ -129,7 +139,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                     label: 'Cantidad de unidades'),
       
                   FormTxt(
-                    suffixIcon: Icons.numbers_outlined,
+                    suffixIcon: Icons.attach_money_outlined,
                     controller: commissionCtrl,
                     keyboardType: TextInputType.number, 
                     label: 'Comisión de ganancia'),
@@ -142,7 +152,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                       label: 'Cantidad mayorista'),
                     
                     FormTxt(
-                      suffixIcon: Icons.numbers_outlined,
+                      suffixIcon: Icons.attach_money_outlined,
                       controller: discountCtrl,
                       keyboardType: TextInputType.number,
                       label: 'Precio de venta'),

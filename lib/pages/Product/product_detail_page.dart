@@ -41,6 +41,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               dosisText('\$${widget.product.price.toString()} CUP', fontWeight: FontWeight.bold,
                 size: 20),
 
+              dosisBold('Proveedor: ', widget.product.provider.toString(), 20),
+
               dosisBold('Stock: ', widget.product.inStock.toString(), 20),
 
               const SizedBox(height: 20),

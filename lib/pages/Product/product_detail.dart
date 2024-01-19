@@ -18,6 +18,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   TextEditingController nameCtrl = TextEditingController();
   TextEditingController descriptionCtrl = TextEditingController();
+  TextEditingController providerCtrl = TextEditingController();
   TextEditingController priceCtrl = TextEditingController();
   TextEditingController commissionCtrl = TextEditingController();
   TextEditingController inStockCtrl = TextEditingController();
@@ -32,6 +33,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
     nameCtrl.text = widget.product.name;
     descriptionCtrl.text = widget.product.description;
+    providerCtrl.text = widget.product.provider;
     priceCtrl.text = widget.product.price.toString();
     commissionCtrl.text = widget.product.commission.toString();
     inStockCtrl.text = widget.product.inStock.toString();
@@ -59,12 +61,13 @@ class _ProductDetailsState extends State<ProductDetails> {
         Visibility(
           visible: !allowEdit,
           child: IconButton(
-            onPressed: (){
+            onPressed: () async{
               final productCtrl = ProductControllers();
 
               if( nameCtrl.text.isEmpty || 
                   priceCtrl.text.isEmpty || 
                   priceCtrl.text == '0' || 
+                  providerCtrl.text.isEmpty || 
                   commissionCtrl.text.isEmpty || 
                   commissionCtrl.text == '0' || 
                   inStockCtrl.text.isEmpty || 
@@ -81,6 +84,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
               String name = nameCtrl.text;
               String description = descriptionCtrl.text;
+              String provider = providerCtrl.text;
               String photo = photoCtrl.text;
               double price = double.parse(priceCtrl.text);
               double inStock = double.parse(inStockCtrl.text);
@@ -91,6 +95,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               Map<String, dynamic> product = {
                 'name': name,
                 'description': description,
+                'provider': provider,
                 'photo': photo,
                 'price': price,
                 'inStock': inStock,
@@ -99,7 +104,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 'discount': discount,
               };
 
-              productCtrl.editProducts(product, widget.product.id);
+              await productCtrl.editProducts(product, widget.product.id);
               setState(() {
                 allowEdit = false;
               });
@@ -130,6 +135,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                   readOnly: allowEdit,
                   controller: nameCtrl, 
                   label: 'Nombre del producto'),
+
+                FormTxt(
+                  suffixIcon: Icons.text_fields_outlined,
+                  readOnly: allowEdit,
+                  controller: providerCtrl, 
+                  label: 'Proveedor del producto'),
                 
                 FormTxt(
                   suffixIcon: Icons.text_fields_outlined,
@@ -138,7 +149,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   label: 'Breve descripción'),
                 
                 FormTxt(
-                  suffixIcon: Icons.numbers_outlined,
+                  suffixIcon: Icons.attach_money_outlined,
                   readOnly: allowEdit,
                   controller: priceCtrl, 
                   keyboardType: TextInputType.number,
@@ -152,7 +163,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   label: 'Cantidad de unidades'),
 
                 FormTxt(
-                  suffixIcon: Icons.numbers_outlined,
+                  suffixIcon: Icons.attach_money_outlined,
                   readOnly: allowEdit,
                   controller: commissionCtrl,
                   keyboardType: TextInputType.number, 
@@ -167,7 +178,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     label: 'Cantidad mayorista'),
                   
                   FormTxt(
-                    suffixIcon: Icons.numbers_outlined,
+                    suffixIcon: Icons.attach_money_outlined,
                     readOnly: allowEdit,
                     controller: discountCtrl,
                     keyboardType: TextInputType.number,

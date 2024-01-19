@@ -30,7 +30,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   double get totalCommisionMoney {
     double commissionMoney = 0.0;
     _productList.forEach((key, value) => 
-      commissionMoney += (value.price * value.cantToBuy) * (value.commission / 100) );
+      commissionMoney += value.cantToBuy * value.commission );
     return commissionMoney;
   }
 
