@@ -24,6 +24,7 @@ bool excede100Minutos(DateTime fecha) {
 String _initialRouteByRole(String role) {
   Map<String, String> mainPages = {
     'admin': 'main_admin_page',
+    'storage': 'main_storage_page',
     'commercial': 'main_commercial_page',
   };
 

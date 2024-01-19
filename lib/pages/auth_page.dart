@@ -114,6 +114,8 @@ class _AuthFormState extends ConsumerState<AuthForm> {
     Map<String, void Function()> routesByRole = {
       'admin': () =>
           Navigator.pushReplacementNamed(context, 'main_admin_page'),
+      'storage': () =>
+          Navigator.pushReplacementNamed(context, 'main_storage_page'),
       'commercial': () =>
           Navigator.pushReplacementNamed(context, 'main_commercial_page'),
     };

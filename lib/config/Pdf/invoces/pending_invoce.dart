@@ -9,6 +9,7 @@ class PendingInvoce {
   final String buyerAddress;
   final String buyerCi;
   final String buyerPhone;
+  final String buyerEconomic;
   
   final String orderNumber;
   final String orderDate;
@@ -22,6 +23,7 @@ class PendingInvoce {
     required this.buyerAddress, 
     required this.buyerCi, 
     required this.buyerPhone, 
+    required this.buyerEconomic, 
     required this.orderNumber, 
     required this.orderDate, 
     required this.productList

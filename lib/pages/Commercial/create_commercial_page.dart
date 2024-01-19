@@ -22,6 +22,7 @@ class _CreateCommercialPageState extends State<CreateCommercialPage> {
   Widget build(BuildContext context) {
 
     Size size = MediaQuery.of(context).size;
+    final focus = FocusScope.of(context);
 
     return PopScope(
       canPop: true,
@@ -79,6 +80,7 @@ class _CreateCommercialPageState extends State<CreateCommercialPage> {
                   margin: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
                   child: FormTxt(
                     controller: address, 
+                    maxLength: 50,
                     keyboardType: TextInputType.name,
                     label: 'Dirección particular'),
                 ),
@@ -126,6 +128,7 @@ class _CreateCommercialPageState extends State<CreateCommercialPage> {
                       return;
                     }
       
+                    focus.unfocus();
                     await userControllers.saveUser(
                       fullname.text, 
                       ci.text, 
@@ -133,6 +136,11 @@ class _CreateCommercialPageState extends State<CreateCommercialPage> {
                       phoneNumber.text
                     );
                     
+                    fullname.text = '';
+                    ci.text = '';
+                    address.text = '';
+                    phoneNumber.text = '';
+
                   }, 
                   icon: const Icon(Icons.done_outline_rounded, color: Colors.green), 
                   label: dosisText('Confirmar', fontWeight: FontWeight.bold)

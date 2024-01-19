@@ -8,10 +8,11 @@ import 'package:gustazo_cubano_app/config/utils/initial_route.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting();
   await dotenv.load(fileName: '.env');
 
   final rutIni = await initialRoute();
-  initializeDateFormatting();
 
   runApp(ProviderScope(
     child: MyApp(

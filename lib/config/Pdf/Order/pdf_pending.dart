@@ -102,6 +102,7 @@ class GeneratePdfPending {
             pwboldLabel('Carnet de Identidad: ', invoice.buyerCi, 23),
             pwboldLabel('Dirección: ', invoice.buyerAddress, 23),
             pwboldLabel('Teléfono de Contacto: ', invoice.buyerPhone, 23),
+            pwboldLabel('Forma de Gestión Económica: ', invoice.buyerEconomic, 23),
           ]
         ),
         Column(
@@ -130,7 +131,7 @@ class GeneratePdfPending {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             pwtextoDosis(item.name, 23),
-            pwboldLabel('Vendido por: ', "E' Gustazo Cubano S.U.R.L", 20)
+            pwboldLabel('Vendido por: ', item.provider, 20)
           ]
         )),
         Container(child: pwtextoDosis(item.cantToBuy.toString(), 23)),

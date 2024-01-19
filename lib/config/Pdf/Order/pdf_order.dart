@@ -111,6 +111,7 @@ class GeneratePdfOrder {
             pwboldLabel('Carnet de Identidad: ', invoice.buyerCi, 23),
             pwboldLabel('Dirección: ', invoice.buyerAddress, 23),
             pwboldLabel('Teléfono de Contacto: ', invoice.buyerPhone, 23),
+            pwboldLabel('Forma de Gestión Económica: ', invoice.buyerEconomic, 23),
           ]
         ),
         Column(

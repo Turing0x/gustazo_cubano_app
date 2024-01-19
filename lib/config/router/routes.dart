@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/internal_storage_admin.dart';
+import 'package:gustazo_cubano_app/pages/Admin/main_storage_page.dart';
 import 'package:gustazo_cubano_app/pages/Admin/orders_history_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/create_commercial_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/forget_password_page.dart';
@@ -24,6 +25,7 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'auth_page': (_) => const AuthPage(),
 
   'main_admin_page': (_) => const MainAdminPage(),
+  'main_storage_page': (_) => const MainStoragePage(),
   'main_commercial_page': (_) => const MainCommercialPage(),
   'pendings_control_page': (_) => const PendignsControlPage(),
   'internal_storage_page': (_) => const InternalStoragePage(),
