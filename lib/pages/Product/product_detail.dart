@@ -76,8 +76,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                   priceCtrl.text.isEmpty || 
                   priceCtrl.text == '0' || 
                   providerCtrl.text.isEmpty || 
-                  commissionCtrl.text.isEmpty || 
-                  commissionCtrl.text == '0' || 
                   inStockCtrl.text.isEmpty || 
                   inStockCtrl.text == '0' || 
                   discountCtrl.text.isEmpty || 
@@ -88,6 +86,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                   texto: 'Parte de la información es incorrecta, por favor revise los campos',
                   typeMessage: false);
                 return;
+              }
+
+              if(show){
+                if( commissionCtrl.text.isEmpty ||
+                  commissionCtrl.text == '0' ){
+                    simpleMessageSnackBar(context, 
+                      texto: 'Rellene todos los campos por favor',
+                      typeMessage: false);
+                    return;
+                  }
               }
 
               String name = nameCtrl.text;
