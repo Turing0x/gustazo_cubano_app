@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_order.dart';
 import 'package:gustazo_cubano_app/config/Pdf/invoces/order_invoce.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -18,6 +19,18 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
+
+  bool show = false;
+
+  @override
+  void initState() {
+    LoginDataService().getRole().then((value) {
+      if(value == 'commercial'){
+        setState(() {show = true;});
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +55,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               customGroupBox('Comercial, cliente y montos de la compra', [
                 dosisBold('Comercial: ', o.seller.fullName, 20),
                 dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
+                Visibility(
+                  visible: show,
+                  child: dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18)),
                 const Divider(
                   color: Colors.black,
                 ),

@@ -13,7 +13,7 @@ class Order {
   final String pendingNumber;
   final DateTime date;
   final List<Product> productList;
-  final int totalAmount;
+  final double totalAmount;
   final double commission;
   final Seller seller;
   final Buyer buyer;

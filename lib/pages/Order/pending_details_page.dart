@@ -23,8 +23,16 @@ class PendingDetailsPage extends StatefulWidget {
 class _PendingDetailsPageState extends State<PendingDetailsPage> {
 
   bool visible = false;
+  bool show = false;
+
   @override
   void initState() {
+    LoginDataService().getRole().then((value) {
+      if(value == 'commercial'){
+        setState(() {show = true;});
+      }
+    });
+    
     LoginDataService().getRole().then((value) {
       if(value == 'admin'){
         setState(() {
@@ -146,6 +154,9 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
         customGroupBox('Comercial, cliente y montos de la compra', [
           dosisBold('Comercial: ', o.seller.fullName, 20),
           dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
+          Visibility(
+            visible: show,
+            child: dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18)),
           const Divider(
             color: Colors.black,
           ),

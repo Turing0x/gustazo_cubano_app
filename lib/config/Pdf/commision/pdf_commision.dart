@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gustazo_cubano_app/config/Pdf/invoces/commision_invoce.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -22,7 +23,9 @@ class GeneratePdfCommision {
 
       pdf.addPage(multiPage(invoice, image));
 
-      final fileName = 'COMISION-${invoice.title.split(' ')[1]}';
+      String formatedDate = DateFormat.MMMd('en').format(invoice.orderList[0].date);
+
+      final fileName = 'COMISION-$formatedDate';
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
       Directory directory =
@@ -108,7 +111,8 @@ class GeneratePdfCommision {
           children: [
             pwtextoDosis('Información de venta', 25, fontWeight: pw.FontWeight.bold),
             pwboldLabel( 'Ventas logradas: ', '${invoice.orderList.length}', 23),
-            pwboldLabel( 'Ganancia Total: ', 'CUP ${foldedCommision.toStringAsFixed(2)}', 23)
+            pwboldLabel( 'Ganancia Total: ', 'CUP ${foldedCommision.toStringAsFixed(2)}', 23),
+            pwboldLabel( 'Rebaja del 5%: ', 'CUP ${(foldedCommision - foldedCommision * 0.05).toStringAsFixed(2)}', 23)
           ]
         )
       ]

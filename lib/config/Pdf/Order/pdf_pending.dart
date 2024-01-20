@@ -22,7 +22,7 @@ class GeneratePdfPending {
 
       pdf.addPage(multiPage(invoice, image));
 
-      final fileName = 'PEDIDO-${invoice.pendingNumber}';
+      final fileName = 'PEDIDO-${invoice.orderNumber}-${invoice.orderDate}';
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
       Directory directory =

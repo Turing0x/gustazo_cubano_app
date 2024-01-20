@@ -22,7 +22,7 @@ class GeneratePdfOrder {
 
       pdf.addPage(multiPage(invoice, image));
 
-      final fileName = 'ORDEN-${invoice.orderNumber}';
+      final fileName = 'ORDEN-${invoice.orderNumber}-${invoice.orderDate}';
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
       Directory directory =

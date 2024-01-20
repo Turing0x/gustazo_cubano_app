@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -22,7 +23,9 @@ class GenerateAdminPdfCommision {
 
       pdf.addPage(multiPage(invoice, image, date));
 
-      const fileName = 'COMISION';
+      String formatedDate = DateFormat.MMMd('en').format(invoice[0].date);
+
+      final fileName = 'COMISION-$formatedDate';
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
       Directory directory =
@@ -93,11 +96,12 @@ class GenerateAdminPdfCommision {
 
   static Widget buildInvoice(List<Order> invoice) {
     final headers = [
-      'Código de Comercial',
-      'Nombre Completo',
-      'Cantidad de Productos',
-      'Monto de la Venta',
-      'Comisión de Ganancia',
+      'Código',
+      'Nombre',
+      'Total de Productos',
+      'Monto Total',
+      'Ganancia',
+      'Rebaja del 5%',
     ];
 
     final data = invoice.map((item) {
@@ -108,12 +112,13 @@ class GenerateAdminPdfCommision {
         Container(child: pwtextoDosis(item.getCantOfProducts.toString(), 23)),
         Container(child: pwtextoDosis('CUP ${item.totalAmount.toStringAsFixed(2)}', 23)),
         Container(child: pwtextoDosis('CUP ${item.commission.toStringAsFixed(2)}', 23)),
+        Container(child: pwtextoDosis('CUP ${(item.commission - item.commission * 0.05).toStringAsFixed(2)}', 23)),
       ];
     }).toList();
 
     String foldedProducts = invoice.fold(0, (previousValue, element) => 
           previousValue + element.getCantOfProducts).toString();
-    String foldedAmount = invoice.fold(0, (previousValue, element) => 
+    String foldedAmount = invoice.fold(0.0, (previousValue, element) => 
           previousValue + element.totalAmount).toString();
     String foldedCommission = invoice.fold(0.0, (previousValue, element) => 
           previousValue + element.commission).toStringAsFixed(2);
@@ -133,6 +138,9 @@ class GenerateAdminPdfCommision {
           fontWeight: FontWeight.bold)),
       Container(
         child: pwtextoDosis('CUP $foldedCommission', 23,
+          fontWeight: FontWeight.bold)),
+      Container(
+        child: pwtextoDosis('CUP ${(double.parse(foldedCommission) - (double.parse(foldedCommission) * 0.05)).toStringAsFixed(2)}', 23,
           fontWeight: FontWeight.bold)),
       ]);
 
