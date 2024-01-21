@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gustazo_cubano_app/config/Pdf/invoces/order_invoce.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -22,7 +23,7 @@ class GeneratePdfOrder {
 
       pdf.addPage(multiPage(invoice, image));
 
-      final fileName = 'ORDEN-${invoice.orderNumber}-${invoice.orderDate}';
+      final fileName = 'ORDEN-${invoice.orderNumber.replaceAll(' ', '')}-${invoice.orderDate.split(' - ')[0].replaceAll('/', '-')}';
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
       Directory directory =
@@ -31,7 +32,6 @@ class GeneratePdfOrder {
 
       final file = File('${directory.path}/$fileName.pdf');
       await file.writeAsBytes(await pdf.save());
-
       return {'done': true, 'path': file.path};
 
     } catch (onError) {
@@ -131,6 +131,7 @@ class GeneratePdfOrder {
       'Producto',
       'Cantidad',
       'Precio',
+      'Importe',
     ];
 
     final data = invoice.productList.map((item) {
@@ -144,7 +145,8 @@ class GeneratePdfOrder {
           ]
         )),
         Container(child: pwtextoDosis(item.cantToBuy.toString(), 23)),
-        Container(child: pwtextoDosis('CUP ${item.price.toString()}', 23)),
+        Container(child: pwtextoDosis('${item.price.numFormat} CUP', 23)),
+        Container(child: pwtextoDosis('${(item.cantToBuy * item.price).numFormat} CUP', 23)),
       ];
     }).toList();
 
@@ -157,8 +159,12 @@ class GeneratePdfOrder {
           previousValue + element.cantToBuy).toString(), 23, 
           fontWeight: FontWeight.bold)),
       Container(
-        child: pwtextoDosis(invoice.productList.fold(0.0, (previousValue, element) => 
-          previousValue + element.price).toStringAsFixed(2), 23,
+        child: pwtextoDosis('${invoice.productList.fold(0.0, (previousValue, element) => 
+          previousValue + element.price).numFormat} CUP', 23,
+          fontWeight: FontWeight.bold)),
+      Container(
+        child: pwtextoDosis('${invoice.productList.fold(0.0, (previousValue, element) => 
+          previousValue + element.cantToBuy * element.price).numFormat} CUP', 23,
           fontWeight: FontWeight.bold)),
       ]);
 

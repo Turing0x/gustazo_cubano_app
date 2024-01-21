@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:gustazo_cubano_app/pages/change_pass.dart';
 import 'package:gustazo_cubano_app/pages/Admin/internal_storage_admin.dart';
 import 'package:gustazo_cubano_app/pages/Admin/main_storage_page.dart';
 import 'package:gustazo_cubano_app/pages/Admin/orders_history_page.dart';
@@ -23,6 +24,7 @@ import 'package:gustazo_cubano_app/pages/Product/create_product_page.dart';
 
 final Map<String, Widget Function(BuildContext)> appRoutes = {
   'auth_page': (_) => const AuthPage(),
+  'change_password': (_) => const ChangeAccessPass(),
 
   'main_admin_page': (_) => const MainAdminPage(),
   'main_storage_page': (_) => const MainStoragePage(),

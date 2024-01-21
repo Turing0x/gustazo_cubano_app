@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -63,8 +64,8 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
             customGroupBox('Información del carrito', [
               dosisBold('Cantidad de productos: ', rProdList.productsCant.toString(), 20),
-              dosisBold('Monto de la compra: ', rProdList.totalAmount.toStringAsFixed(2), 20),
-              dosisBold('Comisión por la compra: ', rProdList.totalCommisionMoney.toStringAsFixed(2), 20)
+              dosisBold('Monto de la compra: ', rProdList.totalAmount.numFormat, 20),
+              dosisBold('Comisión por la compra: ', rProdList.totalCommisionMoney.numFormat, 20)
             ]),
 
             ( rProdList.products.isEmpty )
@@ -240,35 +241,10 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('Precio: \$$price', color: Colors.blue),
+          dosisText('Precio: \$${price.intPart}', color: Colors.blue),
           dosisText('Stock: $stock', color: Colors.green)
         ],
       )
-    );
-  }
-
-  ClipRRect productPhoto(String photo) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox.fromSize(
-        size: const Size.fromRadius(48),
-        child: Image.network(photo, fit: BoxFit.cover,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },errorBuilder: (context, error, stackTrace) {
-            return Image.asset('lib/assets/images/6720387.jpg');
-          },
-        ),
-      ),
     );
   }
 

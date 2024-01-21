@@ -12,6 +12,7 @@ class Product {
   final String photo;
   final double price;
   final double commission;
+  final double commissionDiscount;
   final double discount;
   final int inStock;
   final int cantToBuy;
@@ -26,6 +27,7 @@ class Product {
     this.price = 0,
     this.inStock = 0,
     this.commission = 0,
+    this.commissionDiscount = 0,
     this.moreThan = 0,
     this.discount = 0,
     this.cantToBuy = 1,
@@ -39,6 +41,7 @@ class Product {
     photo: json["photo"] ?? '',
     price: json["price"]?.toDouble() ?? 0,
     commission: json["commission"]?.toDouble() ?? 0,
+    commissionDiscount: json["commissionDiscount"]?.toDouble() ?? 0,
     discount: json["discount"]?.toDouble() ?? 0,
     moreThan: json["more_than"]?.toInt() ?? 0,
     inStock: json["in_stock"]?.toInt() ?? 0,
@@ -54,6 +57,7 @@ class Product {
     "price": price,
     "in_stock": inStock,
     "commission": commission,
+    "commissionDiscount": commissionDiscount,
     "more_than": moreThan,
     "discount": discount,
     "cantToBuy": cantToBuy,

@@ -29,8 +29,9 @@ class ShoppingCartProvider extends StateNotifier<Product> {
 
   double get totalCommisionMoney {
     double commissionMoney = 0.0;
-    _productList.forEach((key, value) => 
-      commissionMoney += value.cantToBuy * value.commission );
+    _productList.forEach((key, value) {
+      double commission = value.cantToBuy >= value.moreThan ? value.commissionDiscount : value.commission;
+      commissionMoney += value.cantToBuy * commission; });
     return commissionMoney;
   }
 
@@ -48,6 +49,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         price: value.price, 
         inStock: value.inStock, 
         commission: value.commission, 
+        commissionDiscount: value.commissionDiscount, 
         discount: value.discount,
         cantToBuy: value.cantToBuy + 1
       ));
@@ -79,6 +81,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         photo: value.photo, 
         price: value.price, 
         inStock: value.inStock, 
+        commissionDiscount: value.commissionDiscount, 
         commission: value.commission, 
         discount: value.discount,
         cantToBuy: value.cantToBuy - 1
@@ -99,6 +102,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         photo: value.photo, 
         price: value.price, 
         inStock: value.inStock, 
+        commissionDiscount: value.commissionDiscount, 
         commission: value.commission, 
         discount: value.discount,
         cantToBuy: value.cantToBuy - 10
@@ -118,6 +122,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
       photo: value.photo, 
       price: value.price, 
       inStock: value.inStock, 
+      commissionDiscount: value.commissionDiscount, 
       commission: value.commission, 
       discount: value.discount,
       cantToBuy: value.cantToBuy + 10

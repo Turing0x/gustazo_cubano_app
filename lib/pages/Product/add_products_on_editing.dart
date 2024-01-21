@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
+import 'package:gustazo_cubano_app/helpers/check_url.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
+import 'package:gustazo_cubano_app/shared/product_photo.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class AddProductsOnEditing extends StatefulWidget {
@@ -99,7 +101,12 @@ class _ShowListState extends ConsumerState<ShowList> {
             child: Row(
               children: [
 
-                Image.asset('lib/assets/images/6720387.jpg'),
+                SizedBox(
+                  height: 70,
+                  child: (widget.products[index].photo.isNotEmpty && 
+                    checkUrl(widget.products[index].photo)) 
+                    ? productPhoto(widget.products[index].photo)
+                    : Image.asset('lib/assets/images/6720387.jpg')),
 
                 productInfo(widget.products[index].name, widget.products[index].price.toString()),
 
@@ -132,31 +139,6 @@ class _ShowListState extends ConsumerState<ShowList> {
           dosisText('\$$price', color: Colors.blue)
         ],
       )
-    );
-  }
-
-  ClipRRect productPhoto(String photo) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox.fromSize(
-        size: const Size.fromRadius(48),
-        child: Image.network(photo, fit: BoxFit.cover,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },errorBuilder: (context, error, stackTrace) {
-            return Image.asset('lib/assets/images/6720387.jpg');
-          },
-        ),
-      ),
     );
   }
 

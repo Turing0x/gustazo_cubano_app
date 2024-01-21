@@ -3,21 +3,37 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class OrderControllers {
 
-  final _dio = Dio(
-    BaseOptions(
-      baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
-      headers: { 'Content-Type': 'application/json' },
-      validateStatus: (status) => true
-    )
-  );
+  late Dio _dio;
+
+  OrderControllers() {
+    _initializeDio();
+  }
+
+  Future<void> _initializeDio() async {
+    final token = await LoginDataService().getToken();
+
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'access-token': token,
+        },
+        validateStatus: (status) => true,
+      ),
+    );
+  }
 
   Future<List<Order>> getAllOrders(bool change, {String date = ''}) async{
     try {
+
+      await _initializeDio();
       EasyLoading.show(status: 'Obteniendo todos los pedidos...');
       Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending/:$date'}');
 
@@ -47,6 +63,8 @@ class OrderControllers {
   
   Future<List<Order>> getOrderById(String orderId) async{
     try {
+
+      await _initializeDio();
       EasyLoading.show(status: 'Obteniendo órden por ID...');
       Response response = await _dio.get('/api/orders/getById/$orderId');
 
@@ -68,6 +86,7 @@ class OrderControllers {
   Future<List<Order>> getMyPendingsToday(String commercialCode, String date) async{
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Obteniendo mis pedidos pendientes de hoy...');
       Response response = await _dio.get('/api/orders/getByComm/$commercialCode/$date');
 
@@ -98,6 +117,8 @@ class OrderControllers {
   
   Future<List<Order>> getMyOrders(String commercialCode, String date) async{
     try {
+
+      await _initializeDio();
       EasyLoading.show(status: 'Obteniendo mis órdenes...');
       Response response = await _dio.get('/api/orders/getByCommOrder/$commercialCode/$date');
 
@@ -127,6 +148,8 @@ class OrderControllers {
 
   Future<void> saveOrder(Map<String, dynamic> order) async {
     try {
+
+      await _initializeDio();
       EasyLoading.show(status: 'Guardando pedido...');
       Response response = await _dio.post('/api/orders', 
         data: jsonEncode(order) );
@@ -145,6 +168,8 @@ class OrderControllers {
   
   Future<void> editOrder(String orderId, Map<String, dynamic> order) async {
     try {
+
+      await _initializeDio();
       EasyLoading.show(status: 'Editando pedido...');
       Response response = await _dio.put('/api/orders/$orderId', 
         data: jsonEncode(order) );
@@ -163,6 +188,8 @@ class OrderControllers {
   
   Future<bool> marckAsDoneOrder(String orderId, String invoiceNumber) async {
     try {
+
+      await _initializeDio();
       EasyLoading.show(status: 'Marcando pedido como hecho...');
       Response response = await _dio.put('/api/orders/$orderId/$invoiceNumber');
 
@@ -183,6 +210,7 @@ class OrderControllers {
   Future<void> deleteOne(String orderId) async {
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Eliminando el pedido...');
       Response response = await _dio.delete('/api/orders/$orderId');
         

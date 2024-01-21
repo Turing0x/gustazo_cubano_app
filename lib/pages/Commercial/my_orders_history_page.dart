@@ -100,6 +100,9 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
 
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);
+    } else{
+      showToast(itsDone['path'], type: true);
+      return;
     }
 
     showToast('Factura exportada exitosamente', type: true);
@@ -158,7 +161,13 @@ class _ShowListState extends ConsumerState<ShowList> {
                   )]
                 ),
                 child: ListTile(
-                  title: dosisText(order.seller.fullName, fontWeight: FontWeight.bold),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      dosisText('Comprador: ${order.buyer.fullName.split(' ')}', fontWeight: FontWeight.bold),
+                      dosisText('Comercial: ${order.seller.fullName.split(' ')[0]}'),
+                    ],
+                  ),
                   subtitle: dosisBold('Factura: ', 
                     order.invoiceNumber, 18),
                   trailing: const Icon(Icons.arrow_right_rounded),

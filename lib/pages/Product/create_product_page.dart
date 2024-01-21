@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
+import 'package:gustazo_cubano_app/helpers/check_url.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
@@ -22,6 +24,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
   TextEditingController commissionCtrl = TextEditingController();
   TextEditingController inStockCtrl = TextEditingController();
   TextEditingController discountCtrl = TextEditingController();
+  TextEditingController commissionDiscountCtrl = TextEditingController();
   TextEditingController moreThanCtrl = TextEditingController();
   TextEditingController photoCtrl = TextEditingController();
 
@@ -80,16 +83,24 @@ class _CreateProductPageState extends State<CreateProductPage> {
                     return;
                   }
               }
+
+              if(!checkUrl(photoCtrl.text)){
+                simpleMessageSnackBar(context, 
+                  texto: 'La URL de la foto no es válida',
+                  typeMessage: false);
+                return;
+              }
       
               String name = nameCtrl.text;
               String description = descriptionCtrl.text;
               String provider = providerCtrl.text;
               String photo = photoCtrl.text;
-              double price = double.parse(priceCtrl.text);
-              double inStock = double.parse(inStockCtrl.text);
-              double commission = double.parse(commissionCtrl.text);
-              int moreThan = int.parse(moreThanCtrl.text);
-              double discount = double.parse(discountCtrl.text);
+              double price = priceCtrl.text.doubleParsed;
+              double inStock = inStockCtrl.text.doubleParsed;
+              double commission = commissionCtrl.text.doubleParsed;
+              double commissionDiscount = commissionCtrl.text.doubleParsed;
+              int moreThan = moreThanCtrl.text.intParsed;
+              double discount = discountCtrl.text.doubleParsed;
       
               Map<String, dynamic> product = {
                 'name': name,
@@ -101,6 +112,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                 'commission': commission,
                 'more_than': moreThan,
                 'discount': discount,
+                'commissionDiscount': commissionDiscount,
               };
       
               productCtrl.saveProducts(product);
@@ -112,6 +124,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
               commissionCtrl.text = '';
               inStockCtrl.text = '';
               discountCtrl.text = '';
+              commissionDiscountCtrl.text = '';
               moreThanCtrl.text = '';
               photoCtrl.text = '';
       
@@ -180,6 +193,12 @@ class _CreateProductPageState extends State<CreateProductPage> {
                       controller: discountCtrl,
                       keyboardType: TextInputType.number,
                       label: 'Precio de venta'),
+
+                    FormTxt(
+                      suffixIcon: Icons.attach_money_outlined,
+                      controller: commissionDiscountCtrl,
+                      keyboardType: TextInputType.number,
+                      label: 'Comisión de ganancia'),
                   ])
               
                 ],

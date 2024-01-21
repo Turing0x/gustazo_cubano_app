@@ -3,22 +3,37 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 
 class ProductControllers {
 
-  final _dio = Dio(
-    BaseOptions(
-      baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
-      headers: { 'Content-Type': 'application/json' },
-      validateStatus: (status) => true
-    )
-  );
+  late Dio _dio;
+
+  ProductControllers() {
+    _initializeDio();
+  }
+
+  Future<void> _initializeDio() async {
+    final token = await LoginDataService().getToken();
+
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'access-token': token,
+        },
+        validateStatus: (status) => true,
+      ),
+    );
+  }
 
   Future<List<Product>> getAllProducts() async{
 
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Buscando información de los productos...');
       Response response = await _dio.get('/api/products',
         options: Options(validateStatus: (status) => true));
@@ -53,6 +68,7 @@ class ProductControllers {
   Future<void> saveProducts(Map<String, dynamic> product) async {
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Añadiendo producto al stock...');
       Response response = await _dio.post('/api/products', 
         data: jsonEncode(product), 
@@ -73,6 +89,7 @@ class ProductControllers {
   Future<void> editProducts(Map<String, dynamic> product, String id) async {
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Editando información del producto...');
       Response response = await _dio.put('/api/products/$id', 
         data: jsonEncode(product), 
@@ -93,6 +110,7 @@ class ProductControllers {
   Future<void> deleteOne(String id) async {
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Eliminando producto del stock...');
       Response response = await _dio.delete('/api/products/$id', 
         options: Options(validateStatus: (status) => true));

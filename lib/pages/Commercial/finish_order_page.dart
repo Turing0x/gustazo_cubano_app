@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
@@ -125,7 +126,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               dosisBold('Total de productos: ', rProdList.productsCant.toString(), 20),
-              dosisBold('Monto: \$', rProdList.totalAmount.toStringAsFixed(2), 20)
+              dosisBold('Monto: \$', rProdList.totalAmount.numFormat, 20)
             ],
           )
         ],
@@ -154,7 +155,7 @@ class ListCartView extends StatelessWidget {
 
           return ListTile(
             title: dosisText(product.name, fontWeight: FontWeight.bold),
-            subtitle: dosisBold('Precio: \$', product.price.toString(), 18),
+            subtitle: dosisBold('Precio: \$', product.price.numFormat, 18),
             trailing: dosisText(product.cantToBuy.toString(), fontWeight: FontWeight.bold),
           );
       

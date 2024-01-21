@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -110,18 +111,18 @@ class GenerateAdminPdfCommision {
         Container(child: pwtextoDosis(item.seller.commercialCode, 23)),
         Container(child: pwtextoDosis(item.seller.fullName, 23)),
         Container(child: pwtextoDosis(item.getCantOfProducts.toString(), 23)),
-        Container(child: pwtextoDosis('CUP ${item.totalAmount.toStringAsFixed(2)}', 23)),
-        Container(child: pwtextoDosis('CUP ${item.commission.toStringAsFixed(2)}', 23)),
-        Container(child: pwtextoDosis('CUP ${(item.commission - item.commission * 0.05).toStringAsFixed(2)}', 23)),
+        Container(child: pwtextoDosis('${item.totalAmount.numFormat} CUP', 23)),
+        Container(child: pwtextoDosis('${item.commission.numFormat} CUP', 23)),
+        Container(child: pwtextoDosis('${(item.commission - item.commission * 0.05).numFormat} CUP', 23)),
       ];
     }).toList();
 
     String foldedProducts = invoice.fold(0, (previousValue, element) => 
           previousValue + element.getCantOfProducts).toString();
     String foldedAmount = invoice.fold(0.0, (previousValue, element) => 
-          previousValue + element.totalAmount).toString();
+          previousValue + element.totalAmount).numFormat;
     String foldedCommission = invoice.fold(0.0, (previousValue, element) => 
-          previousValue + element.commission).toStringAsFixed(2);
+          previousValue + element.commission).numFormat;
 
     data.add([
       Container(
@@ -134,13 +135,13 @@ class GenerateAdminPdfCommision {
         child: pwtextoDosis(foldedProducts, 23, 
           fontWeight: FontWeight.bold)),
       Container(
-        child: pwtextoDosis('CUP $foldedAmount', 23, 
+        child: pwtextoDosis('$foldedAmount CUP', 23, 
           fontWeight: FontWeight.bold)),
       Container(
-        child: pwtextoDosis('CUP $foldedCommission', 23,
+        child: pwtextoDosis('$foldedCommission CUP', 23,
           fontWeight: FontWeight.bold)),
       Container(
-        child: pwtextoDosis('CUP ${(double.parse(foldedCommission) - (double.parse(foldedCommission) * 0.05)).toStringAsFixed(2)}', 23,
+        child: pwtextoDosis('${(double.parse(foldedCommission) - (double.parse(foldedCommission) * 0.05)).numFormat} CUP', 23,
           fontWeight: FontWeight.bold)),
       ]);
 
