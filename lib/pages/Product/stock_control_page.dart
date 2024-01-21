@@ -103,20 +103,4 @@ class _ShowListState extends ConsumerState<ShowList> {
     );
   }
 
-  Container photoProduct(String urlImage) {
-    return Container(
-      margin: const EdgeInsets.only(right: 15),
-      width: 130,
-      height: 140,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.white,
-          width: 3
-        ),
-        borderRadius: BorderRadius.circular(10)
-      ),
-      child: Image.network(urlImage, fit: BoxFit.fill),
-    );
-  }
-
 }

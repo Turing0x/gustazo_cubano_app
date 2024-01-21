@@ -38,7 +38,7 @@ class Order {
       pendingNumber: json["pending_number"],
       date: DateTime.parse(json["date"]),
       productList: List<Product>.from(json["product_list"].map((x) => Product.fromJson(x))),
-      totalAmount: json["total_amount"],
+      totalAmount: json["total_amount"]?.toDouble(),
       commission: json["commission"]?.toDouble(),
       seller: Seller.fromJson(json["seller"]),
       buyer: Buyer.fromJson(json["buyer"]),

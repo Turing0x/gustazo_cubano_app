@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_order.dart';
 import 'package:gustazo_cubano_app/config/Pdf/invoces/order_invoce.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -57,7 +58,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
                 Visibility(
                   visible: show,
-                  child: dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18)),
+                  child: dosisBold('Ganacias por comisión: \$', o.commission.numFormat, 18)),
                 const Divider(
                   color: Colors.black,
                 ),
@@ -72,7 +73,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 dosisBold('Fecha: ', fecha, 18),
                 dosisBold('Número de factura: ', '${o.pendingNumber} - ${o.invoiceNumber}', 18),
                 dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
-                dosisBold('Monto total: \$', o.totalAmount.toString(), 18)
+                dosisBold('Monto total: \$', o.totalAmount.numFormat, 18)
               ]),
 
               SizedBox(
@@ -91,16 +92,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     return ListView.builder(
       itemCount: rProdList.length,
       itemBuilder: (context, index) {
-
         Product product = rProdList[index];
         return ListTile(
-            title: dosisText(product.name, fontWeight: FontWeight.bold),
-            subtitle: dosisBold('Precio: \$', product.price.toString(), 18),
-            trailing: dosisText(product.cantToBuy.toString(), fontWeight: FontWeight.bold),
-          );
-
+          title: dosisText(product.name, fontWeight: FontWeight.bold),
+          subtitle: dosisBold('Precio: \$', product.price.numFormat, 18),
+          trailing: dosisText('x 1 = ${(product.cantToBuy * product.price).numFormat}', fontWeight: FontWeight.bold),
+        );
       }
-    
     );
   }
 
@@ -188,6 +186,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);
+    } else{
+      showToast(itsDone['path'], type: true);
+      return;
     }
 
     showToast('Factura exportada exitosamente', type: true);

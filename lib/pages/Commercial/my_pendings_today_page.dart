@@ -57,9 +57,15 @@ class _MyPendignsTodayPageState extends ConsumerState<MyPendignsTodayPage> {
                   )]
                 ),
                 child: ListTile(
-                  title: dosisText(order.seller.fullName, fontWeight: FontWeight.bold),
-                  subtitle: dosisBold('Monto: \$', 
-                    order.totalAmount.toStringAsFixed(2), 18),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      dosisText('Comprador: ${order.buyer.fullName}', fontWeight: FontWeight.bold),
+                      dosisText('Comercial: ${order.seller.fullName.split(' ')[0]}'),
+                    ],
+                  ),
+                  subtitle: dosisBold('Pedido: ', 
+                    order.pendingNumber, 18),
                   trailing: CircleAvatar(
                     child: dosisText(order.productList.length.toString(),
                     fontWeight: FontWeight.bold)),

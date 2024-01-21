@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
+import 'package:gustazo_cubano_app/helpers/check_url.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
@@ -115,8 +117,11 @@ class _ShowListState extends ConsumerState<ShowList> {
                             
                     SizedBox(
                       height: 70,
-                      child: productPhoto(widget.products[index].photo),),
-                            
+                      child: (widget.products[index].photo.isNotEmpty && 
+                        checkUrl(widget.products[index].photo)) 
+                        ? productPhoto(widget.products[index].photo)
+                        : Image.asset('lib/assets/images/6720387.jpg')),
+
                     productInfo(
                       widget.products[index].name, 
                       widget.products[index].price.toString(),
@@ -150,7 +155,7 @@ class _ShowListState extends ConsumerState<ShowList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('\$$price', color: Colors.blue),
+          dosisText('\$${price.intPart} CUP', color: Colors.blue),
           dosisText('Stock: $stock', color: Colors.green),
         ],
       )

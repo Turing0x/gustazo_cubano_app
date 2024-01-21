@@ -11,18 +11,32 @@ import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class UserControllers {
 
-  final _dio = Dio(
-    BaseOptions(
-      baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
-      headers: { 'Content-Type': 'application/json' },
-      validateStatus: (status) => true
-    )
-  );
+  late Dio _dio;
+
+  UserControllers() {
+    _initializeDio();
+  }
+
+  Future<void> _initializeDio() async {
+    final token = await LoginDataService().getToken();
+
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'access-token': token,
+        },
+        validateStatus: (status) => true,
+      ),
+    );
+  }
 
   Future<List<User>> getAllCommercials() async{
 
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Procesando información...');
 
       Response response = await _dio.get('/api/users',
@@ -59,10 +73,9 @@ class UserControllers {
     authStatus.value = true;
     try {
 
+      await _initializeDio();
       Response response = await _dio.post('/api/users/signin',
-        data: jsonEncode({'username': username, 'password': pass}),
-        options: Options(validateStatus: (status) => true));
-
+        data: jsonEncode({'username': username, 'password': pass}));
       authStatus.value = false;
 
       if (response.statusCode == 200) {
@@ -93,15 +106,21 @@ class UserControllers {
       showToast(response.data['api_message']);
 
       return '';
-    } on Exception catch (_) {
-      authStatus.value = false;
-      return '';
+    } on DioException catch (e) {
+      if (e.response != null) {
+        print(e.response!.data);
+        print(e.response!.headers);
+      } else {
+        print(e.message);
+      }
+      return 'false';
     }
   }
 
   Future<bool> changeEnable(String id, bool enable) async {
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Cambiando el acceso...');
       Response response = await _dio.put('/api/users/changeEnable/$id',
         data: jsonEncode({ 'enable': enable }),
@@ -123,6 +142,7 @@ class UserControllers {
   Future<void> saveUser(String fullname, String ci, String address, String phoneNumber) async {
     try {
 
+      await _initializeDio();
       EasyLoading.show(status: 'Creando usuario...');
       Response response = await _dio.post('/api/users', 
         data: jsonEncode({
@@ -146,6 +166,8 @@ class UserControllers {
   
   Future<void> resetPass(String userId) async {
     try {
+
+      await _initializeDio();
       final queryData = { 'userId': userId };
 
       Response response = await _dio.post('/api/users/resetpass', 
@@ -164,9 +186,32 @@ class UserControllers {
     }
   }
  
+  Future<bool> changePass(String actualPass, String newPass) async {
+    try {
+
+      await _initializeDio();
+      EasyLoading.show(status: 'Cambiando contraseña...');
+
+      Response response = await _dio.post('/api/users/changePassword', 
+        data: jsonEncode({'actualPass': actualPass, 'newPass': newPass}));
+
+      if (response.statusCode == 200) {
+        EasyLoading.showSuccess(response.data['api_message']);
+        return true;
+      }
+
+      EasyLoading.showError(response.data['api_message']);
+      return false;
+    } on Exception catch (e) {
+      showToast(e.toString());
+      return false;
+    }
+  }
+
   Future<void> deleteOne(String id) async {
     try {
       
+      await _initializeDio();
       EasyLoading.show(status: 'Eliminando usuario...');
       Response response = await _dio.delete('/api/users/$id', 
         options: Options(validateStatus: (status) => true));

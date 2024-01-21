@@ -64,6 +64,13 @@ class _MainStoragePageState extends State<MainStoragePage> {
                 'PDFs Generados de órdenes y pedidos',
                 () => Navigator.pushNamed(context, 'internal_storage_page'),
                 true),
+
+              optListTile(
+                Icons.change_circle_outlined,
+                'Cambiar contraseña',
+                'Cambie su contraseña actual',
+                () => Navigator.pushNamed(context, 'change_password'),
+                true),
           
             ],
           

@@ -4,6 +4,7 @@ import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_pending.dart';
 import 'package:gustazo_cubano_app/config/Pdf/invoces/pending_invoce.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -66,16 +67,12 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     return ListView.builder(
       itemCount: rProdList.length,
       itemBuilder: (context, index) {
-
         Product product = rProdList[index];
         return ListTile(
-            title: dosisText(product.name, fontWeight: FontWeight.bold),
-            subtitle: dosisBold('Precio: \$', product.price.toString(), 18),
-            trailing: dosisText(product.cantToBuy.toString(), fontWeight: FontWeight.bold),
-          );
-
+          title: dosisText(product.name, fontWeight: FontWeight.bold),
+          trailing: dosisText('x 1 = ${(product.cantToBuy * product.price).numFormat}', fontWeight: FontWeight.bold),
+        );
       }
-    
     );
   }
 
@@ -101,21 +98,6 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
       ));
   }
   
-  Container productInfo(String name, String price, String commission) {
-    return Container(
-      margin: const EdgeInsets.only(left: 10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('Precio: \$$price', color: Colors.blue),
-          dosisText('Comisión: $commission%', color: Colors.red),
-        ],
-      )
-    );
-  }
-
   ClipRRect productPhoto(String photo) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -156,7 +138,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
           Visibility(
             visible: show,
-            child: dosisBold('Ganacias por comisión: \$', o.commission.toString(), 18)),
+            child: dosisBold('Ganacias por comisión: \$', o.commission.numFormat, 18)),
           const Divider(
             color: Colors.black,
           ),
@@ -170,7 +152,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           ),
           dosisBold('Fecha: ', fecha, 18),
           dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
-          dosisBold('Monto total: \$', o.totalAmount.toString(), 18)
+          dosisBold('Monto total: \$', o.totalAmount.numFormat, 18)
         ]),
     
         SizedBox(
@@ -306,6 +288,9 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
 
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);
+    } else{
+      showToast(itsDone['path'], type: true);
+      return;
     }
 
     showToast('Factura exportada exitosamente', type: true);

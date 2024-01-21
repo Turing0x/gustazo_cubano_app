@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gustazo_cubano_app/config/Pdf/invoces/commision_invoce.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
+import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -111,8 +112,8 @@ class GeneratePdfCommision {
           children: [
             pwtextoDosis('Información de venta', 25, fontWeight: pw.FontWeight.bold),
             pwboldLabel( 'Ventas logradas: ', '${invoice.orderList.length}', 23),
-            pwboldLabel( 'Ganancia Total: ', 'CUP ${foldedCommision.toStringAsFixed(2)}', 23),
-            pwboldLabel( 'Rebaja del 5%: ', 'CUP ${(foldedCommision - foldedCommision * 0.05).toStringAsFixed(2)}', 23)
+            pwboldLabel( 'Ganancia Total: ', '${foldedCommision.numFormat} CUP', 23),
+            pwboldLabel( 'Rebaja del 5%: ', '${(foldedCommision - foldedCommision * 0.05).numFormat} CUP', 23)
           ]
         )
       ]
@@ -133,7 +134,7 @@ class GeneratePdfCommision {
         Container(child: pwtextoDosis('${item.pendingNumber} - ${item.invoiceNumber}', 23)),
         Container(child: pwtextoDosis(item.date.toString(), 23)),
         Container(child: pwtextoDosis('${item.getCantOfProducts}', 23)),
-        Container(child: pwtextoDosis('CUP ${item.totalAmount.toStringAsFixed(2)}', 23)),
+        Container(child: pwtextoDosis('${item.totalAmount.numFormat} CUP', 23)),
       ];
     }).toList();
 
