@@ -194,11 +194,14 @@ class _CreateProductPageState extends State<CreateProductPage> {
                       keyboardType: TextInputType.number,
                       label: 'Precio de venta'),
 
-                    FormTxt(
-                      suffixIcon: Icons.attach_money_outlined,
-                      controller: commissionDiscountCtrl,
-                      keyboardType: TextInputType.number,
-                      label: 'Comisión de ganancia'),
+                    Visibility(
+                      visible: show,
+                      child: FormTxt(
+                        suffixIcon: Icons.attach_money_outlined,
+                        controller: commissionDiscountCtrl,
+                        keyboardType: TextInputType.number,
+                        label: 'Comisión de ganancia'),
+                    ),
                   ])
               
                 ],

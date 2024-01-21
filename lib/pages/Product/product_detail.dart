@@ -224,12 +224,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                       keyboardType: TextInputType.number,
                       label: 'Precio de venta'),
                     
-                    FormTxt(
-                      suffixIcon: Icons.attach_money_outlined,
-                      readOnly: allowEdit,
-                      controller: commissionDiscountCtrl,
-                      keyboardType: TextInputType.number,
-                      label: 'Comisión de ganancia'),
+                    Visibility(
+                      visible: show,
+                      child: FormTxt(
+                        suffixIcon: Icons.attach_money_outlined,
+                        readOnly: allowEdit,
+                        controller: commissionDiscountCtrl,
+                        keyboardType: TextInputType.number,
+                        label: 'Comisión de ganancia'),
+                    ),
                   ])
               
                 ],
