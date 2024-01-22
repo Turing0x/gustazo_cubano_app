@@ -66,6 +66,13 @@ class _MainAdminPageState extends State<MainAdminPage> {
                 true),
 
               optListTile(
+                Icons.monitor_heart_outlined,
+                'Cálculos de monedas',
+                'Cambio con respeto al CUP',
+                () => Navigator.pushNamed(context, 'change_coins_page'),
+                true),
+
+              optListTile(
                 Icons.document_scanner_outlined,
                 'Mis PDFs',
                 'PDFs Generados de órdenes y pedidos',

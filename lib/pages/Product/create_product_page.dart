@@ -29,6 +29,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
   TextEditingController photoCtrl = TextEditingController();
 
   bool show = false;
+  String coinType = 'CUP';
 
   @override
   void initState() {
@@ -76,7 +77,9 @@ class _CreateProductPageState extends State<CreateProductPage> {
 
               if(show){
                 if( commissionCtrl.text.isEmpty ||
-                  commissionCtrl.text == '0' ){
+                  commissionCtrl.text == '0' ||
+                  commissionDiscountCtrl.text.isEmpty ||
+                  commissionDiscountCtrl.text == '0'){
                     simpleMessageSnackBar(context, 
                       texto: 'Rellene todos los campos por favor',
                       typeMessage: false);
@@ -84,7 +87,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                   }
               }
 
-              if(!checkUrl(photoCtrl.text)){
+              if( photoCtrl.text.isNotEmpty && !checkUrl(photoCtrl.text)){
                 simpleMessageSnackBar(context, 
                   texto: 'La URL de la foto no es válida',
                   typeMessage: false);
@@ -95,13 +98,13 @@ class _CreateProductPageState extends State<CreateProductPage> {
               String description = descriptionCtrl.text;
               String provider = providerCtrl.text;
               String photo = photoCtrl.text;
-              double price = priceCtrl.text.doubleParsed;
-              double inStock = inStockCtrl.text.doubleParsed;
-              double commission = commissionCtrl.text.doubleParsed;
-              double commissionDiscount = commissionCtrl.text.doubleParsed;
-              int moreThan = moreThanCtrl.text.intParsed;
-              double discount = discountCtrl.text.doubleParsed;
-      
+              double? price = priceCtrl.text.doubleTryParsed;
+              double? inStock = inStockCtrl.text.doubleTryParsed;
+              double? commission = commissionCtrl.text.doubleTryParsed;
+              double? commissionDiscount = commissionCtrl.text.doubleTryParsed;
+              int? moreThan = moreThanCtrl.text.intTryParsed;
+              double? discount = discountCtrl.text.doubleTryParsed;
+
               Map<String, dynamic> product = {
                 'name': name,
                 'description': description,
@@ -142,32 +145,32 @@ class _CreateProductPageState extends State<CreateProductPage> {
               
                   FormTxt(
                     controller: photoCtrl,
-                    suffixIcon: Icons.add_photo_alternate_outlined, 
+                    suffixIcon: const Icon(Icons.add_photo_alternate_outlined), 
                     label: 'Foto del producto'),
       
                   FormTxt(
-                    suffixIcon: Icons.text_fields_outlined,
+                    suffixIcon: const Icon(Icons.text_fields_outlined),
                     controller: nameCtrl, 
                     label: 'Nombre del producto'),
 
                   FormTxt(
-                    suffixIcon: Icons.text_fields_outlined,
+                    suffixIcon: const Icon(Icons.text_fields_outlined),
                     controller: providerCtrl, 
                     label: 'Proveedor del producto'),
                   
                   FormTxt(
-                    suffixIcon: Icons.text_fields_outlined,
+                    suffixIcon: const Icon(Icons.text_fields_outlined),
                     controller: descriptionCtrl, 
                     label: 'Breve descripción'),
                   
                   FormTxt(
-                    suffixIcon: Icons.attach_money_outlined,
+                    suffixIcon: popupMenuButton(),
                     controller: priceCtrl, 
                     keyboardType: TextInputType.number,
                     label: 'Precio por unidad'),
       
                   FormTxt(
-                    suffixIcon: Icons.numbers_outlined,
+                    suffixIcon: const Icon(Icons.numbers_outlined),
                     controller: inStockCtrl,
                     keyboardType: TextInputType.number, 
                     label: 'Cantidad de unidades'),
@@ -175,7 +178,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                   Visibility(
                     visible: show,
                     child: FormTxt(
-                      suffixIcon: Icons.attach_money_outlined,
+                      suffixIcon: const Icon(Icons.attach_money_outlined),
                       controller: commissionCtrl,
                       keyboardType: TextInputType.number, 
                       label: 'Comisión de ganancia'),
@@ -183,21 +186,21 @@ class _CreateProductPageState extends State<CreateProductPage> {
       
                   customGroupBox('Oferta a compra mayorista', [
                     FormTxt(
-                      suffixIcon: Icons.numbers_outlined,
+                      suffixIcon: const Icon(Icons.numbers_outlined),
                       controller: moreThanCtrl,
                       keyboardType: TextInputType.number,
                       label: 'Cantidad mayorista'),
                     
                     FormTxt(
-                      suffixIcon: Icons.attach_money_outlined,
+                      suffixIcon: popupMenuButton(),
                       controller: discountCtrl,
                       keyboardType: TextInputType.number,
-                      label: 'Precio de venta'),
+                      label: 'Precio por unidad'),
 
                     Visibility(
                       visible: show,
                       child: FormTxt(
-                        suffixIcon: Icons.attach_money_outlined,
+                        suffixIcon: const Icon(Icons.attach_money_outlined),
                         controller: commissionDiscountCtrl,
                         keyboardType: TextInputType.number,
                         label: 'Comisión de ganancia'),
@@ -212,6 +215,61 @@ class _CreateProductPageState extends State<CreateProductPage> {
       ),
     );
   }
+
+  PopupMenuButton popupMenuButton() {
+    return PopupMenuButton(
+      icon: dosisText(coinType, fontWeight: FontWeight.bold),
+      onSelected: (value) {
+
+        Map<String, void Function()> methods = {
+
+          'CUP': (){
+            setState(() {
+              coinType = 'CUP';
+            });
+          },
+          'MLC': (){
+            setState(() {
+              coinType = 'MLC';
+            });
+          },
+          'USD': (){
+            setState(() {
+              coinType = 'USD';
+            });
+          },
+          'ZELLE': (){
+            setState(() {
+              coinType = 'ZELLE';
+            });
+          },
+
+        };
+
+        methods[value]!.call();
+      
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'CUP',
+          child: dosisText('CUP'),
+        ),
+        PopupMenuItem(
+          value: 'MLC',
+          child: dosisText('MLC'),
+        ),
+        PopupMenuItem(
+          value: 'USD',
+          child: dosisText('USD'),
+        ),
+        PopupMenuItem(
+          value: 'ZELLE',
+          child: dosisText('ZELLE'),
+        ),
+      ],
+    );
+  }
+
 }
 
 class FormTxt extends StatelessWidget {
@@ -225,7 +283,7 @@ class FormTxt extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final TextInputType keyboardType;
-  final IconData suffixIcon;
+  final Widget suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +292,7 @@ class FormTxt extends StatelessWidget {
       keyboardType: keyboardType,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
-        suffixIcon: Icon(suffixIcon),
+        suffixIcon: suffixIcon,
         labelStyle: const TextStyle(
           fontFamily: 'Dosis',
           fontWeight: FontWeight.bold),

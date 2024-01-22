@@ -11,6 +11,7 @@ class Product {
   final String provider;
   final String photo;
   final double price;
+  final String coin;
   final double commission;
   final double commissionDiscount;
   final double discount;
@@ -23,6 +24,7 @@ class Product {
     this.name = '',
     this.description = '',
     this.provider = '',
+    this.coin = '',
     this.photo = '',
     this.price = 0,
     this.inStock = 0,
@@ -39,6 +41,7 @@ class Product {
     description: json["description"] ?? '',
     provider: json["provider"] ?? '',
     photo: json["photo"] ?? '',
+    coin: json["coin"] ?? '',
     price: json["price"]?.toDouble() ?? 0,
     commission: json["commission"]?.toDouble() ?? 0,
     commissionDiscount: json["commissionDiscount"]?.toDouble() ?? 0,
@@ -54,6 +57,7 @@ class Product {
     "description": description,
     "provider": provider,
     "photo": photo,
+    "coin": coin,
     "price": price,
     "in_stock": inStock,
     "commission": commission,
@@ -65,7 +69,7 @@ class Product {
 
   @override
   String toString() {
-    return 'Product: { \nid: $id, \nname: $name, \ndescription: $description, \nprovider: $provider, \nphoto: $photo, \nprice: $price, \ninStock: $inStock, \ncantToBuy: $cantToBuy, \nmoreThan: $moreThan, \ncommission: $commission, \ndiscount: $discount}';
+    return 'Product: { \nid: $id, \nname: $name, \ndescription: $description, \nprovider: $provider, \ncoin: $coin, \nphoto: $photo, \nprice: $price, \ninStock: $inStock, \ncantToBuy: $cantToBuy, \nmoreThan: $moreThan, \ncommission: $commission, \ndiscount: $discount}';
   }
   
 }

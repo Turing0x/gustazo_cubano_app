@@ -44,7 +44,7 @@ class ProductControllers {
       }
 
       if( response.data['data'].isEmpty ) {
-        EasyLoading.showInfo('productos pendientes obtenidos correctamente');
+        EasyLoading.showInfo('No tenemos productos en stock');
         return [];
       }
 

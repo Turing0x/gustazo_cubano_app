@@ -110,7 +110,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     }
                 }
 
-                if(!checkUrl(photoCtrl.text)){
+                if( photoCtrl.text.isNotEmpty && !checkUrl(photoCtrl.text)){
                   simpleMessageSnackBar(context, 
                     texto: 'La URL de la foto no es válida',
                     typeMessage: false);
@@ -121,12 +121,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                 String description = descriptionCtrl.text;
                 String provider = providerCtrl.text;
                 String photo = photoCtrl.text;
-                double price = priceCtrl.text.doubleParsed;
-                double inStock = inStockCtrl.text.doubleParsed;
-                double commission = commissionCtrl.text.doubleParsed;
-                double commissionDiscount = commissionDiscountCtrl.text.doubleParsed;
-                int moreThan = moreThanCtrl.text.intParsed;
-                double discount = discountCtrl.text.doubleParsed;
+                double? price = priceCtrl.text.doubleTryParsed;
+                double? inStock = inStockCtrl.text.doubleTryParsed;
+                double? commission = commissionCtrl.text.doubleTryParsed;
+                double? commissionDiscount = commissionDiscountCtrl.text.doubleTryParsed;
+                int? moreThan = moreThanCtrl.text.intTryParsed;
+                double? discount = discountCtrl.text.doubleTryParsed;
       
                 Map<String, dynamic> product = {
                   'name': name,
