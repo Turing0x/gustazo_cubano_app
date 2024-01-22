@@ -117,12 +117,12 @@ class GenerateAdminPdfCommision {
       ];
     }).toList();
 
-    String foldedProducts = invoice.fold(0, (previousValue, element) => 
-          previousValue + element.getCantOfProducts).toString();
-    String foldedAmount = invoice.fold(0.0, (previousValue, element) => 
-          previousValue + element.totalAmount).numFormat;
-    String foldedCommission = invoice.fold(0.0, (previousValue, element) => 
-          previousValue + element.commission).numFormat;
+    int foldedProducts = invoice.fold(0, (previousValue, element) =>
+          previousValue + element.getCantOfProducts);
+    double foldedAmount = invoice.fold(0.0, (previousValue, element) =>
+          previousValue + element.totalAmount);
+    double foldedCommission = invoice.fold(0.0, (previousValue, element) =>
+          previousValue + element.commission);
 
     data.add([
       Container(
@@ -132,7 +132,7 @@ class GenerateAdminPdfCommision {
         child: pwtextoDosis('', 23, 
           fontWeight: FontWeight.bold)), 
       Container(
-        child: pwtextoDosis(foldedProducts, 23, 
+        child: pwtextoDosis(foldedProducts.toString(), 23,
           fontWeight: FontWeight.bold)),
       Container(
         child: pwtextoDosis('$foldedAmount CUP', 23, 
@@ -141,7 +141,7 @@ class GenerateAdminPdfCommision {
         child: pwtextoDosis('$foldedCommission CUP', 23,
           fontWeight: FontWeight.bold)),
       Container(
-        child: pwtextoDosis('${(double.parse(foldedCommission) - (double.parse(foldedCommission) * 0.05)).numFormat} CUP', 23,
+        child: pwtextoDosis('${(foldedCommission - foldedCommission * 0.05).numFormat} CUP', 23,
           fontWeight: FontWeight.bold)),
       ]);
 

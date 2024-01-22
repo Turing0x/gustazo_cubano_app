@@ -96,7 +96,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         return ListTile(
           title: dosisText(product.name, fontWeight: FontWeight.bold),
           subtitle: dosisBold('Precio: \$', product.price.numFormat, 18),
-          trailing: dosisText('x 1 = ${(product.cantToBuy * product.price).numFormat}', fontWeight: FontWeight.bold),
+          trailing: dosisText('x ${product.cantToBuy} = ${(product.cantToBuy * product.price).numFormat}', fontWeight: FontWeight.bold),
         );
       }
     );
