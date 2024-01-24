@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/change_coins_page.dart';
+import 'package:gustazo_cubano_app/pages/Admin/settings_admin_page.dart';
 import 'package:gustazo_cubano_app/pages/change_pass.dart';
 import 'package:gustazo_cubano_app/pages/Admin/internal_storage_admin.dart';
 import 'package:gustazo_cubano_app/pages/Admin/main_storage_page.dart';
@@ -9,7 +10,6 @@ import 'package:gustazo_cubano_app/pages/Commercial/create_commercial_page.dart'
 import 'package:gustazo_cubano_app/pages/Commercial/forget_password_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/to_make_shopping_cart_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/pendigns_control_page.dart';
-import 'package:gustazo_cubano_app/pages/Commercial/finish_order_page.dart';
 import 'package:gustazo_cubano_app/pages/Product/add_products_on_editing.dart';
 import 'package:gustazo_cubano_app/pages/Product/shopping_cart_page.dart';
 
@@ -35,10 +35,10 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'orders_history_page': (_) => const OrdersHistoryPage(),
   'create_commercial_page': (_) => const CreateCommercialPage(),
   'change_coins_page': (_) => const ChangeCoinsPage(),
+  'settings_admin_page': (_) => const SettingAdminPage(),
   
   'commercials_control_page': (_) => const CommercialsControlPage(),
   'to_make_shopping_cart_page': (_) => const ToMakeShoppingCartPage(),
-  'finish_order_page': (_) => const FinishOrderPage(),
   'forget_password_page': (_) => const ForgetPasswordPage(),
 
   'stock_control_page': (_) => const StockControlPage(),

@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gustazo_cubano_app/config/controllers/coins_controllers.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/shared/opt_list_tile.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class MainAdminPage extends StatefulWidget {
+class MainAdminPage extends ConsumerStatefulWidget {
   const MainAdminPage({super.key});
 
   @override
-  State<MainAdminPage> createState() => _MainAdminPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MainAdminPageState();
 }
 
-class _MainAdminPageState extends State<MainAdminPage> {
+class _MainAdminPageState extends ConsumerState<MainAdminPage> {
+
+  @override
+  void initState() {
+    final prices = ref.read(coinPrices.notifier);
+    
+    CoinControllers().getAllCoins().then((value) {
+      if(value.isNotEmpty){
+        prices.setMlc(value[0].mlc);
+        prices.setUsd(value[0].usd);
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +34,8 @@ class _MainAdminPageState extends State<MainAdminPage> {
   
       appBar: showAppBar('Zona Administrativa', actions: [
         IconButton(
-          onPressed: ()async {
-            final contex = Navigator.of(context);
-
-            LoginDataService().deleteData();
-
-            contex.pushNamedAndRemoveUntil(
-                'auth_page', (Route<dynamic> route) => false);
-          },
-          icon: const Icon(Icons.logout))
+          onPressed: () => Navigator.pushNamed(context, 'settings_admin_page'), 
+          icon: const Icon(Icons.settings))
       ]),
       body: SingleChildScrollView(
         child: Container(
@@ -36,19 +44,19 @@ class _MainAdminPageState extends State<MainAdminPage> {
           child: Column(
           
             children: [
+
+              optListTile(
+                Icons.shopping_cart_outlined,
+                'Hacer carrito',
+                'LLenar el carrito de la compra',
+                () => Navigator.pushNamed(context, 'to_make_shopping_cart_page'),
+                true),
           
               optListTile(
                 Icons.sell_outlined,
                 'Stock',
                 'Logística de la mercancía',
                 () => Navigator.pushNamed(context, 'stock_control_page'),
-                true),
-
-              optListTile(
-                Icons.groups_2_outlined,
-                'Equipo de trabajo',
-                'Empleados del negocio',
-                () => Navigator.pushNamed(context, 'commercials_control_page'),
                 true),
           
               optListTile(
@@ -63,27 +71,6 @@ class _MainAdminPageState extends State<MainAdminPage> {
                 'Ordenes',
                 'Historial de órdenes pasadas',
                 () => Navigator.pushNamed(context, 'orders_history_page'),
-                true),
-
-              optListTile(
-                Icons.monitor_heart_outlined,
-                'Cálculos de monedas',
-                'Cambio con respeto al CUP',
-                () => Navigator.pushNamed(context, 'change_coins_page'),
-                true),
-
-              optListTile(
-                Icons.document_scanner_outlined,
-                'Mis PDFs',
-                'PDFs Generados de órdenes y pedidos',
-                () => Navigator.pushNamed(context, 'internal_storage_page'),
-                true),
-
-              optListTile(
-                Icons.change_circle_outlined,
-                'Cambiar contraseña',
-                'Cambie su contraseña actual',
-                () => Navigator.pushNamed(context, 'change_password'),
                 true),
           
             ],

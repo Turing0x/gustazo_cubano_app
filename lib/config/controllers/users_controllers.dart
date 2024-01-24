@@ -52,6 +52,11 @@ class UserControllers {
         return [];
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return [];
+      }
+
       List<User> list = [];
 
       response.data['data'].forEach((value) {
@@ -108,10 +113,7 @@ class UserControllers {
       return '';
     } on DioException catch (e) {
       if (e.response != null) {
-        print(e.response!.data);
-        print(e.response!.headers);
       } else {
-        print(e.message);
       }
       return 'false';
     }
@@ -129,6 +131,11 @@ class UserControllers {
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El cambio a sido aplicado correctamente');
         return true;
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return false;
       }
 
       EasyLoading.showError('No se pudo aplicar el cambio al usuario seleccionado');
@@ -157,6 +164,11 @@ class UserControllers {
         return;
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return;
+      }
+
       EasyLoading.showError('No se pudo crear el usuario con la información proporcionada');
       return;
     } on Exception catch (_) {
@@ -179,10 +191,16 @@ class UserControllers {
         return;
       }
 
+      if( response.statusCode == 401 ) {
+        showToast('Por favor, reinicie su sesión actual, su token ha expirado');
+        return;
+      }
+
       showToast(response.data['api_message']);
+
       return;
     } on Exception catch (e) {
-      showToast(e.toString());
+      EasyLoading.showError(e.toString());
     }
   }
  
@@ -200,10 +218,15 @@ class UserControllers {
         return true;
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return false;
+      }
+
       EasyLoading.showError(response.data['api_message']);
       return false;
     } on Exception catch (e) {
-      showToast(e.toString());
+      EasyLoading.showError(e.toString());
       return false;
     }
   }
@@ -218,6 +241,11 @@ class UserControllers {
         
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El usuario ha sido eliminado correctamente');
+        return;
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
 

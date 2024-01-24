@@ -67,6 +67,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 dosisBold('Gestión Económica: ', o.buyer.economic, 18),
                 dosisBold('Dirección Particular: \$', o.buyer.address, 18),
                 dosisBold('Número de Contacto: \$', o.buyer.phoneNumber, 18),
+                dosisBold('Método de pago: \$', o.typeCoin, 18),
                 const Divider(
                   color: Colors.black,
                 ),
@@ -169,6 +170,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
 
     final invoice = OrderInvoce(
+      paymentMethod: widget.order.typeCoin,
+      payeerName: widget.order.whoPay.fullName,
+      payeerAddress: widget.order.whoPay.address,
+      payeerPostalCode: widget.order.whoPay.postalCode,
+      payeerPhone: widget.order.whoPay.phoneNumber,
       orderNumber: widget.order.invoiceNumber,
       pendingNumber: widget.order.pendingNumber,
       orderDate: fecha,

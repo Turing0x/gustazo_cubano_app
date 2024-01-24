@@ -72,9 +72,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   }
 
   void decreaseCantToBuyOfAProduct( String productId ){
-    if(_productList[productId]!.cantToBuy == 1){
-      removeProductFromList(productId);
-    }else {
+    if(_productList[productId]!.cantToBuy != 1){
       _productList.update(productId, (value) => Product(
         id: value.id, 
         name: value.name, 
@@ -92,11 +90,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   }
   
   void decreaseTenCantToBuyOfAProduct( String productId ){
-    if(_productList[productId]!.cantToBuy == 1){
-      removeProductFromList(productId);
-    }else if(_productList[productId]!.cantToBuy - 10 < 1) {
-      return;
-    }else {
+    if(_productList[productId]!.cantToBuy - 10 > 1){
       _productList.update(productId, (value) => Product(
         id: value.id, 
         name: value.name, 

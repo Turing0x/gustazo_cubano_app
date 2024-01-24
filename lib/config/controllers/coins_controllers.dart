@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/coin_model.dart';
+import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class CoinControllers {
 
@@ -34,12 +35,15 @@ class CoinControllers {
     try {
 
       await _initializeDio();
-      EasyLoading.show(status: 'Buscando información de las monedas...');
       Response response = await _dio.get('/api/coins',
         options: Options(validateStatus: (status) => true));
 
       if( response.statusCode == 500 ) {
-        EasyLoading.showError('No se pudo cargar la información');
+        return [];
+      }
+
+      if( response.statusCode == 401 ) {
+        showToast('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
 
@@ -50,11 +54,9 @@ class CoinControllers {
         list.add(coinTemp);
       });
 
-      EasyLoading.showSuccess('La información ha sido cargada');
       return list;
       
     } catch (_) {
-      EasyLoading.showError('No se pudo cargar la información');
       return [];
     }
 
@@ -71,6 +73,11 @@ class CoinControllers {
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('La información a sido guardada correctamente');
+        return;
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
 

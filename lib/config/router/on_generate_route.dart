@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/pages/Admin/order_details_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/commercial_info_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/finish_order_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/my_orders_history_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/my_pendings_today_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/buyer_info_page.dart';
@@ -63,6 +64,11 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
     'commercial_info_page': MaterialPageRoute(
       builder: (_) => CommercialInfoPage(
         commercial: argumentos[0],
+      )),
+
+    'finish_order_page': MaterialPageRoute(
+      builder: (_) => FinishOrderPage(
+        coin: argumentos[0],
       )),
     
   };

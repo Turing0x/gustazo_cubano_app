@@ -49,8 +49,10 @@ class GeneratePdfOrder {
           child: pw.Column(
             children: [
 
-              topRow(invoice.title, invoice.address, image),
-              
+              topRow(invoice.title, invoice.address, image,
+                '${invoice.pendingNumber} - ${invoice.orderNumber}', 
+                  invoice.orderDate, invoice.paymentMethod),
+
               pw.SizedBox(height: 100),
 
               pw.Align(
@@ -83,7 +85,12 @@ class GeneratePdfOrder {
     );
   }
 
-  static Row topRow( String title, String address, MemoryImage image  ){
+  static Row topRow( 
+    String title, 
+    String address, MemoryImage image, 
+    String number, 
+    String orderDate,
+    String method  ){
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -92,6 +99,15 @@ class GeneratePdfOrder {
           children: [
             pwtextoDosis(title, 28, fontWeight: pw.FontWeight.bold),
             pwtextoDosis(address, 25),
+            pwboldLabel( 'Número: ', number, 23),
+            pwboldLabel( 'Fecha: ', orderDate, 23),
+            pwtextoDosis(( method == 'CUP' )
+            ? 'Pago en Moneda Nacional ( CUP )'
+            : (method == 'MLC')
+              ? 'Transferencia de Moneda Libremente Convertible ( MLC )'
+              : (method == 'USD')
+                ? 'Pago en efectivo de Dólar Estadounidense ( USD )'
+                : 'Transferencia Bancaria Directa USD ( ZELLE )', 23)
           ]
         )
       ]
@@ -106,7 +122,7 @@ class GeneratePdfOrder {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            pwtextoDosis('Información de comprador', 25, fontWeight: pw.FontWeight.bold),
+            pwtextoDosis('Quién recibe la compra', 25, fontWeight: pw.FontWeight.bold),
             pwboldLabel('Nombre Completo: ', invoice.buyerName, 23),
             pwboldLabel('Carnet de Identidad: ', invoice.buyerCi, 23),
             pwboldLabel('Dirección: ', invoice.buyerAddress, 23),
@@ -114,14 +130,17 @@ class GeneratePdfOrder {
             pwboldLabel('Forma de Gestión Económica: ', invoice.buyerEconomic, 23),
           ]
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            pwtextoDosis('Información de pedido', 25, fontWeight: pw.FontWeight.bold),
-            pwboldLabel( 'Número: ', '${invoice.pendingNumber} - ${invoice.orderNumber}', 23),
-            pwboldLabel( 'Fecha: ', invoice.orderDate, 23)
-          ]
-        )
+        (invoice.payeerName != '')
+          ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              pwtextoDosis('Quién realiza el pago', 25, fontWeight: pw.FontWeight.bold),
+              pwboldLabel('Nombre Completo: ', invoice.payeerName, 23),
+              pwboldLabel('Dirección: ', invoice.payeerAddress, 23),
+              pwboldLabel('Código Postal: ', invoice.payeerPostalCode, 23),
+              pwboldLabel('Teléfono de Contacto: ', invoice.payeerPhone, 23),
+            ]
+          ) : Container()
       ]
     );
   }

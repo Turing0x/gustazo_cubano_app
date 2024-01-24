@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
@@ -19,6 +19,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
   final ScrollController _controller = ScrollController();
   bool _visible = true;
+  String coinType = 'CUP';
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
         }
       }
     });
+
     super.initState();
   }
   
@@ -45,13 +47,16 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
     final rProdList = ShoppingCartProvider();
     final size = MediaQuery.of(context).size;
+    final prices = ref.watch(coinPrices);
 
     return Scaffold(
       appBar: showAppBar('Carrito de la compra', actions: [
         IconButton(
           onPressed: (){
             if(rProdList.products.isNotEmpty){
-              Navigator.pushNamed(context, 'finish_order_page');
+              Navigator.pushNamed(context, 'finish_order_page', arguments: [
+                coinType
+              ]);
             }
           }, 
           icon: const Icon(Icons.shopping_cart_checkout_rounded))
@@ -62,10 +67,24 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
 
+            const SizedBox(height: 10),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                dosisText('Moneda de pago: ', size: 20, fontWeight: FontWeight.bold),
+                popupMenuButton()
+              ],
+            ),
+
             customGroupBox('Información del carrito', [
               dosisBold('Cantidad de productos: ', rProdList.productsCant.toString(), 20),
-              dosisBold('Monto de la compra: ', rProdList.totalAmount.numFormat, 20),
-              dosisBold('Comisión por la compra: ', rProdList.totalCommisionMoney.numFormat, 20)
+              dosisBold('Monto de la compra: ', (coinType == 'CUP')
+                ? '${rProdList.totalAmount.toStringAsFixed(2)} $coinType'
+                : ( coinType == 'MLC' )
+                  ? '${(rProdList.totalAmount / prices.mlc!).toStringAsFixed(2)} $coinType'
+                  : '${(rProdList.totalAmount / prices.usd!).toStringAsFixed(2)} $coinType', 20),
+              dosisBold('Comisión por la compra: ', '${rProdList.totalCommisionMoney.toStringAsFixed(2)} CUP', 20)
             ]),
 
             ( rProdList.products.isEmpty )
@@ -117,7 +136,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
               
                   productInfo(
                     product.name, 
-                    product.price.toString(),
+                    product.price,
                     product.inStock.toStringAsFixed(0)),
               
                   const Spacer(),
@@ -233,7 +252,10 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
       ));
   }
   
-  Container productInfo(String name, String price, String stock) {
+  Container productInfo(String name, double price, String stock) {
+
+    final prices = ref.watch(coinPrices);
+
     return Container(
       margin: const EdgeInsets.only(left: 10),
       child: Column(
@@ -241,7 +263,13 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('Precio: \$${price.intPart}', color: Colors.blue),
+          dosisText('Precio: \$${
+            (coinType == 'CUP')
+              ? price.toStringAsFixed(2)
+              : ( coinType == 'MLC' )
+                ? (price / prices.mlc!).toStringAsFixed(2)
+                : (price / prices.usd!).toStringAsFixed(2)
+          }', color: Colors.blue),
           dosisText('Stock: $stock', color: Colors.green)
         ],
       )
@@ -270,6 +298,60 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
         child: dosisText(
           rProdList.cantOfAProduct(productId).toString(),
           color: Colors.blue, fontWeight: FontWeight.bold))
+    );
+  }
+
+  PopupMenuButton popupMenuButton() {
+    return PopupMenuButton(
+      icon: dosisText(coinType, fontWeight: FontWeight.bold),
+      onSelected: (value) {
+
+        Map<String, void Function()> methods = {
+
+          'CUP': (){
+            setState(() {
+              coinType = 'CUP';
+            });
+          },
+          'MLC': (){
+            setState(() {
+              coinType = 'MLC';
+            });
+          },
+          'USD': (){
+            setState(() {
+              coinType = 'USD';
+            });
+          },
+          'ZELLE': (){
+            setState(() {
+              coinType = 'ZELLE';
+            });
+          },
+
+        };
+
+        methods[value]!.call();
+      
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'CUP',
+          child: dosisText('CUP'),
+        ),
+        PopupMenuItem(
+          value: 'MLC',
+          child: dosisText('MLC'),
+        ),
+        PopupMenuItem(
+          value: 'USD',
+          child: dosisText('USD'),
+        ),
+        PopupMenuItem(
+          value: 'ZELLE',
+          child: dosisText('ZELLE'),
+        ),
+      ],
     );
   }
 

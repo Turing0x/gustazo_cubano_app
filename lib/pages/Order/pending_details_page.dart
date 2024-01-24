@@ -35,7 +35,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     });
     
     LoginDataService().getRole().then((value) {
-      if(value == 'admin'){
+      if(value == 'admin' || value == 'storage'){
         setState(() {
           visible = true;
         });
@@ -147,6 +147,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           dosisBold('Gestión Económica: ', o.buyer.economic, 18),
           dosisBold('Dirección Particular: \$', o.buyer.address, 18),
           dosisBold('Número de Contacto: \$', o.buyer.phoneNumber, 18),
+          dosisBold('Método de pago: \$', o.typeCoin, 18),
           const Divider(
             color: Colors.black,
           ),
