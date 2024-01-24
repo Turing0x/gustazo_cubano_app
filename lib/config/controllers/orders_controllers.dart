@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
-import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class OrderControllers {
 
@@ -47,6 +46,11 @@ class OrderControllers {
         return [];
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return [];
+      }
+
       List<Order> list = [];
       response.data['data'].forEach((value) {
         final userTemp = Order.fromJson(value);
@@ -70,6 +74,11 @@ class OrderControllers {
 
       if( response.statusCode == 500 ) {
         EasyLoading.showError('No se pudo obtener la órden');
+        return [];
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
 
@@ -97,6 +106,11 @@ class OrderControllers {
 
       if( response.data['data'].isEmpty ) {
         EasyLoading.showInfo('No hay pedidos para hoy');
+        return [];
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
 
@@ -132,6 +146,11 @@ class OrderControllers {
         return [];
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return [];
+      }
+
       List<Order> list = [];
       response.data['data'].forEach((value) {
         final userTemp = Order.fromJson(value);
@@ -159,6 +178,11 @@ class OrderControllers {
         return;
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return;
+      }
+
       EasyLoading.showError('No se pudo guardar el pedido');
       return;
     } on Exception catch (_) {
@@ -176,6 +200,11 @@ class OrderControllers {
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('Pedido editado correctamente');
+        return;
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
 
@@ -198,6 +227,11 @@ class OrderControllers {
         return true;
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return false;
+      }
+
       EasyLoading.showError('No se pudo marcar el pedido como hecho');
       return false;
 
@@ -216,12 +250,15 @@ class OrderControllers {
         
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El pedido a sido eliminado correctamente');
-        showToast(response.data['api_message'], type: true);
         return;
       }
 
-      showToast(response.data['api_message']);
-      EasyLoading.showError('No se ha podido eliminar el pedido');
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return;
+      }
+
+      EasyLoading.showError(response.data['api_message']);
       return;
     } catch (_) {
       EasyLoading.showError('No se ha podido eliminar el pedido');

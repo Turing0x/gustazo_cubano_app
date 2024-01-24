@@ -7,7 +7,9 @@ import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:intl/intl.dart';
 
 class FinishOrderPage extends StatefulWidget {
-  const FinishOrderPage({super.key});
+  const FinishOrderPage({super.key, required this.coin});
+
+  final String coin; 
 
   @override
   State<FinishOrderPage> createState() => _FinishOrderPageState();
@@ -70,6 +72,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
               'date': DateTime.now().toString(),
               'product_list': list,
               'total_amount': rProdList.totalAmount,
+              'type_coin': widget.coin,
               'commission': rProdList.totalCommisionMoney.toStringAsFixed(2),
               'seller': {
                 'commercial_code': referalCode,
@@ -121,6 +124,13 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
           dosisText(DateFormat.yMEd().add_jms().format(DateTime.now())),
 
           dosisText(fullName, size: 20, fontWeight: FontWeight.bold),
+          dosisText(( widget.coin == 'CUP' )
+            ? 'Pago en Moneda Nacional ( CUP )'
+            : (widget.coin == 'MLC')
+              ? 'Transferencia de Moneda Libremente Convertible ( MLC )'
+              : (widget.coin == 'USD')
+                ? 'Pago en efectivo de Dólar Estadounidense ( USD )'
+                : 'Transferencia Bancaria Directa USD ( ZELLE )', fontWeight: FontWeight.bold),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

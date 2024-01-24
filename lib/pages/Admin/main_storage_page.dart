@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gustazo_cubano_app/config/controllers/coins_controllers.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/shared/opt_list_tile.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class MainStoragePage extends StatefulWidget {
+class MainStoragePage extends ConsumerStatefulWidget {
   const MainStoragePage({super.key});
 
   @override
-  State<MainStoragePage> createState() => _MainStoragePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MainStoragePageState();
 }
 
-class _MainStoragePageState extends State<MainStoragePage> {
+class _MainStoragePageState extends ConsumerState<MainStoragePage> {
+
+  @override
+  void initState() {
+    final prices = ref.read(coinPrices.notifier);
+    CoinControllers().getAllCoins().then((value) {
+      if(value.isNotEmpty){
+        prices.setMlc(value[0].mlc);
+        prices.setUsd(value[0].usd);
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +51,13 @@ class _MainStoragePageState extends State<MainStoragePage> {
           child: Column(
           
             children: [
+
+              optListTile(
+                Icons.shopping_cart_outlined,
+                'Hacer carrito',
+                'LLenar el carrito de la compra',
+                () => Navigator.pushNamed(context, 'to_make_shopping_cart_page'),
+                true),
           
               optListTile(
                 Icons.sell_outlined,

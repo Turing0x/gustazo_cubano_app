@@ -47,7 +47,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         description: value.description, 
         photo: value.photo, 
         price: value.price, 
-        moreThan: value.moreThan, 
+        coin: value.coin, 
         inStock: value.inStock, 
         commission: value.commission, 
         commissionDiscount: value.commissionDiscount, 
@@ -72,16 +72,14 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   }
 
   void decreaseCantToBuyOfAProduct( String productId ){
-    if(_productList[productId]!.cantToBuy == 1){
-      removeProductFromList(productId);
-    }else {
+    if(_productList[productId]!.cantToBuy != 1){
       _productList.update(productId, (value) => Product(
         id: value.id, 
         name: value.name, 
         description: value.description, 
         photo: value.photo, 
         price: value.price, 
-        moreThan: value.moreThan, 
+        coin: value.coin, 
         inStock: value.inStock, 
         commissionDiscount: value.commissionDiscount, 
         commission: value.commission, 
@@ -92,18 +90,14 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   }
   
   void decreaseTenCantToBuyOfAProduct( String productId ){
-    if(_productList[productId]!.cantToBuy == 1){
-      removeProductFromList(productId);
-    }else if(_productList[productId]!.cantToBuy - 10 < 1) {
-      return;
-    }else {
+    if(_productList[productId]!.cantToBuy - 10 > 1){
       _productList.update(productId, (value) => Product(
         id: value.id, 
         name: value.name, 
         description: value.description, 
         photo: value.photo, 
         price: value.price, 
-        moreThan: value.moreThan, 
+        coin: value.coin, 
         inStock: value.inStock, 
         commissionDiscount: value.commissionDiscount, 
         commission: value.commission, 
@@ -124,7 +118,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
       description: value.description, 
       photo: value.photo, 
       price: value.price, 
-      moreThan: value.moreThan, 
+      coin: value.coin, 
       inStock: value.inStock, 
       commissionDiscount: value.commissionDiscount, 
       commission: value.commission, 

@@ -44,7 +44,12 @@ class ProductControllers {
       }
 
       if( response.data['data'].isEmpty ) {
-        EasyLoading.showInfo('productos pendientes obtenidos correctamente');
+        EasyLoading.showInfo('No tenemos productos en stock');
+        return [];
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
 
@@ -79,6 +84,11 @@ class ProductControllers {
         return;
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return;
+      }
+
       EasyLoading.showError('No se ha podido añadir el producto');
       return;
     } on Exception catch (_) {
@@ -100,6 +110,11 @@ class ProductControllers {
         return;
       }
 
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return;
+      }
+
       EasyLoading.showError('No se ha podido editar el producto');
       return;
     } on Exception catch (_) {
@@ -117,6 +132,11 @@ class ProductControllers {
         
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El producto a sido eliminado correctamente');
+        return;
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
 

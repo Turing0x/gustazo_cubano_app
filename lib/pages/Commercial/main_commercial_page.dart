@@ -1,26 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gustazo_cubano_app/config/controllers/coins_controllers.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/shared/opt_list_tile.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class MainCommercialPage extends StatefulWidget {
+class MainCommercialPage extends ConsumerStatefulWidget {
   const MainCommercialPage({super.key});
 
   @override
-  State<MainCommercialPage> createState() => _MainCommercialPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MainCommercialPageState();
 }
 
-class _MainCommercialPageState extends State<MainCommercialPage> {
+class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
 
   String commercialCode = '';
   @override
   void initState() {
+    
+    final prices = ref.read(coinPrices.notifier);
+    
     LoginDataService().getCommercialCode().then((value) {
       setState(() {
         commercialCode = value!;
       });
     });
+
+    CoinControllers().getAllCoins().then((value) {
+      if(value.isNotEmpty){
+        prices.setMlc(value[0].mlc);
+        prices.setUsd(value[0].usd);
+      }
+    });
+
     super.initState();
   }
 
