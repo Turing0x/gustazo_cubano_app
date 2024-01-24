@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/models/coin_model.dart';
-import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class CoinControllers {
 
@@ -20,7 +19,7 @@ class CoinControllers {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
+        baseUrl: Uri.https(dotenv.env['SERVER_URL']!).toString(),
         headers: {
           'Content-Type': 'application/json',
           'access-token': token,
@@ -43,7 +42,6 @@ class CoinControllers {
       }
 
       if( response.statusCode == 401 ) {
-        showToast('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
 

@@ -20,8 +20,10 @@ class _MainStoragePageState extends ConsumerState<MainStoragePage> {
     final prices = ref.read(coinPrices.notifier);
     CoinControllers().getAllCoins().then((value) {
       if(value.isNotEmpty){
-        prices.setMlc(value[0].mlc);
-        prices.setUsd(value[0].usd);
+        setState(() {
+          prices.setMlc(value[0].mlc);
+          prices.setUsd(value[0].usd);
+        });
       }
     });
     super.initState();
