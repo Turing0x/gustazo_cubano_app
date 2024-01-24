@@ -100,7 +100,7 @@ class GeneratePdfCommision {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            pwtextoDosis('Información de comprador', 25, fontWeight: pw.FontWeight.bold),
+            pwtextoDosis('Información de Comercial', 25, fontWeight: pw.FontWeight.bold),
             pwboldLabel('Nombre Completo: ', invoice.userName, 23),
             pwboldLabel('Carnet de Identidad: ', invoice.userCi, 23),
             pwboldLabel('Dirección: ', invoice.userAddress, 23),
