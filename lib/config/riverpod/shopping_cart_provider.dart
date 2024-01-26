@@ -19,12 +19,10 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   }
 
   double get totalAmount {
-    double totalAmount = 0.0;
-    _productList.forEach((key, value) {
-      double price = value.cantToBuy >= value.moreThan ? value.discount : value.price;
-      totalAmount += price * value.cantToBuy;
+    return _productList.values.fold(0.0, (previousValue, element) {
+      double price = element.cantToBuy >= element.moreThan ? element.discount : element.price;
+      return price * element.cantToBuy;
     });
-    return totalAmount;
   }
 
   double get totalCommisionMoney {
@@ -45,6 +43,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         id: value.id, 
         name: value.name, 
         description: value.description, 
+        moreThan: value.moreThan, 
         photo: value.photo, 
         price: value.price, 
         coin: value.coin, 
@@ -77,6 +76,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         id: value.id, 
         name: value.name, 
         description: value.description, 
+        moreThan: value.moreThan, 
         photo: value.photo, 
         price: value.price, 
         coin: value.coin, 
@@ -95,6 +95,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
         id: value.id, 
         name: value.name, 
         description: value.description, 
+        moreThan: value.moreThan, 
         photo: value.photo, 
         price: value.price, 
         coin: value.coin, 
@@ -116,6 +117,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
       id: value.id, 
       name: value.name, 
       description: value.description, 
+      moreThan: value.moreThan, 
       photo: value.photo, 
       price: value.price, 
       coin: value.coin, 
