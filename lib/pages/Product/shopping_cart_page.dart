@@ -55,7 +55,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
           onPressed: (){
             if(rProdList.products.isNotEmpty){
               Navigator.pushNamed(context, 'finish_order_page', arguments: [
-                coinType
+                coinType, prices.mlc, prices.usd
               ]);
             }
           }, 
@@ -82,8 +82,8 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
               dosisBold('Monto de la compra: ', (coinType == 'CUP')
                 ? '${rProdList.totalAmount.toStringAsFixed(2)} $coinType'
                 : ( coinType == 'MLC' )
-                  ? '${(rProdList.totalAmount / prices.mlc!).toStringAsFixed(2)} $coinType'
-                  : '${(rProdList.totalAmount / prices.usd!).toStringAsFixed(2)} $coinType', 20),
+                  ? '${(rProdList.totalAmount / prices.mlc).toStringAsFixed(2)} $coinType'
+                  : '${(rProdList.totalAmount / prices.usd).toStringAsFixed(2)} $coinType', 20),
               dosisBold('Comisión por la compra: ', '${rProdList.totalCommisionMoney.toStringAsFixed(2)} CUP', 20)
             ]),
 
@@ -146,76 +146,71 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
                 ],
               ),const SizedBox(height: 5),
         
-              Flexible(
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-        
-                    OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.all(0),
-                        side: const BorderSide(color: Colors.transparent)
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          rProdList.removeProductFromList(product.id);
-                        });
-                      }, 
-                      icon: const Icon(Icons.delete_forever_outlined, color: Colors.black, size: 18,), 
-                      label: dosisText('Quitar', size: 18)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                      
+                  // OutlinedButton.icon(
+                  //   style: OutlinedButton.styleFrom(
+                  //     padding: const EdgeInsets.all(0),
+                  //     side: const BorderSide(color: Colors.transparent)
+                  //   ),
+                  //   onPressed: (){
+                  //     setState(() {
+                  //       rProdList.removeProductFromList(product.id);
+                  //     });
+                  //   }, 
+                  //   icon: const Icon(Icons.delete_forever_outlined, color: Colors.black, size: 18,), 
+                  //   label: dosisText('Quitar', size: 18)
+                  // ),
+              
+                  IconButton(
+                    style: const ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
                     ),
-          
-                    const SizedBox(width: 50),
-          
-                    IconButton(
-                      style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          rProdList.decreaseTenCantToBuyOfAProduct(product.id);
-                        });
-                      }, 
-                      icon: dosisText('-10', fontWeight: FontWeight.bold)
+                    onPressed: (){
+                      setState(() {
+                        rProdList.decreaseTenCantToBuyOfAProduct(product.id);
+                      });
+                    }, 
+                    icon: dosisText('-10', fontWeight: FontWeight.bold)
+                  ),
+                  IconButton(
+                    style: const ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
                     ),
-                    IconButton(
-                      style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          rProdList.decreaseCantToBuyOfAProduct(product.id);
-                        });
-                      }, 
-                      icon: const Icon(Icons.remove, color: Colors.red)
+                    onPressed: (){
+                      setState(() {
+                        rProdList.decreaseCantToBuyOfAProduct(product.id);
+                      });
+                    }, 
+                    icon: const Icon(Icons.remove, color: Colors.red)
+                  ),
+                  IconButton(
+                    style: const ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
                     ),
-                    IconButton(
-                      style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          rProdList.addProductToList(product);
-                        });
-                      }, 
-                      icon: const Icon(Icons.add, color: Colors.green)
+                    onPressed: (){
+                      setState(() {
+                        rProdList.addProductToList(product);
+                      });
+                    }, 
+                    icon: const Icon(Icons.add, color: Colors.green)
+                  ),
+                  IconButton(
+                    style: const ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
                     ),
-                    IconButton(
-                      style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          rProdList.addTenCantToBuyOfAProduct(product.id);
-                        });
-                      }, 
-                      icon: dosisText('+10', fontWeight: FontWeight.bold)
-                    ),
-          
-                  ],
-
-                )
-
+                    onPressed: (){
+                      setState(() {
+                        rProdList.addTenCantToBuyOfAProduct(product.id);
+                      });
+                    }, 
+                    icon: dosisText('+10', fontWeight: FontWeight.bold)
+                  ),
+                        
+                ],
+              
               )
 
             ],
@@ -267,8 +262,8 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
             (coinType == 'CUP')
               ? price.toStringAsFixed(2)
               : ( coinType == 'MLC' )
-                ? (price / prices.mlc!).toStringAsFixed(2)
-                : (price / prices.usd!).toStringAsFixed(2)
+                ? (price / prices.mlc).toStringAsFixed(2)
+                : (price / prices.usd).toStringAsFixed(2)
           }', color: Colors.blue),
           dosisText('Stock: $stock', color: Colors.green)
         ],

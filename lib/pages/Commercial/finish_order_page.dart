@@ -7,9 +7,11 @@ import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:intl/intl.dart';
 
 class FinishOrderPage extends StatefulWidget {
-  const FinishOrderPage({super.key, required this.coin});
+  const FinishOrderPage({super.key, required this.coin, required this.mlc, required this.usd});
 
   final String coin; 
+  final double mlc; 
+  final double usd; 
 
   @override
   State<FinishOrderPage> createState() => _FinishOrderPageState();
@@ -101,7 +103,10 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               height: MediaQuery.of(context).size.height * 0.65,
-              child: ListCartView(rProdList: rProdList))
+              child: ListCartView(rProdList: rProdList, 
+                coinType: widget.coin, 
+                mlc: widget.mlc, 
+                usd: widget.usd,))
         
           ],
         ),
@@ -136,7 +141,11 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               dosisBold('Total de productos: ', rProdList.productsCant.toString(), 20),
-              dosisBold('Monto: \$', rProdList.totalAmount.numFormat, 20)
+              dosisBold('Monto: \$', (widget.coin == 'CUP')
+                ? '${rProdList.totalAmount.toStringAsFixed(2)} ${widget.coin}'
+                : ( widget.coin == 'MLC' )
+                  ? '${(rProdList.totalAmount / widget.mlc).toStringAsFixed(2)} ${widget.coin}'
+                  : '${(rProdList.totalAmount / widget.usd).toStringAsFixed(2)} ${widget.coin}', 20)
             ],
           )
         ],
@@ -149,10 +158,13 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
 class ListCartView extends StatelessWidget {
   const ListCartView({
     super.key,
-    required this.rProdList,
+    required this.rProdList, required this.coinType, required this.mlc, required this.usd,
   });
 
   final ShoppingCartProvider rProdList;
+  final String coinType;
+  final double mlc;
+  final double usd;
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +177,11 @@ class ListCartView extends StatelessWidget {
 
           return ListTile(
             title: dosisText(product.name, fontWeight: FontWeight.bold),
-            subtitle: dosisBold('Precio: \$', product.price.numFormat, 18),
+            subtitle: dosisBold('Precio: \$', (coinType == 'CUP')
+              ? product.price .toStringAsFixed(2)
+              : ( coinType == 'MLC' )
+                ? (product.price / mlc).toStringAsFixed(2)
+                : (product.price / usd).toStringAsFixed(2), 18),
             trailing: dosisText(product.cantToBuy.toString(), fontWeight: FontWeight.bold),
           );
       

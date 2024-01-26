@@ -19,7 +19,7 @@ class OrderControllers {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: Uri.https(dotenv.env['SERVER_URL']!).toString(),
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
         headers: {
           'Content-Type': 'application/json',
           'access-token': token,
@@ -59,7 +59,7 @@ class OrderControllers {
       EasyLoading.showSuccess('Pedidos obtenidos correctamente');
       return list;
       
-    } catch (_) {
+    } catch (error) {
       EasyLoading.showError('No se pudo obtener los pedidos');
       return [];
     }

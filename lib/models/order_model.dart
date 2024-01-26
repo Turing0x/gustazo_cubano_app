@@ -13,8 +13,8 @@ class Order {
   final String pendingNumber;
   final DateTime date;
   final List<Product> productList;
-  final int totalAmount;
-  final int commission;
+  final double totalAmount;
+  final double commission;
   final Seller seller;
   final Buyer buyer;
   final String typeCoin;
@@ -42,8 +42,8 @@ class Order {
     pendingNumber: json["pending_number"],
     date: DateTime.parse(json["date"]),
     productList: List<Product>.from(json["product_list"].map((x) => Product.fromJson(x))),
-    totalAmount: json["total_amount"],
-    commission: json["commission"],
+    totalAmount: json["total_amount"].toDouble(),
+    commission: json["commission"].toDouble(),
     seller: Seller.fromJson(json["seller"]),
     buyer: Buyer.fromJson(json["buyer"]),
     typeCoin: json["type_coin"],

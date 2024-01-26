@@ -91,7 +91,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           ),
 
           dosisText(
-            'Acaba de vaciar su carritorder!. Por favor, regrese al listado de productos', 
+            'Acaba de vaciar su carrito!. Por favor, regrese al listado de productos',
             size: 18, maxLines: 3, textAlign: TextAlign.center),
           
         ],

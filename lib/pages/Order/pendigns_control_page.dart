@@ -23,7 +23,7 @@ class _PendignsControlPageState extends ConsumerState<PendignsControlPage> {
     return Scaffold(
       appBar: showAppBar('Control de pedidos'),
       body: FutureBuilder(
-        future: OrderControllers().getAllOrders(false, date: janddate.currentDate), 
+        future: OrderControllers().getAllOrders(false, date: janddate.currentDate),
         builder: (context, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {

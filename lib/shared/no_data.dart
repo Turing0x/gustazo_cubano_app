@@ -12,7 +12,6 @@ Widget noData(BuildContext context, String text) {
         margin: EdgeInsets.only(
             left: size.width * .07,
             right: size.width * .07,
-            top: size.width * .35,
             bottom: 20),
         child: Image.asset('lib/assets/images/empty_list.jpg'),
       ),

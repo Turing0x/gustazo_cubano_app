@@ -69,6 +69,8 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
     'finish_order_page': MaterialPageRoute(
       builder: (_) => FinishOrderPage(
         coin: argumentos[0],
+        mlc: argumentos[1],
+        usd: argumentos[2],
       )),
     
   };
