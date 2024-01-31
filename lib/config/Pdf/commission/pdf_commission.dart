@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:gustazo_cubano_app/config/Pdf/invoces/commision_invoce.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoices/commission_invoice.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
 import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
@@ -11,8 +11,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 
-class GeneratePdfCommision {
-  static Future<Map<String, dynamic>> generate(CommisionInvoce invoice) async {
+class GeneratePdfCommission {
+  static Future<Map<String, dynamic>> generate(CommissionInvoice invoice) async {
 
     try {
 
@@ -44,7 +44,7 @@ class GeneratePdfCommision {
 
   }
 
-  static pw.MultiPage multiPage(CommisionInvoce invoice, MemoryImage image) {
+  static pw.MultiPage multiPage(CommissionInvoice invoice, MemoryImage image) {
     return MultiPage(
       pageFormat: const PdfPageFormat(1500, 1500),
       build: (context) => [
@@ -88,7 +88,7 @@ class GeneratePdfCommision {
     );
   }
   
-  static Row infoRow( CommisionInvoce invoice ){
+  static Row infoRow( CommissionInvoice invoice ){
 
     double foldedCommision = invoice.orderList.fold(0, 
       (previousValue, element) => previousValue + element.commission);
@@ -120,7 +120,7 @@ class GeneratePdfCommision {
     );
   }
 
-  static Widget buildInvoice(CommisionInvoce invoice) {
+  static Widget buildInvoice(CommissionInvoice invoice) {
     final headers = [
       'Número de Órden',
       'Fecha',

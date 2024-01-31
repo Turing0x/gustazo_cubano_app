@@ -41,7 +41,7 @@ class Product {
     description: json["description"] ?? '',
     provider: json["provider"] ?? '',
     photo: json["photo"] ?? '',
-    coin: json["coin"] ?? '',
+    coin: json["coin"] ?? 'CUP',
     price: json["price"]?.toDouble() ?? 0,
     commission: json["commission"]?.toDouble() ?? 0,
     commissionDiscount: json["commissionDiscount"]?.toDouble() ?? 0,

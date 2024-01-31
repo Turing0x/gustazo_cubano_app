@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
-import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
+import 'package:gustazo_cubano_app/helpers/determinate_amount.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:intl/intl.dart';
 
-class FinishOrderPage extends StatefulWidget {
+class FinishOrderPage extends ConsumerStatefulWidget {
   const FinishOrderPage({super.key, required this.coin, required this.mlc, required this.usd});
 
   final String coin; 
@@ -14,12 +15,12 @@ class FinishOrderPage extends StatefulWidget {
   final double usd; 
 
   @override
-  State<FinishOrderPage> createState() => _FinishOrderPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _FinishOrderPageState();
 }
 
-class _FinishOrderPageState extends State<FinishOrderPage> {
+class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
 
-  String referalCode = '';
+  String referralCode = '';
   String ci = '';
   String fullName = '';
   String phone = '';
@@ -29,7 +30,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
   void initState() {
     LoginDataService().getCommercialCode().then((value) {
       setState(() {
-        referalCode = value!;
+        referralCode = value!;
       });
     });
     LoginDataService().getCi().then((value) {
@@ -75,9 +76,9 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
               'product_list': list,
               'total_amount': rProdList.totalAmount,
               'type_coin': widget.coin,
-              'commission': rProdList.totalCommisionMoney.toStringAsFixed(2),
+              'commission': rProdList.totalCommissionMoney(ref).toStringAsFixed(2),
               'seller': {
-                'commercial_code': referalCode,
+                'commercial_code': referralCode,
                 'ci': ci,
                 'full_name': fullName,
                 'phone': phone,
@@ -141,11 +142,9 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               dosisBold('Total de productos: ', rProdList.productsCant.toString(), 20),
-              dosisBold('Monto: \$', (widget.coin == 'CUP')
-                ? '${rProdList.totalAmount.toStringAsFixed(2)} ${widget.coin}'
-                : ( widget.coin == 'MLC' )
-                  ? '${(rProdList.totalAmount / widget.mlc).toStringAsFixed(2)} ${widget.coin}'
-                  : '${(rProdList.totalAmount / widget.usd).toStringAsFixed(2)} ${widget.coin}', 20)
+              dosisBold('Monto: \$', '${(rProdList.whatCoin() == widget.coin)
+                ? rProdList.totalAmount
+                : calculatePurchaseAmount(ref, widget.coin, rProdList.totalAmount)}', 20)
             ],
           )
         ],
@@ -155,7 +154,7 @@ class _FinishOrderPageState extends State<FinishOrderPage> {
 
 }
 
-class ListCartView extends StatelessWidget {
+class ListCartView extends ConsumerStatefulWidget {
   const ListCartView({
     super.key,
     required this.rProdList, required this.coinType, required this.mlc, required this.usd,
@@ -167,21 +166,24 @@ class ListCartView extends StatelessWidget {
   final double usd;
 
   @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ListCartViewState();
+}
+
+class _ListCartViewState extends ConsumerState<ListCartView> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemCount: rProdList.products.length,
+        itemCount: widget.rProdList.products.length,
         itemBuilder: (context, index) {
           
-          Product product = rProdList.products.values.elementAt(index);
+          Product product = widget.rProdList.products.values.elementAt(index);
 
           return ListTile(
             title: dosisText(product.name, fontWeight: FontWeight.bold),
-            subtitle: dosisBold('Precio: \$', (coinType == 'CUP')
-              ? product.price .toStringAsFixed(2)
-              : ( coinType == 'MLC' )
-                ? (product.price / mlc).toStringAsFixed(2)
-                : (product.price / usd).toStringAsFixed(2), 18),
+            subtitle: dosisBold('Precio: \$', '${(product.coin == widget.coinType)
+            ? product.price
+            : calculatePurchaseAmount(ref, widget.coinType, product.price)}', 18),
             trailing: dosisText(product.cantToBuy.toString(), fontWeight: FontWeight.bold),
           );
       

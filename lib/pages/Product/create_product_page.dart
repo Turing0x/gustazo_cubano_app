@@ -55,7 +55,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
             side: const BorderSide(
               color: Colors.transparent,
             )),
-            onPressed: (){
+            onPressed: () async{
         
               final productCtrl = ProductControllers();
       
@@ -111,6 +111,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                 'provider': provider,
                 'photo': photo,
                 'price': price,
+                'coin': coinType,
                 'inStock': inStock,
                 'commission': commission,
                 'more_than': moreThan,
@@ -118,7 +119,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                 'commissionDiscount': commissionDiscount,
               };
       
-              productCtrl.saveProducts(product);
+              await productCtrl.saveProducts(product);
       
               nameCtrl.text = '';
               descriptionCtrl.text = '';

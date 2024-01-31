@@ -6,14 +6,17 @@ import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class PendingControlPage extends ConsumerStatefulWidget {
-  const PendingControlPage({super.key});
+class MyPendingTodayPage extends ConsumerStatefulWidget {
+  const MyPendingTodayPage({super.key,
+    required this.commercialCode});
+
+  final String commercialCode;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PendingControlPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyPendingTodayPageState();
 }
 
-class _PendingControlPageState extends ConsumerState<PendingControlPage> {
+class _MyPendingTodayPageState extends ConsumerState<MyPendingTodayPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class _PendingControlPageState extends ConsumerState<PendingControlPage> {
       body: ValueListenableBuilder(
         valueListenable: reloadPending,
         builder: (context, value, child) => FutureBuilder(
-          future: OrderControllers().getAllOrders(false, date: janddate.currentDate),
+          future: OrderControllers().getMyPendingToday(widget.commercialCode, janddate.currentDate), 
           builder: (context, snapshot) {
         
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -68,7 +71,7 @@ class _PendingControlPageState extends ConsumerState<PendingControlPage> {
                     trailing: CircleAvatar(
                       child: dosisText(order.productList.length.toString(),
                       fontWeight: FontWeight.bold)),
-                    onTap: () => Navigator.pushReplacementNamed(context, 'pending_details_page', arguments: [
+                    onTap: () => Navigator.popAndPushNamed(context, 'pending_details_page', arguments: [
                       order
                     ]),
                   ),

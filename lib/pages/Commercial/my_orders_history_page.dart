@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gustazo_cubano_app/config/Pdf/Commision/pdf_commision.dart';
-import 'package:gustazo_cubano_app/config/Pdf/invoces/commision_invoce.dart';
+import 'package:gustazo_cubano_app/config/Pdf/commission/pdf_commission.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoices/commission_invoice.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
@@ -87,7 +87,7 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
 
   void makePDF() async{
 
-    final invoice = CommisionInvoce(
+    final invoice = CommissionInvoice(
       userCi: ci,
       userName: fullName,
       userPhone: phone,
@@ -96,7 +96,7 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
     );
 
     Map<String, dynamic> itsDone =
-      await GeneratePdfCommision.generate(invoice);
+      await GeneratePdfCommission.generate(invoice);
 
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);

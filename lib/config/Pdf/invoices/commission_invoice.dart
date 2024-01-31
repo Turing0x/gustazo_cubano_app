@@ -1,6 +1,6 @@
 import 'package:gustazo_cubano_app/models/order_model.dart';
 
-class CommisionInvoce {
+class CommissionInvoice {
 
   final String title = 'Ventas Kapricho';
   final String address = 'Calle 222 e/ 29 y 31 La Coronela. La Lisa';
@@ -12,7 +12,7 @@ class CommisionInvoce {
   
   final List<Order> orderList;
 
-  CommisionInvoce({
+  CommissionInvoice({
     required this.userName, 
     required this.userAddress,
     required this.userCi, 

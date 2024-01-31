@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
+import 'package:gustazo_cubano_app/helpers/determinate_amount.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
@@ -19,10 +20,15 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
   final ScrollController _controller = ScrollController();
   bool _visible = true;
-  String coinType = 'CUP';
+  late String coinType;
 
   @override
   void initState() {
+
+    setState(() {
+      coinType = ShoppingCartProvider().whatCoin();
+    });
+
     _controller.addListener(() {
       if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
         if (_visible == true) {
@@ -79,12 +85,10 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
             customGroupBox('Información del carrito', [
               dosisBold('Cantidad de productos: ', rProdList.productsCant.toString(), 20),
-              dosisBold('Monto de la compra: ', (coinType == 'CUP')
-                ? '${rProdList.totalAmount.toStringAsFixed(2)} $coinType'
-                : ( coinType == 'MLC' )
-                  ? '${(rProdList.totalAmount / prices.mlc).toStringAsFixed(2)} $coinType'
-                  : '${(rProdList.totalAmount / prices.usd).toStringAsFixed(2)} $coinType', 20),
-              dosisBold('Comisión por la compra: ', '${rProdList.totalCommisionMoney.toStringAsFixed(2)} CUP', 20)
+              dosisBold('Monto de la compra: ', '${(rProdList.whatCoin() == coinType)
+                ? rProdList.totalAmount
+                : calculatePurchaseAmount(ref, coinType, rProdList.totalAmount)} $coinType', 20),
+              dosisBold('Comisión: ', '${rProdList.totalCommissionMoney(ref)} CUP', 20)
             ]),
 
             ( rProdList.products.isEmpty )
@@ -136,6 +140,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
               
                   productInfo(
                     product.name, 
+                    product.coin,
                     product.price,
                     product.inStock.toStringAsFixed(0)),
               
@@ -146,72 +151,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
                 ],
               ),const SizedBox(height: 5),
         
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                      
-                  // OutlinedButton.icon(
-                  //   style: OutlinedButton.styleFrom(
-                  //     padding: const EdgeInsets.all(0),
-                  //     side: const BorderSide(color: Colors.transparent)
-                  //   ),
-                  //   onPressed: (){
-                  //     setState(() {
-                  //       rProdList.removeProductFromList(product.id);
-                  //     });
-                  //   }, 
-                  //   icon: const Icon(Icons.delete_forever_outlined, color: Colors.black, size: 18,), 
-                  //   label: dosisText('Quitar', size: 18)
-                  // ),
-              
-                  IconButton(
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        rProdList.decreaseTenCantToBuyOfAProduct(product.id);
-                      });
-                    }, 
-                    icon: dosisText('-10', fontWeight: FontWeight.bold)
-                  ),
-                  IconButton(
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        rProdList.decreaseCantToBuyOfAProduct(product.id);
-                      });
-                    }, 
-                    icon: const Icon(Icons.remove, color: Colors.red)
-                  ),
-                  IconButton(
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        rProdList.addProductToList(product);
-                      });
-                    }, 
-                    icon: const Icon(Icons.add, color: Colors.green)
-                  ),
-                  IconButton(
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap
-                    ),
-                    onPressed: (){
-                      setState(() {
-                        rProdList.addTenCantToBuyOfAProduct(product.id);
-                      });
-                    }, 
-                    icon: dosisText('+10', fontWeight: FontWeight.bold)
-                  ),
-                        
-                ],
-              
-              )
+              btnCant(rProdList, product)
 
             ],
 
@@ -247,9 +187,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
       ));
   }
   
-  Container productInfo(String name, double price, String stock) {
-
-    final prices = ref.watch(coinPrices);
+  Container productInfo(String name, String coin, double price, String stock) {
 
     return Container(
       margin: const EdgeInsets.only(left: 10),
@@ -258,13 +196,9 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('Precio: \$${
-            (coinType == 'CUP')
-              ? price.toStringAsFixed(2)
-              : ( coinType == 'MLC' )
-                ? (price / prices.mlc).toStringAsFixed(2)
-                : (price / prices.usd).toStringAsFixed(2)
-          }', color: Colors.blue),
+          dosisText('Precio: \$${(coin == coinType)
+            ? price
+            : calculatePurchaseAmount(ref, coinType, price)} $coin', color: Colors.blue),
           dosisText('Stock: $stock', color: Colors.green)
         ],
       )
@@ -347,6 +281,61 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
           child: dosisText('ZELLE'),
         ),
       ],
+    );
+  }
+
+  Row btnCant(ShoppingCartProvider rProdList, Product product) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+            
+        IconButton(
+          style: const ButtonStyle(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap
+          ),
+          onPressed: (){
+            setState(() {
+              rProdList.decreaseTenCantToBuyOfAProduct(product.id);
+            });
+          }, 
+          icon: dosisText('-10', fontWeight: FontWeight.bold)
+        ),
+        IconButton(
+          style: const ButtonStyle(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap
+          ),
+          onPressed: (){
+            setState(() {
+              rProdList.decreaseCantToBuyOfAProduct(product.id);
+            });
+          }, 
+          icon: const Icon(Icons.remove, color: Colors.red)
+        ),
+        IconButton(
+          style: const ButtonStyle(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap
+          ),
+          onPressed: (){
+            setState(() {
+              rProdList.addProductToList(product);
+            });
+          }, 
+          icon: const Icon(Icons.add, color: Colors.green)
+        ),
+        IconButton(
+          style: const ButtonStyle(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap
+          ),
+          onPressed: (){
+            setState(() {
+              rProdList.addTenCantToBuyOfAProduct(product.id);
+            });
+          }, 
+          icon: dosisText('+10', fontWeight: FontWeight.bold)
+        ),
+              
+      ],
+    
     );
   }
 

@@ -43,7 +43,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               dosisText(widget.product.name, fontWeight: FontWeight.bold,
                 size: 30),
 
-              dosisText('\$${widget.product.price.numFormat} CUP', fontWeight: FontWeight.bold,
+              dosisText('\$${widget.product.price.numFormat} ${widget.product.coin}', fontWeight: FontWeight.bold,
                 size: 20),
 
               dosisBold('Proveedor: ', widget.product.provider.toString(), 20),
@@ -62,7 +62,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               const Divider(color: Colors.black),
 
               dosisBold('Cantidad a superar: ', widget.product.moreThan.toString(), 20),
-              dosisBold('Precio de venta: ', '${widget.product.discount.numFormat} CUP', 20),
+              dosisBold('Precio de venta: ', '${widget.product.discount.numFormat} ${widget.product.coin}', 20),
               dosisBold('Comisión: ', '${widget.product.commissionDiscount.numFormat} CUP', 20),
           
             ],

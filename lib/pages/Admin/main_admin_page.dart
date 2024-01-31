@@ -65,7 +65,7 @@ class _MainAdminPageState extends ConsumerState<MainAdminPage> {
                 Icons.pending_actions_outlined,
                 'Pedidos',
                 'Ordenes aún pendientes',
-                () => Navigator.pushNamed(context, 'pendings_control_page'),
+                () => Navigator.pushNamed(context, 'pending_control_page'),
                 true),
 
               optListTile(

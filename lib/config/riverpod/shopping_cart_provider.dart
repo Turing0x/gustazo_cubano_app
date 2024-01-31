@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 
 Map<String, Product> _productList = {};
@@ -18,6 +19,15 @@ class ShoppingCartProvider extends StateNotifier<Product> {
     return total;
   }
 
+  String whatCoin() {
+   List<String> coins = ['CUP', 'USD', 'MLC', 'ZELLE'];
+   return coins.firstWhere(
+      (coin) => products.values.every(
+        (element) => element.coin == coin),
+      orElse: () => 'CUP',
+   );
+  }
+
   double get totalAmount {
     return _productList.values.fold(0.0, (previousValue, element) {
       double price = element.cantToBuy >= element.moreThan ? element.discount : element.price;
@@ -25,12 +35,27 @@ class ShoppingCartProvider extends StateNotifier<Product> {
     });
   }
 
-  double get totalCommisionMoney {
+  double totalCommissionMoney(WidgetRef ref) {
+    
     double commissionMoney = 0.0;
+    final prices = ref.watch(coinPrices);
+
     _productList.forEach((key, value) {
-      double commission = value.cantToBuy >= value.moreThan ? value.commissionDiscount : value.commission;
-      commissionMoney += value.cantToBuy * commission; });
+      
+      double commission = value.cantToBuy >= value.moreThan 
+        ? value.commissionDiscount 
+        : value.commission;
+      
+      commissionMoney += (value.coin == 'CUP')
+        ? value.cantToBuy * commission
+        : (value.coin == 'MLC')
+          ? (value.cantToBuy * commission) * prices.mlc
+          : (value.cantToBuy * commission) * prices.usd;
+          
+    });
+    
     return commissionMoney;
+  
   }
 
   bool isInCart(String productId) => _productList.containsKey(productId);

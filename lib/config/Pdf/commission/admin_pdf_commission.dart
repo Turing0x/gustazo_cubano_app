@@ -11,7 +11,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 
-class GenerateAdminPdfCommision {
+class GenerateAdminPdfCommission {
   static Future<Map<String, dynamic>> generate(List<Order> invoice, String date) async {
 
     try {

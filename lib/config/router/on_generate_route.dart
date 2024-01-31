@@ -3,7 +3,7 @@ import 'package:gustazo_cubano_app/pages/Admin/order_details_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/commercial_info_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/finish_order_page.dart';
 import 'package:gustazo_cubano_app/pages/Commercial/my_orders_history_page.dart';
-import 'package:gustazo_cubano_app/pages/Commercial/my_pendings_today_page.dart';
+import 'package:gustazo_cubano_app/pages/Commercial/my_pending_today_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/buyer_info_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/confirm_pending_page.dart';
 import 'package:gustazo_cubano_app/pages/Order/edit_pending_page.dart';
@@ -46,8 +46,8 @@ MaterialPageRoute<dynamic>? onGenerateRoute ( RouteSettings settings ) {
         dataOrder: argumentos[0],
       )),
 
-    'my_pendings_today_page': MaterialPageRoute(
-      builder: (_) => MyPendignsTodayPage(
+    'my_pending_today_page': MaterialPageRoute(
+      builder: (_) => MyPendingTodayPage(
         commercialCode: argumentos[0],
       )),
 

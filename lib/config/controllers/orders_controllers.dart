@@ -19,7 +19,7 @@ class OrderControllers {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: Uri.https(dotenv.env['SERVER_URL']!).toString(),
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
         headers: {
           'Content-Type': 'application/json',
           'access-token': token,
@@ -92,7 +92,7 @@ class OrderControllers {
     }
   }
   
-  Future<List<Order>> getMyPendingsToday(String commercialCode, String date) async{
+  Future<List<Order>> getMyPendingToday(String commercialCode, String date) async{
     try {
 
       await _initializeDio();

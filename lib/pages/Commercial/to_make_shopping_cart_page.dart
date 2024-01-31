@@ -100,8 +100,8 @@ class _ShowListState extends ConsumerState<ShowList> {
               widget.products[index]
             ]),
             child: Container(
-              margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
+              padding: const EdgeInsets.only(left: 10, top: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -111,29 +111,27 @@ class _ShowListState extends ConsumerState<ShowList> {
                   blurRadius: 1
                 )]
               ),
-              child: SingleChildScrollView(
-                child: Row(
-                  children: [
-                            
-                    SizedBox(
-                      height: 70,
-                      child: (widget.products[index].photo.isNotEmpty && 
-                        checkUrl(widget.products[index].photo)) 
-                        ? productPhoto(widget.products[index].photo)
-                        : Image.asset('lib/assets/images/6720387.jpg')),
+              child: Column(
+                children: [
+                  bodyProd(index),
 
-                    productInfo(
-                      widget.products[index].name, 
-                      widget.products[index].price.toString(),
-                      widget.products[index].inStock.toStringAsFixed(0)),
-                            
-                    const Spacer(),
-                            
-                    addBuyBtn(widget.products[index])
-                            
-                  ],
-                            
-                ),
+                  const SizedBox(height: 10),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Text(widget.products[index].description, style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 18,
+                          fontFamily: 'Dosis'
+                        ),),
+                      ),
+                      addBuyBtn(widget.products[index]),
+                    ],
+                  )
+                ],
               ),
             
             ),
@@ -147,15 +145,45 @@ class _ShowListState extends ConsumerState<ShowList> {
 
   }
 
-  Container productInfo(String name, String price, String stock) {
+  Row bodyProd(int index) {
+    return Row(
+      children: [
+                
+        SizedBox(
+          height: 70,
+          child: (widget.products[index].photo.isNotEmpty && 
+            checkUrl(widget.products[index].photo)) 
+            ? productPhoto(widget.products[index].photo)
+            : Image.asset('lib/assets/images/6720387.jpg')),
+    
+        productInfo(
+          widget.products[index].name, 
+          widget.products[index].price.toString().intPart,
+          widget.products[index].coin,
+          widget.products[index].inStock.toStringAsFixed(0)),
+                
+      ],
+                
+    );
+  }
+
+  Container productInfo(String name, String price, String coin, String stock) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('\$${price.intPart} CUP', color: Colors.blue),
+          SizedBox(
+            width: 200,
+            child: Text(name, style: const TextStyle(
+              fontFamily: 'Dosis',
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.ellipsis
+            )),
+          ),
+          dosisText('\$$price $coin', color: Colors.blue),
           dosisText('Stock: $stock', color: Colors.green),
         ],
       )
@@ -194,11 +222,14 @@ class _ShowListState extends ConsumerState<ShowList> {
     final rProdList = ref.read(productList.notifier);
 
     return Container(
-      width: 40,
+      width: 80,
       height: 40,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(100),
+        color: Colors.green[100],
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(5),
+          bottomRight: Radius.circular(10)
+        ),
         boxShadow: const [BoxShadow(
           color: Colors.black12,
           spreadRadius: 1,
@@ -206,6 +237,7 @@ class _ShowListState extends ConsumerState<ShowList> {
         )]
       ),
       child: IconButton(
+        highlightColor: Colors.transparent,
         onPressed: (){
           if(!rProdList.isInCart(product.id)){
             setState(() {
@@ -219,7 +251,7 @@ class _ShowListState extends ConsumerState<ShowList> {
         }, 
         icon: (rProdList.isInCart(product.id))
           ? const Icon(Icons.remove_shopping_cart_outlined, color: Colors.red)
-          : const Icon(Icons.add_shopping_cart_outlined, color: Colors.blue)
+          : const Icon(Icons.add_shopping_cart_outlined, color: Colors.green)
       )
     );
   }

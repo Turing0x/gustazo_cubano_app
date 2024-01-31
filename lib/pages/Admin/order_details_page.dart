@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_order.dart';
-import 'package:gustazo_cubano_app/config/Pdf/invoces/order_invoce.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoices/order_invoice.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
@@ -65,16 +65,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 dosisBold('Nombre Completo: ', o.buyer.fullName, 20),
                 dosisBold('Carnet de Identidad: ', o.buyer.ci, 20),
                 dosisBold('Gestión Económica: ', o.buyer.economic, 18),
-                dosisBold('Dirección Particular: \$', o.buyer.address, 18),
-                dosisBold('Número de Contacto: \$', o.buyer.phoneNumber, 18),
-                dosisBold('Método de pago: \$', o.typeCoin, 18),
+                dosisBold('Dirección Particular: ', o.buyer.address, 18),
+                dosisBold('Número de Contacto: ', o.buyer.phoneNumber, 18),
+                dosisBold('Método de pago: ', o.typeCoin, 18),
                 const Divider(
                   color: Colors.black,
                 ),
                 dosisBold('Fecha: ', fecha, 18),
                 dosisBold('Número de factura: ', '${o.pendingNumber} - ${o.invoiceNumber}', 18),
                 dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
-                dosisBold('Monto total: \$', o.totalAmount.numFormat, 18)
+                dosisBold('Monto total: \$', '${o.totalAmount.numFormat} ${o.typeCoin}', 18)
               ]),
 
               SizedBox(
@@ -169,7 +169,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     DateTime date = widget.order.date;
     String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
 
-    final invoice = OrderInvoce(
+    final invoice = OrderInvoice(
       paymentMethod: widget.order.typeCoin,
       payeerName: widget.order.whoPay.fullName,
       payeerAddress: widget.order.whoPay.address,

@@ -92,7 +92,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
             orderCtrl.editOrder(widget.order.id, order);
 
             Navigator.pushReplacementNamed(context, (role != 'admin') 
-              ? 'my_pendings_today_page' : 'pendings_control_page', arguments: [
+              ? 'my_pending_today_page' : 'pending_control_page', arguments: [
                 widget.order.seller.commercialCode
               ]);
           }, 
@@ -112,7 +112,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
             customGroupBox('Información del carrito', [
               dosisBold('Cantidad de productos: ', rProdList.productsCant.toString(), 20),
               dosisBold('Monto de la compra: ', rProdList.totalAmount.toStringAsFixed(2), 20),
-              dosisBold('Comisión por la compra: ', rProdList.totalCommisionMoney.toStringAsFixed(2), 20)
+              dosisBold('Comisión por la compra: ', rProdList.totalCommissionMoney(ref).toStringAsFixed(2), 20)
             ]),
 
             ( rProdList.products.isEmpty )

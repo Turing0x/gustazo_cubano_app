@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_pending.dart';
-import 'package:gustazo_cubano_app/config/Pdf/invoces/pending_invoce.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoices/pending_invoice.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
@@ -138,22 +138,22 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
           Visibility(
             visible: show,
-            child: dosisBold('Ganacias por comisión: \$', o.commission.numFormat, 18)),
+            child: dosisBold('Ganacias: \$', '${o.commission.numFormat} CUP', 18)),
           const Divider(
             color: Colors.black,
           ),
           dosisBold('Cliente: ', o.buyer.fullName, 20),
           dosisBold('Carnet de Identidad: ', o.buyer.ci, 20),
           dosisBold('Gestión Económica: ', o.buyer.economic, 18),
-          dosisBold('Dirección Particular: \$', o.buyer.address, 18),
-          dosisBold('Número de Contacto: \$', o.buyer.phoneNumber, 18),
-          dosisBold('Método de pago: \$', o.typeCoin, 18),
+          dosisBold('Dirección Particular: ', o.buyer.address, 18),
+          dosisBold('Número de Contacto: ', o.buyer.phoneNumber, 18),
+          dosisBold('Método de pago: ', o.typeCoin, 18),
           const Divider(
             color: Colors.black,
           ),
           dosisBold('Fecha: ', fecha, 18),
           dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
-          dosisBold('Monto total: \$', o.totalAmount.numFormat, 18)
+          dosisBold('Monto total: \$', '${o.totalAmount.numFormat} ${o.typeCoin}', 18)
         ]),
     
         SizedBox(
@@ -165,6 +165,8 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
   }
 
   PopupMenuButton popupMenuButton() {
+
+    final nav = Navigator.of(context);
 
     final orderCrt = OrderControllers();
     return PopupMenuButton(
@@ -180,9 +182,9 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
             arguments: [widget.order]),
           
-          'cancel_order': () => {
-            orderCrt.deleteOne(widget.order.id),
-            Navigator.pushReplacementNamed(context, 'pendings_control_page')
+          'cancel_order': () async => {
+            await orderCrt.deleteOne(widget.order.id),
+            nav.pushReplacementNamed('pending_control_page')
           }
 
         };
@@ -219,6 +221,8 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
   PopupMenuButton popupMenuButton2() {
 
     final orderCrt = OrderControllers();
+    final nav = Navigator.of(context);
+
     return PopupMenuButton(
 
       icon: const Icon(Icons.more_vert, color: Colors.white,),
@@ -232,9 +236,9 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
             arguments: [widget.order]),
           
           'cancel_order': () => actionsSnackBar(context, 'Confirmar eliminación',
-            'Eliminar', (){
-              orderCrt.deleteOne(widget.order.id);
-              Navigator.popAndPushNamed(context, 'my_pendings_today_page');
+            'Eliminar', () async{
+              await orderCrt.deleteOne(widget.order.id);
+              nav.pushReplacementNamed('my_pending_today_page');
           })
 
         };
@@ -272,7 +276,8 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     DateTime date = widget.order.date;
     String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
 
-    final invoice = PendingInvoce(
+    final invoice = PendingInvoice(
+      paymentMethod: widget.order.typeCoin,
       orderNumber: widget.order.invoiceNumber,
       pendingNumber: widget.order.pendingNumber,
       orderDate: fecha,

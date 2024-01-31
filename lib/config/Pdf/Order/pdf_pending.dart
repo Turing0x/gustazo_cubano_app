@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:gustazo_cubano_app/config/Pdf/invoces/pending_invoce.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoices/pending_invoice.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
 import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
@@ -11,7 +11,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 
 class GeneratePdfPending {
-  static Future<Map<String, dynamic>> generate(PendingInvoce invoice) async {
+  static Future<Map<String, dynamic>> generate(PendingInvoice invoice) async {
 
     try {
 
@@ -41,7 +41,7 @@ class GeneratePdfPending {
 
   }
 
-  static pw.MultiPage multiPage(PendingInvoce invoice, MemoryImage image) {
+  static pw.MultiPage multiPage(PendingInvoice invoice, MemoryImage image) {
     return MultiPage(
       pageFormat: const PdfPageFormat(1500, 1500),
       build: (context) => [
@@ -50,7 +50,7 @@ class GeneratePdfPending {
           child: pw.Column(
             children: [
 
-              topRow(invoice.title, invoice.address, image),
+              topRow(invoice.title, invoice.address, image, invoice.paymentMethod),
               
               pw.SizedBox(height: 100),
 
@@ -75,7 +75,7 @@ class GeneratePdfPending {
     );
   }
 
-  static Row topRow( String title, String address, MemoryImage image  ){
+  static Row topRow( String title, String address, MemoryImage image, String method ){
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -84,13 +84,20 @@ class GeneratePdfPending {
           children: [
             pwtextoDosis(title, 28, fontWeight: pw.FontWeight.bold),
             pwtextoDosis(address, 25),
+            pwtextoDosis(( method == 'CUP' )
+            ? 'Pago en Moneda Nacional ( CUP )'
+            : (method == 'MLC')
+              ? 'Transferencia de Moneda Libremente Convertible ( MLC )'
+              : (method == 'USD')
+                ? 'Pago en efectivo de Dólar Estadounidense ( USD )'
+                : 'Transferencia Bancaria Directa USD ( ZELLE )', 23)
           ]
         )
       ]
     );
   }
   
-  static Row infoRow( PendingInvoce invoice ){
+  static Row infoRow( PendingInvoice invoice ){
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +125,7 @@ class GeneratePdfPending {
     );
   }
 
-  static Widget buildInvoice(PendingInvoce invoice) {
+  static Widget buildInvoice(PendingInvoice invoice) {
     final headers = [
       'Producto',
       'Cantidad',
@@ -137,8 +144,8 @@ class GeneratePdfPending {
           ]
         )),
         Container(child: pwtextoDosis(item.cantToBuy.toString(), 23)),
-        Container(child: pwtextoDosis('${item.price.toString()} CUP', 23)),
-        Container(child: pwtextoDosis('${(item.cantToBuy * item.price).numFormat} CUP', 23)),
+        Container(child: pwtextoDosis('${item.price} ${item.coin}', 23)),
+        Container(child: pwtextoDosis('${(item.cantToBuy * item.price).numFormat} ${item.coin}', 23)),
       ];
     }).toList();
 
@@ -152,11 +159,11 @@ class GeneratePdfPending {
           fontWeight: FontWeight.bold)),
       Container(
         child: pwtextoDosis('${invoice.productList.fold(0.0, (previousValue, element) => 
-          previousValue + element.price).numFormat} CUP', 23,
+          previousValue + element.price).numFormat} ${invoice.paymentMethod}', 23,
           fontWeight: FontWeight.bold)),
       Container(
         child: pwtextoDosis('${invoice.productList.fold(0.0, (previousValue, element) => 
-          previousValue + element.cantToBuy * element.price).numFormat} CUP', 23,
+          previousValue + element.cantToBuy * element.price).numFormat} ${invoice.paymentMethod}', 23,
           fontWeight: FontWeight.bold)),
       ]);
 

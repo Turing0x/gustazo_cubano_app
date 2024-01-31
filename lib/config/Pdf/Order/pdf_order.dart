@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:gustazo_cubano_app/config/Pdf/invoces/order_invoce.dart';
+import 'package:gustazo_cubano_app/config/Pdf/invoices/order_invoice.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/bold_text.dart';
 import 'package:gustazo_cubano_app/config/Pdf/widgets/texto_dosis.dart';
 import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
@@ -11,7 +11,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 
 class GeneratePdfOrder {
-  static Future<Map<String, dynamic>> generate(OrderInvoce invoice) async {
+  static Future<Map<String, dynamic>> generate(OrderInvoice invoice) async {
 
     try {
 
@@ -40,7 +40,7 @@ class GeneratePdfOrder {
 
   }
 
-  static pw.MultiPage multiPage(OrderInvoce invoice, MemoryImage image) {
+  static pw.MultiPage multiPage(OrderInvoice invoice, MemoryImage image) {
     return MultiPage(
       pageFormat: const PdfPageFormat(1500, 1500),
       build: (context) => [
@@ -114,7 +114,7 @@ class GeneratePdfOrder {
     );
   }
   
-  static Row infoRow( OrderInvoce invoice ){
+  static Row infoRow( OrderInvoice invoice ){
     return pw.Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +145,7 @@ class GeneratePdfOrder {
     );
   }
 
-  static Widget buildInvoice(OrderInvoce invoice) {
+  static Widget buildInvoice(OrderInvoice invoice) {
     final headers = [
       'Producto',
       'Cantidad',
@@ -164,8 +164,8 @@ class GeneratePdfOrder {
           ]
         )),
         Container(child: pwtextoDosis(item.cantToBuy.toString(), 23)),
-        Container(child: pwtextoDosis('${item.price.numFormat} CUP', 23)),
-        Container(child: pwtextoDosis('${(item.cantToBuy * item.price).numFormat} CUP', 23)),
+        Container(child: pwtextoDosis('${item.price.numFormat} ${item.coin}', 23)),
+        Container(child: pwtextoDosis('${(item.cantToBuy * item.price).numFormat} ${item.coin}', 23)),
       ];
     }).toList();
 
@@ -179,11 +179,11 @@ class GeneratePdfOrder {
           fontWeight: FontWeight.bold)),
       Container(
         child: pwtextoDosis('${invoice.productList.fold(0.0, (previousValue, element) => 
-          previousValue + element.price).numFormat} CUP', 23,
+          previousValue + element.price).numFormat} ${invoice.paymentMethod}', 23,
           fontWeight: FontWeight.bold)),
       Container(
         child: pwtextoDosis('${invoice.productList.fold(0.0, (previousValue, element) => 
-          previousValue + element.cantToBuy * element.price).numFormat} CUP', 23,
+          previousValue + element.cantToBuy * element.price).numFormat} ${invoice.paymentMethod}', 23,
           fontWeight: FontWeight.bold)),
       ]);
 

@@ -79,7 +79,7 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
                 Icons.pending_actions_outlined,
                 'Mis pedidos',
                 'Pedidos aun pendientes',
-                () => Navigator.pushNamed(context, 'my_pendings_today_page', arguments: [
+                () => Navigator.pushNamed(context, 'my_pending_today_page', arguments: [
                   commercialCode
                 ]),
                 true),

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gustazo_cubano_app/config/Pdf/Commision/admin_pdf_commision.dart';
+import 'package:gustazo_cubano_app/config/Pdf/commission/admin_pdf_commission.dart';
+import 'package:gustazo_cubano_app/config/Pdf/commission/admin_pdf_daily.dart';
 import 'package:gustazo_cubano_app/config/controllers/orders_controllers.dart';
+import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
 import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
+import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/Select_date/select_date.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 
 List<Order> listToPdf = [];
@@ -38,13 +42,7 @@ class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
 
     return Scaffold(
       appBar: showAppBar('Historial de órdenes', actions: [
-        Visibility(
-          visible: show,
-          child: IconButton(
-            onPressed: () => makePDF(),
-            icon: const Icon(Icons.picture_as_pdf_outlined)
-          ),
-        )
+        menu()
       ]),
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -71,7 +69,7 @@ class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
     DateTime date = listToPdf[0].date;
     String fecha = '${date.day}/${date.month}/${date.year}';
     Map<String, dynamic> itsDone =
-      await GenerateAdminPdfCommision.generate(listToPdf, fecha);
+      await GenerateAdminPdfCommission.generate(listToPdf, fecha);
 
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);
@@ -81,6 +79,50 @@ class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
     }
 
     showToast('Factura exportada exitosamente', type: true);
+  }
+
+  void makeDailyPDF() async{
+
+    DateTime date = listToPdf[0].date;
+    String fecha = DateFormat.MMMd('en').format(date);
+
+    List<Product> list = await ProductControllers().getDataForDaily(fecha);
+    if(list.isEmpty) return;
+    
+    Map<String, dynamic> itsDone =
+      await GenerateAdminPdfDaily.generate([], fecha);
+
+    if(itsDone['done'] == true){
+      OpenFile.open(itsDone['path']);
+    } else{
+      showToast(itsDone['path'], type: true);
+      return;
+    }
+
+    showToast('Factura exportada exitosamente', type: true);
+  }
+
+  PopupMenuButton menu(){
+    return PopupMenuButton(
+      icon: const Icon(Icons.more_vert),
+      onSelected: (value) async {
+        Map<String, void Function()> methods = {
+          'commi': () => makePDF() ,
+          'daily': () => makeDailyPDF(),
+        };
+        methods[value]!.call();
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'commi',
+          child: dosisText('Cálculo de comisiones', size: 18)
+        ),
+        PopupMenuItem(
+          value: 'daily',
+          child: dosisText('Resúmen del día', size: 18),
+        )
+      ]
+    );
   }
 
 }

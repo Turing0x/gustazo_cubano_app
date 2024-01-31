@@ -93,7 +93,7 @@ class _ConfirmPendingPageState extends State<ConfirmPendingPage> {
                   final orderCtrl = OrderControllers();
                   orderCtrl.marckAsDoneOrder(widget.orderId, number).then((value) {
                     if(value){
-                      Navigator.pushReplacementNamed(context, 'pendings_control_page');
+                      Navigator.pushReplacementNamed(context, 'pending_control_page');
                     }
                   });
                 }, 

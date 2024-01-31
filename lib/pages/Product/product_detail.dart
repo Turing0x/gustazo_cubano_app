@@ -34,6 +34,8 @@ class _ProductDetailsState extends State<ProductDetails> {
   bool allowEdit = true;
   bool show = false;
 
+  String coinType = 'CUP';
+
   @override
   void initState() {
 
@@ -47,6 +49,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     descriptionCtrl.text = widget.product.description;
     providerCtrl.text = widget.product.provider;
     priceCtrl.text = widget.product.price.toString();
+    coinType = widget.product.coin;
     commissionCtrl.text = widget.product.commission.toString();
     commissionDiscountCtrl.text = widget.product.commissionDiscount.toString();
     inStockCtrl.text = widget.product.inStock.toString();
@@ -134,6 +137,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   'provider': provider,
                   'photo': photo,
                   'price': price,
+                  'coin': coinType,
                   'inStock': inStock,
                   'commission': commission,
                   'commissionDiscount': commissionDiscount,
@@ -163,37 +167,36 @@ class _ProductDetailsState extends State<ProductDetails> {
               
                   FormTxt(
                     controller: photoCtrl,
-                    suffixIcon: Icons.add_photo_alternate_outlined, 
+                    suffixIcon: const Icon(Icons.add_photo_alternate_outlined), 
                     readOnly: allowEdit,
                     label: 'Foto del producto'),
       
                   FormTxt(
-                    suffixIcon: Icons.text_fields_outlined,
+                    suffixIcon: const Icon(Icons.text_fields_outlined),
                     readOnly: allowEdit,
                     controller: nameCtrl, 
                     label: 'Nombre del producto'),
       
                   FormTxt(
-                    suffixIcon: Icons.text_fields_outlined,
+                    suffixIcon: const Icon(Icons.text_fields_outlined),
                     readOnly: allowEdit,
                     controller: providerCtrl, 
                     label: 'Proveedor del producto'),
                   
                   FormTxt(
-                    suffixIcon: Icons.text_fields_outlined,
+                    suffixIcon: const Icon(Icons.text_fields_outlined),
                     readOnly: allowEdit,
                     controller: descriptionCtrl, 
                     label: 'Breve descripción'),
                   
                   FormTxt(
-                    suffixIcon: Icons.attach_money_outlined,
-                    readOnly: allowEdit,
+                    suffixIcon: popupMenuButton(),
                     controller: priceCtrl, 
                     keyboardType: TextInputType.number,
                     label: 'Precio por unidad'),
       
                   FormTxt(
-                    suffixIcon: Icons.numbers_outlined,
+                    suffixIcon: const Icon(Icons.numbers_outlined),
                     readOnly: allowEdit,
                     controller: inStockCtrl,
                     keyboardType: TextInputType.number, 
@@ -202,7 +205,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   Visibility(
                     visible: show,
                     child: FormTxt(
-                      suffixIcon: Icons.attach_money_outlined,
+                      suffixIcon: const Icon(Icons.attach_money_outlined),
                       readOnly: allowEdit,
                       controller: commissionCtrl,
                       keyboardType: TextInputType.number, 
@@ -211,23 +214,22 @@ class _ProductDetailsState extends State<ProductDetails> {
       
                   customGroupBox('Oferta a compra mayorista', [
                     FormTxt(
-                      suffixIcon: Icons.numbers_outlined,
+                      suffixIcon: const Icon(Icons.numbers_outlined),
                       readOnly: allowEdit,
                       controller: moreThanCtrl,
                       keyboardType: TextInputType.number,
                       label: 'Cantidad mayorista'),
                     
                     FormTxt(
-                      suffixIcon: Icons.attach_money_outlined,
-                      readOnly: allowEdit,
-                      controller: discountCtrl,
+                      suffixIcon: popupMenuButton(),
+                      controller: priceCtrl, 
                       keyboardType: TextInputType.number,
-                      label: 'Precio de venta'),
+                      label: 'Precio por unidad'),
                     
                     Visibility(
                       visible: show,
                       child: FormTxt(
-                        suffixIcon: Icons.attach_money_outlined,
+                        suffixIcon: const Icon(Icons.attach_money_outlined),
                         readOnly: allowEdit,
                         controller: commissionDiscountCtrl,
                         keyboardType: TextInputType.number,
@@ -248,6 +250,60 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   }
 
+  PopupMenuButton popupMenuButton() {
+    return PopupMenuButton(
+      icon: dosisText(coinType, fontWeight: FontWeight.bold),
+      onSelected: (value) {
+
+        Map<String, void Function()> methods = {
+
+          'CUP': (){
+            setState(() {
+              coinType = 'CUP';
+            });
+          },
+          'MLC': (){
+            setState(() {
+              coinType = 'MLC';
+            });
+          },
+          'USD': (){
+            setState(() {
+              coinType = 'USD';
+            });
+          },
+          'ZELLE': (){
+            setState(() {
+              coinType = 'ZELLE';
+            });
+          },
+
+        };
+
+        methods[value]!.call();
+      
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'CUP',
+          child: dosisText('CUP'),
+        ),
+        PopupMenuItem(
+          value: 'MLC',
+          child: dosisText('MLC'),
+        ),
+        PopupMenuItem(
+          value: 'USD',
+          child: dosisText('USD'),
+        ),
+        PopupMenuItem(
+          value: 'ZELLE',
+          child: dosisText('ZELLE'),
+        ),
+      ],
+    );
+  }
+
 }
 
 class FormTxt extends StatelessWidget {
@@ -262,7 +318,7 @@ class FormTxt extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final TextInputType keyboardType;
-  final IconData suffixIcon;
+  final Widget suffixIcon;
   final bool readOnly;
 
   @override
@@ -273,7 +329,7 @@ class FormTxt extends StatelessWidget {
       readOnly: readOnly,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
-        suffixIcon: Icon(suffixIcon),
+        suffixIcon: suffixIcon,
         labelStyle: const TextStyle(
           fontFamily: 'Dosis',
           fontWeight: FontWeight.bold),

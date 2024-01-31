@@ -19,7 +19,7 @@ class ProductControllers {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: Uri.https(dotenv.env['SERVER_URL']!).toString(),
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
         headers: {
           'Content-Type': 'application/json',
           'access-token': token,
@@ -61,6 +61,44 @@ class ProductControllers {
       });
 
       EasyLoading.showSuccess('La información de los productos en stock ha sido cargada');
+      return list;
+      
+    } catch (_) {
+      EasyLoading.showError('No se pudo cargar la información');
+      return [];
+    }
+
+  }
+
+  Future<List<Product>> getDataForDaily(String date) async{
+
+    try {
+
+      await _initializeDio();
+      EasyLoading.show(status: 'Buscando información para generar el resumen del día...');
+      Response response = await _dio.get('/api/getDaily/$date',
+        options: Options(validateStatus: (status) => true));
+
+      if( response.statusCode == 500 ) {
+        return [];
+      }
+
+      if( response.data['data'].isEmpty ) {
+        return [];
+      }
+
+      if( response.statusCode == 401 ) {
+        EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
+        return [];
+      }
+
+      List<Product> list = [];
+
+      response.data['data'].forEach((value) {
+        final productTemp = Product.fromJson(value);
+        list.add(productTemp);
+      });
+
       return list;
       
     } catch (_) {
