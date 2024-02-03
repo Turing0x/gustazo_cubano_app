@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
+import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,8 +37,9 @@ class _InternalStoragePageState extends State<InternalStoragePage> {
 
               filePath.deleteSync(recursive: true);
 
-              showToast('Todo los documentos fueron eliminados',
-                  type: true);
+              // ignore: use_build_context_synchronously
+              simpleMessageSnackBar(context, texto: 'Todo los documentos fueron eliminados',
+                  typeMessage: true);
               navigator.pop();
               cambioListas.value = !cambioListas.value;
             }
@@ -134,10 +136,10 @@ class _InternalStoragePageState extends State<InternalStoragePage> {
           final file = File(path);
           try {
             file.deleteSync();
-            showToast('Documento eliminado exitosamente', type: true);
+            simpleMessageSnackBar(context, texto: 'Documento eliminado exitosamente', typeMessage: true);
             cambioListas.value = !cambioListas.value;
           } catch (e) {
-            showToast('No se pudo eliminar el documento');
+            simpleMessageSnackBar(context, texto: 'No se pudo eliminar el documento');
           }
         });
   }
@@ -150,11 +152,11 @@ class _InternalStoragePageState extends State<InternalStoragePage> {
           final folder = Directory(path);
           try {
             folder.deleteSync(recursive: true);
-            showToast('Documento eliminado exitosamente', type: true);
+            simpleMessageSnackBar(context, texto: 'Documento eliminado exitosamente', typeMessage: true);
             cambioListas.value = !cambioListas.value;
             Navigator.pop(context);
           } catch (e) {
-            showToast('No se pudo eliminar el documento');
+            simpleMessageSnackBar(context, texto: 'No se pudo eliminar el documento');
           }
         });
   }

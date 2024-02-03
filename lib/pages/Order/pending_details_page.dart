@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gustazo_cubano_app/config/Pdf/Order/pdf_pending.dart';
@@ -295,11 +297,11 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);
     } else{
-      showToast(itsDone['path'], type: true);
+      simpleMessageSnackBar(context, texto: itsDone['path'], typeMessage: true);
       return;
     }
 
-    showToast('Factura exportada exitosamente', type: true);
+    simpleMessageSnackBar(context, texto: 'Factura exportada exitosamente', typeMessage: true);
   }
 
 }

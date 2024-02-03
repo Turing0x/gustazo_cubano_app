@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/Pdf/commission/pdf_commission.dart';
@@ -8,6 +10,7 @@ import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/order_model.dart';
 import 'package:gustazo_cubano_app/shared/Select_date/select_date.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
+import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 import 'package:open_file/open_file.dart';
 
@@ -101,11 +104,11 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
     if(itsDone['done'] == true){
       OpenFile.open(itsDone['path']);
     } else{
-      showToast(itsDone['path'], type: true);
+      simpleMessageSnackBar(context, texto: itsDone['path'], typeMessage: true);
       return;
     }
 
-    showToast('Factura exportada exitosamente', type: true);
+    simpleMessageSnackBar(context, texto: 'Factura exportada exitosamente', typeMessage: true);
   }
 
 }

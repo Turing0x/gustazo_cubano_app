@@ -41,7 +41,7 @@ class SettingAdminPage extends StatelessWidget {
             true),
 
           OutlinedButton.icon(
-            onPressed: () async{
+            onPressed: () {
               final contex = Navigator.of(context);
 
               LoginDataService().deleteData();

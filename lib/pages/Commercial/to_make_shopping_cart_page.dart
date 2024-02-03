@@ -88,61 +88,111 @@ class ShowList extends ConsumerStatefulWidget {
 
 class _ShowListState extends ConsumerState<ShowList> {
 
+  TextEditingController controller = TextEditingController();
+  late List<Product> list;
+
+  @override
+  void initState() {
+    list = widget.products;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: ListView.builder(
-        itemCount: widget.products.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'product_details_page', arguments: [
-              widget.products[index]
-            ]),
-            child: Container(
-              margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
-              padding: const EdgeInsets.only(left: 10, top: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: const [BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 1,
-                  blurRadius: 1
-                )]
+      body: Column(
+        children: [
+          
+          Container(
+            margin: const EdgeInsets.all(10),
+            height: 60,
+            child: TextField(
+              controller: controller,
+              onChanged: searchProduct,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: 'Título del producto',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.blue)
+                )
               ),
-              child: Column(
-                children: [
-                  bodyProd(index),
-
-                  const SizedBox(height: 10),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 200,
-                        child: Text(widget.products[index].description, style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 18,
-                          fontFamily: 'Dosis'
-                        ),),
-                      ),
-                      addBuyBtn(widget.products[index]),
-                    ],
-                  )
-                ],
-              ),
+            ),
+          ),
+          
+          Expanded(
+            child: ListView.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, 'product_details_page', arguments: [
+                    list[index]
+                  ]),
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
+                    padding: const EdgeInsets.only(left: 10, top: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 1,
+                        blurRadius: 1
+                      )]
+                    ),
+                    child: Column(
+                      children: [
+                        bodyProd(index),
+            
+                        const SizedBox(height: 10),
+            
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 200,
+                              child: Text(list[index].description, style: const TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 18,
+                                fontFamily: 'Dosis'
+                              ),),
+                            ),
+                            addBuyBtn(list[index]),
+                          ],
+                        )
+                      ],
+                    ),
+                  
+                  ),
+                );
+            
+              }
             
             ),
-          );
-
-        }
-
+          ),
+        ],
       )
 
     );
 
+  }
+
+  void searchProduct(String query){
+    List<Product> suggestions = list.where((element) {
+      final productTitle = element.name.toLowerCase();
+      final input = query.toLowerCase();
+
+      return productTitle.contains(input);
+    }).toList();
+
+    if(suggestions.isEmpty || query == ''){
+      setState(() {
+        suggestions = widget.products;
+      });
+    }
+
+    setState(() => list = suggestions);
   }
 
   Row bodyProd(int index) {
@@ -151,16 +201,16 @@ class _ShowListState extends ConsumerState<ShowList> {
                 
         SizedBox(
           height: 70,
-          child: (widget.products[index].photo.isNotEmpty && 
-            checkUrl(widget.products[index].photo)) 
-            ? productPhoto(widget.products[index].photo)
+          child: (list[index].photo.isNotEmpty && 
+            checkUrl(list[index].photo)) 
+            ? productPhoto(list[index].photo)
             : Image.asset('lib/assets/images/6720387.jpg')),
     
         productInfo(
-          widget.products[index].name, 
-          widget.products[index].price.toString().intPart,
-          widget.products[index].coin,
-          widget.products[index].inStock.toStringAsFixed(0)),
+          list[index].name, 
+          list[index].price.toString().intPart,
+          list[index].coin,
+          list[index].inStock.toStringAsFixed(0)),
                 
       ],
                 

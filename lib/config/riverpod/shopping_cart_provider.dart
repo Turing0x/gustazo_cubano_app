@@ -29,10 +29,12 @@ class ShoppingCartProvider extends StateNotifier<Product> {
   }
 
   double get totalAmount {
-    return _productList.values.fold(0.0, (previousValue, element) {
-      double price = element.cantToBuy >= element.moreThan ? element.discount : element.price;
-      return price * element.cantToBuy;
+    double totalAmount = 0.0;
+    _productList.forEach((key, value) {
+      double price = value.cantToBuy >= value.moreThan ? value.discount : value.price;
+      totalAmount += price * value.cantToBuy;
     });
+    return totalAmount;
   }
 
   double totalCommissionMoney(WidgetRef ref) {
