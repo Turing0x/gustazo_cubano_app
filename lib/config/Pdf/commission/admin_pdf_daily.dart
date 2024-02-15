@@ -84,7 +84,7 @@ class GenerateAdminPdfDaily {
         pw.Image(image),
         pw.Column(
           children: [
-            pwtextoDosis('Ventas Kapricho', 28, fontWeight: pw.FontWeight.bold),
+            pwtextoDosis('E Gustazo Cubano', 28, fontWeight: pw.FontWeight.bold),
             pwtextoDosis('Calle 222 e/ 29 y 31 La Coronela. La Lisa', 25),
           ]
         )

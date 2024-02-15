@@ -2,8 +2,8 @@ import 'package:gustazo_cubano_app/models/product_model.dart';
 
 class PendingInvoice {
 
-  final String title = 'Ventas Kapricho';
-  final String address = 'Calle 222 e/ 29 y 31 La Coronela. La Lisa';
+  final String title = 'E Gustazo Cubano';
+  final String address = 'Ave 51 No 18004 Apto 9 e/ 180 y 190 La Lisa';
 
   final String paymentMethod;
 
