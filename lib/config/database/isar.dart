@@ -5,27 +5,19 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 class IsarService {
-
   late Future<Isar> isar;
 
-  IsarService(){
+  IsarService() {
     isar = openDb();
   }
 
-  Future<Isar> openDb() async{
-
+  Future<Isar> openDb() async {
     Directory dbPath = await getApplicationDocumentsDirectory();
 
-    if( Isar.instanceNames.isNotEmpty ){
+    if (Isar.instanceNames.isNotEmpty) {
       return Future.value(Isar.getInstance());
     }
 
-    return await Isar.open(
-      [LoginDataSchema], 
-      directory: dbPath.path,
-      inspector: true
-    );
-
+    return await Isar.open([LoginDataSchema], directory: dbPath.path, inspector: true);
   }
-
 }

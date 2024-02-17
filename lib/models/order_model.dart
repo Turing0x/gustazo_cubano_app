@@ -36,34 +36,34 @@ class Order {
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
-    id: json["_id"],
-    finish: json["finish"],
-    invoiceNumber: json["invoice_number"],
-    pendingNumber: json["pending_number"],
-    date: DateTime.parse(json["date"]),
-    productList: List<Product>.from(json["product_list"].map((x) => Product.fromJson(x))),
-    totalAmount: json["total_amount"].toDouble(),
-    commission: json["commission"].toDouble(),
-    seller: Seller.fromJson(json["seller"]),
-    buyer: Buyer.fromJson(json["buyer"]),
-    typeCoin: json["type_coin"],
-    whoPay: WhoPay.fromJson(json["who_pay"]),
-  );
+        id: json["_id"],
+        finish: json["finish"],
+        invoiceNumber: json["invoice_number"],
+        pendingNumber: json["pending_number"],
+        date: DateTime.parse(json["date"]),
+        productList: List<Product>.from(json["product_list"].map((x) => Product.fromJson(x))),
+        totalAmount: json["total_amount"].toDouble(),
+        commission: json["commission"].toDouble(),
+        seller: Seller.fromJson(json["seller"]),
+        buyer: Buyer.fromJson(json["buyer"]),
+        typeCoin: json["type_coin"],
+        whoPay: WhoPay.fromJson(json["who_pay"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "finish": finish,
-    "invoice_number": invoiceNumber,
-    "pending_number": pendingNumber,
-    "date": date.toIso8601String(),
-    "product_list": List<dynamic>.from(productList.map((x) => x.toJson())),
-    "total_amount": totalAmount,
-    "commission": commission,
-    "seller": seller.toJson(),
-    "buyer": buyer.toJson(),
-    "type_coin": typeCoin,
-    "who_pay": whoPay.toJson(),
-  };
+        "_id": id,
+        "finish": finish,
+        "invoice_number": invoiceNumber,
+        "pending_number": pendingNumber,
+        "date": date.toIso8601String(),
+        "product_list": List<dynamic>.from(productList.map((x) => x.toJson())),
+        "total_amount": totalAmount,
+        "commission": commission,
+        "seller": seller.toJson(),
+        "buyer": buyer.toJson(),
+        "type_coin": typeCoin,
+        "who_pay": whoPay.toJson(),
+      };
 
   int get getCantOfProducts {
     int total = 0;
@@ -72,7 +72,6 @@ class Order {
     }
     return total;
   }
-
 }
 
 class Buyer {
@@ -91,20 +90,20 @@ class Buyer {
   });
 
   factory Buyer.fromJson(Map<String, dynamic> json) => Buyer(
-    economic: json["economic"],
-    fullName: json["full_name"],
-    ci: json["ci"],
-    phoneNumber: json["phone_number"],
-    address: json["address"],
-  );
+        economic: json["economic"],
+        fullName: json["full_name"],
+        ci: json["ci"],
+        phoneNumber: json["phone_number"],
+        address: json["address"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "economic": economic,
-    "full_name": fullName,
-    "ci": ci,
-    "phone_number": phoneNumber,
-    "address": address,
-  };
+        "economic": economic,
+        "full_name": fullName,
+        "ci": ci,
+        "phone_number": phoneNumber,
+        "address": address,
+      };
 }
 
 class Seller {
@@ -123,20 +122,20 @@ class Seller {
   });
 
   factory Seller.fromJson(Map<String, dynamic> json) => Seller(
-    commercialCode: json["commercial_code"],
-    ci: json["ci"],
-    fullName: json["full_name"],
-    phone: json["phone"],
-    address: json["address"],
-  );
+        commercialCode: json["commercial_code"],
+        ci: json["ci"],
+        fullName: json["full_name"],
+        phone: json["phone"],
+        address: json["address"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "commercial_code": commercialCode,
-    "ci": ci,
-    "full_name": fullName,
-    "phone": phone,
-    "address": address,
-  };
+        "commercial_code": commercialCode,
+        "ci": ci,
+        "full_name": fullName,
+        "phone": phone,
+        "address": address,
+      };
 }
 
 class WhoPay {
@@ -153,16 +152,16 @@ class WhoPay {
   });
 
   factory WhoPay.fromJson(Map<String, dynamic> json) => WhoPay(
-    fullName: json["full_name"] ?? '',
-    postalCode: json["postal_code"] ?? '',
-    phoneNumber: json["phone_number"] ?? '',
-    address: json["address"] ?? '',
-  );
+        fullName: json["full_name"] ?? '',
+        postalCode: json["postal_code"] ?? '',
+        phoneNumber: json["phone_number"] ?? '',
+        address: json["address"] ?? '',
+      );
 
   Map<String, dynamic> toJson() => {
-    "full_name": fullName,
-    "postal_code": postalCode,
-    "phone_number": phoneNumber,
-    "address": address,
-  };
+        "full_name": fullName,
+        "postal_code": postalCode,
+        "phone_number": phoneNumber,
+        "address": address,
+      };
 }

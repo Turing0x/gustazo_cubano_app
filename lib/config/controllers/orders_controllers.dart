@@ -7,7 +7,6 @@ import 'package:gustazo_cubano_app/config/database/entities/login_data_service.d
 import 'package:gustazo_cubano_app/models/order_model.dart';
 
 class OrderControllers {
-
   late Dio _dio;
 
   OrderControllers() {
@@ -19,7 +18,7 @@ class OrderControllers {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: Uri.https(dotenv.env['SERVER_URL']!).toString(),
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
         headers: {
           'Content-Type': 'application/json',
           'access-token': token,
@@ -29,24 +28,23 @@ class OrderControllers {
     );
   }
 
-  Future<List<Order>> getAllOrders(bool change, {String date = ''}) async{
+  Future<List<Order>> getAllOrders(bool change, {String date = ''}) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Obteniendo todos los pedidos...');
       Response response = await _dio.get('/api/${change ? 'orders/$date' : 'orders/pending/:$date'}');
 
-      if( response.statusCode == 500 ) {
+      if (response.statusCode == 500) {
         EasyLoading.showError('No se pudo obtener los pedidos');
         return [];
       }
 
-      if( response.data['data'].isEmpty ) {
+      if (response.data['data'].isEmpty) {
         EasyLoading.showInfo('Pedidos pendientes obtenidos correctamente');
         return [];
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
@@ -58,26 +56,24 @@ class OrderControllers {
       });
       EasyLoading.showSuccess('Pedidos obtenidos correctamente');
       return list;
-      
     } catch (error) {
       EasyLoading.showError('No se pudo obtener los pedidos');
       return [];
     }
   }
-  
-  Future<List<Order>> getOrderById(String orderId) async{
-    try {
 
+  Future<List<Order>> getOrderById(String orderId) async {
+    try {
       await _initializeDio();
       EasyLoading.show(status: 'Obteniendo órden por ID...');
       Response response = await _dio.get('/api/orders/getById/$orderId');
 
-      if( response.statusCode == 500 ) {
+      if (response.statusCode == 500) {
         EasyLoading.showError('No se pudo obtener la órden');
         return [];
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
@@ -85,31 +81,29 @@ class OrderControllers {
       Order order = Order.fromJson(response.data['data']);
       EasyLoading.showSuccess('Pedido obtenido correctamente');
       return [order];
-      
     } catch (_) {
       EasyLoading.showError('No se pudo obtener la órden');
       return [];
     }
   }
-  
-  Future<List<Order>> getMyPendingToday(String commercialCode, String date) async{
-    try {
 
+  Future<List<Order>> getMyPendingToday(String commercialCode, String date) async {
+    try {
       await _initializeDio();
       EasyLoading.show(status: 'Obteniendo mis pedidos pendientes de hoy...');
       Response response = await _dio.get('/api/orders/getByComm/$commercialCode/$date');
 
-      if( response.statusCode == 500 ) {
+      if (response.statusCode == 500) {
         EasyLoading.showError('No se pudo obtener los pedidos pendientes');
         return [];
       }
 
-      if( response.data['data'].isEmpty ) {
+      if (response.data['data'].isEmpty) {
         EasyLoading.showInfo('No hay pedidos para hoy');
         return [];
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
@@ -122,31 +116,29 @@ class OrderControllers {
 
       EasyLoading.showSuccess('Pedidos pendientes obtenidos correctamente');
       return list;
-      
     } catch (e) {
       EasyLoading.showError('No se pudo obtener los pedidos pendientes');
       return [];
     }
   }
-  
-  Future<List<Order>> getMyOrders(String commercialCode, String date) async{
-    try {
 
+  Future<List<Order>> getMyOrders(String commercialCode, String date) async {
+    try {
       await _initializeDio();
       EasyLoading.show(status: 'Obteniendo mis órdenes...');
       Response response = await _dio.get('/api/orders/getByCommOrder/$commercialCode/$date');
 
-      if( response.statusCode == 500 ) {
+      if (response.statusCode == 500) {
         EasyLoading.showError('No se pudo obtener las órdenes');
         return [];
       }
 
-      if( response.data['data'].isEmpty ) {
+      if (response.data['data'].isEmpty) {
         EasyLoading.showInfo('No hay órdenes para hoy');
         return [];
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
@@ -158,7 +150,6 @@ class OrderControllers {
       });
       EasyLoading.showSuccess('Órdenes obtenidas correctamente');
       return list;
-      
     } catch (_) {
       EasyLoading.showError('No se pudo obtener las órdenes');
       return [];
@@ -167,18 +158,16 @@ class OrderControllers {
 
   Future<void> saveOrder(Map<String, dynamic> order) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Guardando pedido...');
-      Response response = await _dio.post('/api/orders', 
-        data: jsonEncode(order) );
+      Response response = await _dio.post('/api/orders', data: jsonEncode(order));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('Pedido guardado correctamente');
         return;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
@@ -189,21 +178,19 @@ class OrderControllers {
       EasyLoading.showError('No se pudo guardar el pedido');
     }
   }
-  
+
   Future<void> editOrder(String orderId, Map<String, dynamic> order) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Editando pedido...');
-      Response response = await _dio.put('/api/orders/$orderId', 
-        data: jsonEncode(order) );
+      Response response = await _dio.put('/api/orders/$orderId', data: jsonEncode(order));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('Pedido editado correctamente');
         return;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
@@ -214,10 +201,9 @@ class OrderControllers {
       EasyLoading.showError('No se pudo editar el pedido');
     }
   }
-  
+
   Future<bool> marckAsDoneOrder(String orderId, String invoiceNumber) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Marcando pedido como hecho...');
       Response response = await _dio.put('/api/orders/$orderId/$invoiceNumber');
@@ -227,14 +213,13 @@ class OrderControllers {
         return true;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return false;
       }
 
       EasyLoading.showError('No se pudo marcar el pedido como hecho');
       return false;
-
     } on Exception catch (_) {
       EasyLoading.showError('No se pudo marcar el pedido como hecho');
       return false;
@@ -243,17 +228,16 @@ class OrderControllers {
 
   Future<void> deleteOne(String orderId) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Eliminando el pedido...');
       Response response = await _dio.delete('/api/orders/$orderId');
-        
+
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El pedido a sido eliminado correctamente');
         return;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
@@ -265,5 +249,4 @@ class OrderControllers {
       return;
     }
   }
-
 }

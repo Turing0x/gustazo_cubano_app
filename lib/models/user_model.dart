@@ -24,24 +24,24 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["_id"],
-    enable: json["enable"],
-    username: json["username"],
-    password: json["password"],
-    role: json["role"],
-    commercialCode: json["commercial_code"],
-    personalInfo: PersonalInfo.fromJson(json["personal_info"]),
-  );
+        id: json["_id"],
+        enable: json["enable"],
+        username: json["username"],
+        password: json["password"],
+        role: json["role"],
+        commercialCode: json["commercial_code"],
+        personalInfo: PersonalInfo.fromJson(json["personal_info"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "enable": enable,
-    "username": username,
-    "password": password,
-    "role": role,
-    "commercial_code": commercialCode,
-    "personal_info": personalInfo.toJson(),
-  };
+        "_id": id,
+        "enable": enable,
+        "username": username,
+        "password": password,
+        "role": role,
+        "commercial_code": commercialCode,
+        "personal_info": personalInfo.toJson(),
+      };
 }
 
 class PersonalInfo {
@@ -58,16 +58,16 @@ class PersonalInfo {
   });
 
   factory PersonalInfo.fromJson(Map<String, dynamic> json) => PersonalInfo(
-    ci: json["ci"],
-    fullName: json["full_name"],
-    address: json["address"],
-    phone: json["phone"],
-  );
+        ci: json["ci"],
+        fullName: json["full_name"],
+        address: json["address"],
+        phone: json["phone"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "ci": ci,
-    "full_name": fullName,
-    "address": address,
-    "phone": phone,
-  };
+        "ci": ci,
+        "full_name": fullName,
+        "address": address,
+        "phone": phone,
+      };
 }

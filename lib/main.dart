@@ -7,7 +7,7 @@ import 'package:gustazo_cubano_app/config/router/routes.dart';
 import 'package:gustazo_cubano_app/config/utils/initial_route.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeDateFormatting();
   await dotenv.load(fileName: '.env');
@@ -22,8 +22,9 @@ void main() async{
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key,
-    required this.rutaInicial, 
+  const MyApp({
+    super.key,
+    required this.rutaInicial,
   });
 
   final String rutaInicial;

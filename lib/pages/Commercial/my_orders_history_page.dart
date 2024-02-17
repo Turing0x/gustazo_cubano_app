@@ -17,8 +17,7 @@ import 'package:open_file/open_file.dart';
 List<Order> listToPdf = [];
 
 class MyOrdersHistoryPage extends StatefulWidget {
-  const MyOrdersHistoryPage({super.key,
-    required this.commercialCode});
+  const MyOrdersHistoryPage({super.key, required this.commercialCode});
 
   final String commercialCode;
 
@@ -27,7 +26,6 @@ class MyOrdersHistoryPage extends StatefulWidget {
 }
 
 class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
-
   String ci = '';
   String fullName = '';
   String phone = '';
@@ -57,39 +55,28 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
     });
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
-      appBar: showAppBar('Historial de órdenes', actions: [
-        IconButton(
-          onPressed: () => makePDF(),
-          icon: const Icon(Icons.picture_as_pdf_outlined)
-        )
-      ]),
+      appBar: showAppBar('Historial de órdenes',
+          actions: [IconButton(onPressed: () => makePDF(), icon: const Icon(Icons.picture_as_pdf_outlined))]),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
-      
           children: [
-      
             const CustomDateSelect(),
-
-            Expanded(child: ShowList(commercialCode: widget.commercialCode,))
-      
+            Expanded(
+                child: ShowList(
+              commercialCode: widget.commercialCode,
+            ))
           ],
-      
         ),
-      
       ),
-
     );
-
   }
 
-  void makePDF() async{
-
+  void makePDF() async {
     final invoice = CommissionInvoice(
       userCi: ci,
       userName: fullName,
@@ -98,24 +85,21 @@ class _MyOrdersHistoryPageState extends State<MyOrdersHistoryPage> {
       orderList: listToPdf,
     );
 
-    Map<String, dynamic> itsDone =
-      await GeneratePdfCommission.generate(invoice);
+    Map<String, dynamic> itsDone = await GeneratePdfCommission.generate(invoice);
 
-    if(itsDone['done'] == true){
+    if (itsDone['done'] == true) {
       OpenFile.open(itsDone['path']);
-    } else{
+    } else {
       simpleMessageSnackBar(context, texto: itsDone['path'], typeMessage: true);
       return;
     }
 
     simpleMessageSnackBar(context, texto: 'Factura exportada exitosamente', typeMessage: true);
   }
-
 }
 
 class ShowList extends ConsumerStatefulWidget {
-  const ShowList({super.key,
-    required this.commercialCode});
+  const ShowList({super.key, required this.commercialCode});
 
   final String commercialCode;
 
@@ -124,17 +108,14 @@ class ShowList extends ConsumerStatefulWidget {
 }
 
 class _ShowListState extends ConsumerState<ShowList> {
-
   @override
   Widget build(BuildContext context) {
-
     final janddate = ref.watch(janddateR);
 
     return Scaffold(
       body: FutureBuilder(
-        future: OrderControllers().getMyOrders( widget.commercialCode, janddate.currentDate),
+        future: OrderControllers().getMyOrders(widget.commercialCode, janddate.currentDate),
         builder: (context, snapshot) {
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -144,25 +125,18 @@ class _ShowListState extends ConsumerState<ShowList> {
 
           final list = snapshot.data;
           listToPdf = list!;
-          
+
           return ListView.builder(
-      
             itemCount: list.length,
             itemBuilder: (context, index) {
-
               Order order = list[index];
-              
+
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [BoxShadow(
-                    color: Colors.black12,
-                    spreadRadius: 1,
-                    blurRadius: 1
-                  )]
-                ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1)]),
                 child: ListTile(
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,27 +145,15 @@ class _ShowListState extends ConsumerState<ShowList> {
                       dosisText('Comercial: ${order.seller.fullName.split(' ')[0]}'),
                     ],
                   ),
-                  subtitle: dosisBold('Factura: ', 
-                    order.invoiceNumber, 18),
+                  subtitle: dosisBold('Factura: ', order.invoiceNumber, 18),
                   trailing: const Icon(Icons.arrow_right_rounded),
-                  onTap: () => Navigator.pushNamed(context, 'order_details_page', arguments: [
-                    order
-                  ]),
-
+                  onTap: () => Navigator.pushNamed(context, 'order_details_page', arguments: [order]),
                 ),
-
               );
-
             },
-          
           );
-          
         },
-
       ),
-
     );
-
   }
-
 }

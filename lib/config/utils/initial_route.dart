@@ -3,7 +3,7 @@ import 'package:gustazo_cubano_app/config/database/entities/login_data_service.d
 Future<String> initialRoute() async {
   final role = await LoginDataService().getRole();
 
-  if (role != '' ) {
+  if (role != '') {
     return _initialRouteByRole(role!);
   }
 

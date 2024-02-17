@@ -33,18 +33,15 @@ class _CustomDateSelectState extends ConsumerState<CustomDateSelect> {
                       height: 40,
                       width: 150,
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
                       child: dosisText(janddate.currentDate, size: 20, fontWeight: FontWeight.bold)),
                 ),
                 Flexible(
                   child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.black38,
-                        )
-                      ),
+                          side: const BorderSide(
+                        color: Colors.black38,
+                      )),
                       onPressed: () async {
                         DateTime? pickedDate = await showDatePicker(
                             context: context,
@@ -53,8 +50,7 @@ class _CustomDateSelectState extends ConsumerState<CustomDateSelect> {
                             lastDate: DateTime(DateTime.now().year + 1));
 
                         if (pickedDate != null) {
-                          String formattedDate =
-                              DateFormat.MMMd('en').format(pickedDate);
+                          String formattedDate = DateFormat.MMMd('en').format(pickedDate);
                           janddateM.setCurrentDate(formattedDate);
                         }
                       },

@@ -24,20 +24,21 @@ class PendingDetailsPage extends StatefulWidget {
 }
 
 class _PendingDetailsPageState extends State<PendingDetailsPage> {
-
   bool visible = false;
   bool show = false;
 
   @override
   void initState() {
     LoginDataService().getRole().then((value) {
-      if(value == 'commercial'){
-        setState(() {show = true;});
+      if (value == 'commercial') {
+        setState(() {
+          show = true;
+        });
       }
     });
-    
+
     LoginDataService().getRole().then((value) {
-      if(value == 'admin' || value == 'storage'){
+      if (value == 'admin' || value == 'storage') {
         setState(() {
           visible = true;
         });
@@ -48,76 +49,61 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: showAppBar('Detalles del pedido', actions: [
-        (visible)
-          ? popupMenuButton()
-          : popupMenuButton2()
-      ]),
+      appBar: showAppBar('Detalles del pedido', actions: [(visible) ? popupMenuButton() : popupMenuButton2()]),
       body: SingleChildScrollView(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          child: pageColumn()
-        ),
+        child: Container(margin: const EdgeInsets.symmetric(horizontal: 10), child: pageColumn()),
       ),
     );
-
   }
 
   ListView shoppingCartList(List<Product> rProdList) {
     return ListView.builder(
-      itemCount: rProdList.length,
-      itemBuilder: (context, index) {
-        Product product = rProdList[index];
-        return ListTile(
-          title: dosisText(product.name, fontWeight: FontWeight.bold),
-          trailing: dosisText('x ${product.cantToBuy} = ${(product.cantToBuy * product.price).numFormat}', fontWeight: FontWeight.bold),
-        );
-      }
-    );
+        itemCount: rProdList.length,
+        itemBuilder: (context, index) {
+          Product product = rProdList[index];
+          return ListTile(
+            title: dosisText(product.name, fontWeight: FontWeight.bold),
+            trailing: dosisText('x ${product.cantToBuy} = ${(product.cantToBuy * product.price).numFormat}',
+                fontWeight: FontWeight.bold),
+          );
+        });
   }
 
   Center emptyCart(Size size) {
     return Center(
-      child: Column(
-        children: [
-          Container(
-            height: size.height * 0.3,
-            margin: EdgeInsets.only(
-                left: size.width * .06,
-                right: size.width * .06,
-                top: size.width * .15,
-                bottom: 20),
-            child: SvgPicture.asset('lib/assets/images/empty_cart.svg'),
-          ),
-
-          dosisText(
-            'Acaba de vaciar su carrito!. Por favor, regrese al listado de productos',
+        child: Column(
+      children: [
+        Container(
+          height: size.height * 0.3,
+          margin: EdgeInsets.only(left: size.width * .06, right: size.width * .06, top: size.width * .15, bottom: 20),
+          child: SvgPicture.asset('lib/assets/images/empty_cart.svg'),
+        ),
+        dosisText('Acaba de vaciar su carrito!. Por favor, regrese al listado de productos',
             size: 18, maxLines: 3, textAlign: TextAlign.center),
-          
-        ],
-      ));
+      ],
+    ));
   }
-  
+
   ClipRRect productPhoto(String photo) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: SizedBox.fromSize(
         size: const Size.fromRadius(48),
-        child: Image.network(photo, fit: BoxFit.cover,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
+        child: Image.network(
+          photo,
+          fit: BoxFit.cover,
+          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
             if (loadingProgress == null) return child;
             return Center(
               child: CircularProgressIndicator(
                 value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
+                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                     : null,
               ),
             );
-          },errorBuilder: (context, error, stackTrace) {
+          },
+          errorBuilder: (context, error, stackTrace) {
             return Image.asset('lib/assets/images/6720387.jpg');
           },
         ),
@@ -125,8 +111,7 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     );
   }
 
-  Column pageColumn(){
-
+  Column pageColumn() {
     final o = widget.order;
 
     String fecha = '${o.date.day}/${o.date.month}/${o.date.year} - ${o.date.hour}:${o.date.minute}:${o.date.second}';
@@ -134,13 +119,10 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-    
         customGroupBox('Comercial, cliente y montos de la compra', [
           dosisBold('Comercial: ', o.seller.fullName, 20),
           dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
-          Visibility(
-            visible: show,
-            child: dosisBold('Ganacias: \$', '${o.commission.numFormat} CUP', 18)),
+          Visibility(visible: show, child: dosisBold('Ganacias: \$', '${o.commission.numFormat} CUP', 18)),
           const Divider(
             color: Colors.black,
           ),
@@ -157,124 +139,98 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
           dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
           dosisBold('Monto total: \$', '${o.totalAmount.numFormat} ${o.typeCoin}', 18)
         ]),
-    
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.55,
-          child: shoppingCartList(o.productList))
-    
+        SizedBox(height: MediaQuery.of(context).size.height * 0.55, child: shoppingCartList(o.productList))
       ],
     );
   }
 
   PopupMenuButton popupMenuButton() {
-
     final nav = Navigator.of(context);
 
     final orderCrt = OrderControllers();
     return PopupMenuButton(
-
-      icon: const Icon(Icons.more_vert, color: Colors.white,),
+      icon: const Icon(
+        Icons.more_vert,
+        color: Colors.white,
+      ),
       onSelected: (value) {
-        
         Map<String, void Function()> methods = {
-          
-          'mark_as_ready': () => Navigator.pushNamed(context, 'confirm_pending_page',
-            arguments: [widget.order.id]),
-          
-          'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
-            arguments: [widget.order]),
-          
-          'cancel_order': () async => {
-            await orderCrt.deleteOne(widget.order.id),
-            nav.pushReplacementNamed('pending_control_page')
-          }
-
+          'mark_as_ready': () => Navigator.pushNamed(context, 'confirm_pending_page', arguments: [widget.order.id]),
+          'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page', arguments: [widget.order]),
+          'cancel_order': () async =>
+              {await orderCrt.deleteOne(widget.order.id), nav.pushReplacementNamed('pending_control_page')}
         };
 
         methods[value]!.call();
-
       },
       itemBuilder: (BuildContext context) => [
         PopupMenuItem(
-          value: 'mark_as_ready',
-          child: ListTile(
-            title: dosisText('Marcar como entregado', size: 18),
-            leading: const Icon(Icons.done_outline_rounded, color: Colors.green, size: 19),
-          )
-        ),
+            value: 'mark_as_ready',
+            child: ListTile(
+              title: dosisText('Marcar como entregado', size: 18),
+              leading: const Icon(Icons.done_outline_rounded, color: Colors.green, size: 19),
+            )),
         PopupMenuItem(
-          value: 'edit_pending',
-          child: ListTile(
-            title: dosisText('Editar este pedido', size: 18),
-            leading: const Icon(Icons.edit_document, color: Colors.blue, size: 19),
-          )
-        ),
+            value: 'edit_pending',
+            child: ListTile(
+              title: dosisText('Editar este pedido', size: 18),
+              leading: const Icon(Icons.edit_document, color: Colors.blue, size: 19),
+            )),
         PopupMenuItem(
-          value: 'cancel_order',
-          child: ListTile(
-            title: dosisText('Cancelar pedido', size: 18),
-            leading: const Icon(Icons.cancel_outlined, color: Colors.red, size: 19),
-          )
-        )
+            value: 'cancel_order',
+            child: ListTile(
+              title: dosisText('Cancelar pedido', size: 18),
+              leading: const Icon(Icons.cancel_outlined, color: Colors.red, size: 19),
+            ))
       ],
     );
   }
-  
+
   PopupMenuButton popupMenuButton2() {
-
     final orderCrt = OrderControllers();
     final nav = Navigator.of(context);
 
     return PopupMenuButton(
-
-      icon: const Icon(Icons.more_vert, color: Colors.white,),
+      icon: const Icon(
+        Icons.more_vert,
+        color: Colors.white,
+      ),
       onSelected: (value) {
-        
         Map<String, void Function()> methods = {
-          
           'make_pdf': () => makePDF(),
-
-          'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page',
-            arguments: [widget.order]),
-          
-          'cancel_order': () => actionsSnackBar(context, 'Confirmar eliminación',
-            'Eliminar', () async{
-              await orderCrt.deleteOne(widget.order.id);
-              nav.pushReplacementNamed('my_pending_today_page');
-          })
-
+          'edit_pending': () => Navigator.pushNamed(context, 'edit_pending_page', arguments: [widget.order]),
+          'cancel_order': () => actionsSnackBar(context, 'Confirmar eliminación', 'Eliminar', () async {
+                await orderCrt.deleteOne(widget.order.id);
+                nav.pushReplacementNamed('my_pending_today_page');
+              })
         };
 
         methods[value]!.call();
-
       },
       itemBuilder: (BuildContext context) => [
         PopupMenuItem(
-          value: 'make_pdf',
-          child: ListTile(
-            title: dosisText('Hacer PDF', size: 18),
-            leading: const Icon(Icons.picture_as_pdf_outlined, color: Colors.blue, size: 19),
-          )
-        ),
+            value: 'make_pdf',
+            child: ListTile(
+              title: dosisText('Hacer PDF', size: 18),
+              leading: const Icon(Icons.picture_as_pdf_outlined, color: Colors.blue, size: 19),
+            )),
         PopupMenuItem(
-          value: 'edit_pending',
-          child: ListTile(
-            title: dosisText('Editar este pedido', size: 18),
-            leading: const Icon(Icons.edit_document, color: Colors.blue, size: 19),
-          )
-        ),
+            value: 'edit_pending',
+            child: ListTile(
+              title: dosisText('Editar este pedido', size: 18),
+              leading: const Icon(Icons.edit_document, color: Colors.blue, size: 19),
+            )),
         PopupMenuItem(
-          value: 'cancel_order',
-          child: ListTile(
-            title: dosisText('Cancelar pedido', size: 18),
-            leading: const Icon(Icons.cancel_outlined, color: Colors.red, size: 19),
-          )
-        )
+            value: 'cancel_order',
+            child: ListTile(
+              title: dosisText('Cancelar pedido', size: 18),
+              leading: const Icon(Icons.cancel_outlined, color: Colors.red, size: 19),
+            ))
       ],
     );
   }
 
-  void makePDF() async{
+  void makePDF() async {
     DateTime date = widget.order.date;
     String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
 
@@ -291,17 +247,15 @@ class _PendingDetailsPageState extends State<PendingDetailsPage> {
       buyerPhone: widget.order.buyer.phoneNumber,
     );
 
-    Map<String, dynamic> itsDone =
-      await GeneratePdfPending.generate(invoice);
+    Map<String, dynamic> itsDone = await GeneratePdfPending.generate(invoice);
 
-    if(itsDone['done'] == true){
+    if (itsDone['done'] == true) {
       OpenFile.open(itsDone['path']);
-    } else{
+    } else {
       simpleMessageSnackBar(context, texto: itsDone['path'], typeMessage: true);
       return;
     }
 
     simpleMessageSnackBar(context, texto: 'Factura exportada exitosamente', typeMessage: true);
   }
-
 }

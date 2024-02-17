@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CoinPricesProvider extends StateNotifier<CoinPricesModel> {
-  CoinPricesProvider()
-      : super(CoinPricesModel(mlc: 0.0, usd: 0.0));
+  CoinPricesProvider() : super(CoinPricesModel(mlc: 0.0, usd: 0.0));
 
   void setMlc(double price) {
     state = state.copyWith(mlc: price);
@@ -11,7 +10,6 @@ class CoinPricesProvider extends StateNotifier<CoinPricesModel> {
   void setUsd(double price) {
     state = state.copyWith(usd: price);
   }
-
 }
 
 class CoinPricesModel {

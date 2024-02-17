@@ -23,14 +23,15 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
-
   bool show = false;
 
   @override
   void initState() {
     LoginDataService().getRole().then((value) {
-      if(value == 'commercial'){
-        setState(() {show = true;});
+      if (value == 'commercial') {
+        setState(() {
+          show = true;
+        });
       }
     });
     super.initState();
@@ -38,30 +39,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-
     Order o = widget.order;
 
     String fecha = '${o.date.day}/${o.date.month}/${o.date.year} - ${o.date.hour}:${o.date.minute}:${o.date.second}';
 
     return Scaffold(
-      appBar: showAppBar('Detalles de la orden', actions: [
-        IconButton(
-          onPressed: () => makePDF(), 
-          icon: const Icon(Icons.picture_as_pdf_outlined))
-      ]),
+      appBar: showAppBar('Detalles de la orden',
+          actions: [IconButton(onPressed: () => makePDF(), icon: const Icon(Icons.picture_as_pdf_outlined))]),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-          
               customGroupBox('Comercial, cliente y montos de la compra', [
                 dosisBold('Comercial: ', o.seller.fullName, 20),
                 dosisBold('Código de comercial: ', o.seller.commercialCode, 20),
-                Visibility(
-                  visible: show,
-                  child: dosisBold('Ganacias por comisión: \$', o.commission.numFormat, 18)),
+                Visibility(visible: show, child: dosisBold('Ganacias por comisión: \$', o.commission.numFormat, 18)),
                 const Divider(
                   color: Colors.black,
                 ),
@@ -79,68 +73,55 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 dosisBold('Cant de productos: ', o.getCantOfProducts.toString(), 18),
                 dosisBold('Monto total: \$', '${o.totalAmount.numFormat} ${o.typeCoin}', 18)
               ]),
-
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.55,
-                child: shoppingCartList(o.productList))
-          
+              SizedBox(height: MediaQuery.of(context).size.height * 0.55, child: shoppingCartList(o.productList))
             ],
           ),
         ),
       ),
     );
-
   }
 
   ListView shoppingCartList(List<Product> rProdList) {
     return ListView.builder(
-      itemCount: rProdList.length,
-      itemBuilder: (context, index) {
-        Product product = rProdList[index];
-        return ListTile(
-          title: dosisText(product.name, fontWeight: FontWeight.bold),
-          subtitle: dosisBold('Precio: \$', product.price.numFormat, 18),
-          trailing: dosisText('x ${product.cantToBuy} = ${(product.cantToBuy * product.price).numFormat}', fontWeight: FontWeight.bold),
-        );
-      }
-    );
+        itemCount: rProdList.length,
+        itemBuilder: (context, index) {
+          Product product = rProdList[index];
+          return ListTile(
+            title: dosisText(product.name, fontWeight: FontWeight.bold),
+            subtitle: dosisBold('Precio: \$', product.price.numFormat, 18),
+            trailing: dosisText('x ${product.cantToBuy} = ${(product.cantToBuy * product.price).numFormat}',
+                fontWeight: FontWeight.bold),
+          );
+        });
   }
 
   Center emptyCart(Size size) {
     return Center(
-      child: Column(
-        children: [
-          Container(
-            height: size.height * 0.3,
-            margin: EdgeInsets.only(
-                left: size.width * .06,
-                right: size.width * .06,
-                top: size.width * .15,
-                bottom: 20),
-            child: SvgPicture.asset('lib/assets/images/empty_cart.svg'),
-          ),
-
-          dosisText(
-            'Acaba de vaciar su carrito. Por favor, regrese al listado de productos', 
+        child: Column(
+      children: [
+        Container(
+          height: size.height * 0.3,
+          margin: EdgeInsets.only(left: size.width * .06, right: size.width * .06, top: size.width * .15, bottom: 20),
+          child: SvgPicture.asset('lib/assets/images/empty_cart.svg'),
+        ),
+        dosisText('Acaba de vaciar su carrito. Por favor, regrese al listado de productos',
             size: 18, maxLines: 3, textAlign: TextAlign.center),
-          
-        ],
-      ));
+      ],
+    ));
   }
-  
+
   Container productInfo(String name, String price, String commission) {
     return Container(
-      margin: const EdgeInsets.only(left: 10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          dosisText(name, fontWeight: FontWeight.bold),
-          dosisText('Precio: \$$price', color: Colors.blue),
-          dosisText('Comisión: $commission%', color: Colors.red),
-        ],
-      )
-    );
+        margin: const EdgeInsets.only(left: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            dosisText(name, fontWeight: FontWeight.bold),
+            dosisText('Precio: \$$price', color: Colors.blue),
+            dosisText('Comisión: $commission%', color: Colors.red),
+          ],
+        ));
   }
 
   ClipRRect productPhoto(String photo) {
@@ -148,19 +129,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       borderRadius: BorderRadius.circular(10),
       child: SizedBox.fromSize(
         size: const Size.fromRadius(48),
-        child: Image.network(photo, fit: BoxFit.cover,
-          loadingBuilder: (BuildContext context, Widget child,
-              ImageChunkEvent? loadingProgress) {
+        child: Image.network(
+          photo,
+          fit: BoxFit.cover,
+          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
             if (loadingProgress == null) return child;
             return Center(
               child: CircularProgressIndicator(
                 value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
+                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                     : null,
               ),
             );
-          },errorBuilder: (context, error, stackTrace) {
+          },
+          errorBuilder: (context, error, stackTrace) {
             return Image.asset('lib/assets/images/6720387.jpg');
           },
         ),
@@ -168,7 +150,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 
-  void makePDF() async{
+  void makePDF() async {
     DateTime date = widget.order.date;
     String fecha = '${date.day}/${date.month}/${date.year} - ${date.hour}:${date.minute}:${date.second}';
 
@@ -190,17 +172,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       buyerPhone: widget.order.buyer.phoneNumber,
     );
 
-    Map<String, dynamic> itsDone =
-      await GeneratePdfOrder.generate(invoice);
+    Map<String, dynamic> itsDone = await GeneratePdfOrder.generate(invoice);
 
-    if(itsDone['done'] == true){
+    if (itsDone['done'] == true) {
       OpenFile.open(itsDone['path']);
-    } else{
+    } else {
       simpleMessageSnackBar(context, texto: itsDone['path'], typeMessage: true);
       return;
     }
 
     simpleMessageSnackBar(context, texto: 'Factura exportada exitosamente', typeMessage: true);
   }
-
 }

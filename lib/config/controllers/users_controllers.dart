@@ -10,7 +10,6 @@ import 'package:gustazo_cubano_app/models/user_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class UserControllers {
-
   late Dio _dio;
 
   UserControllers() {
@@ -22,7 +21,7 @@ class UserControllers {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: Uri.https(dotenv.env['SERVER_URL']!).toString(),
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
         headers: {
           'Content-Type': 'application/json',
           'access-token': token,
@@ -32,27 +31,24 @@ class UserControllers {
     );
   }
 
-  Future<List<User>> getAllCommercials() async{
-
+  Future<List<User>> getAllCommercials() async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Procesando información...');
 
-      Response response = await _dio.get('/api/users',
-        options: Options(validateStatus: (status) => true));
+      Response response = await _dio.get('/api/users', options: Options(validateStatus: (status) => true));
 
-      if( response.statusCode == 500 ) {
+      if (response.statusCode == 500) {
         EasyLoading.showInfo('No se pudo cargar la información de los usuarios');
         return [];
       }
 
-      if( response.data['data'].isEmpty ) {
+      if (response.data['data'].isEmpty) {
         EasyLoading.showInfo('Los usuarios han sido cargados correctamente');
         return [];
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return [];
       }
@@ -66,21 +62,18 @@ class UserControllers {
 
       EasyLoading.showSuccess('Los usuarios han sido cargados correctamente');
       return list;
-      
     } catch (_) {
       EasyLoading.showError('No se pudo cargar la información de los usuarios');
       return [];
     }
-
   }
 
   Future<String> login(String username, String pass) async {
     authStatus.value = true;
     try {
-
       await _initializeDio();
-      Response response = await _dio.post('/api/users/signin',
-        data: jsonEncode({'username': username, 'password': pass}));
+      Response response =
+          await _dio.post('/api/users/signin', data: jsonEncode({'username': username, 'password': pass}));
       authStatus.value = false;
 
       if (response.statusCode == 200) {
@@ -113,27 +106,24 @@ class UserControllers {
       return '';
     } on DioException catch (e) {
       if (e.response != null) {
-      } else {
-      }
+      } else {}
       return 'false';
     }
   }
 
   Future<bool> changeEnable(String id, bool enable) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Cambiando el acceso...');
       Response response = await _dio.put('/api/users/changeEnable/$id',
-        data: jsonEncode({ 'enable': enable }),
-        options: Options(validateStatus: (status) => true));
+          data: jsonEncode({'enable': enable}), options: Options(validateStatus: (status) => true));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El cambio a sido aplicado correctamente');
         return true;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return false;
       }
@@ -148,23 +138,17 @@ class UserControllers {
 
   Future<void> saveUser(String fullname, String ci, String address, String phoneNumber) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Creando usuario...');
-      Response response = await _dio.post('/api/users', 
-        data: jsonEncode({
-          'fullname': fullname, 
-          'ci': ci,
-          'address': address,
-          'phoneNumber': phoneNumber
-        }));
+      Response response = await _dio.post('/api/users',
+          data: jsonEncode({'fullname': fullname, 'ci': ci, 'address': address, 'phoneNumber': phoneNumber}));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El usuario ha sido creado correctamente');
         return;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
@@ -175,23 +159,21 @@ class UserControllers {
       EasyLoading.showError('No se pudo crear el usuario con la información proporcionada');
     }
   }
-  
+
   Future<void> resetPass(String userId) async {
     try {
-
       await _initializeDio();
-      final queryData = { 'userId': userId };
+      final queryData = {'userId': userId};
 
-      Response response = await _dio.post('/api/users/resetpass', 
-        queryParameters: queryData, 
-        options: Options(validateStatus: (status) => true));
+      Response response = await _dio.post('/api/users/resetpass',
+          queryParameters: queryData, options: Options(validateStatus: (status) => true));
 
       if (response.statusCode == 200) {
         showToast(response.data['api_message'], type: true);
         return;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         showToast('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
@@ -203,22 +185,21 @@ class UserControllers {
       EasyLoading.showError(e.toString());
     }
   }
- 
+
   Future<bool> changePass(String actualPass, String newPass) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Cambiando contraseña...');
 
-      Response response = await _dio.post('/api/users/changePassword', 
-        data: jsonEncode({'actualPass': actualPass, 'newPass': newPass}));
+      Response response = await _dio.post('/api/users/changePassword',
+          data: jsonEncode({'actualPass': actualPass, 'newPass': newPass}));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess(response.data['api_message']);
         return true;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return false;
       }
@@ -233,18 +214,16 @@ class UserControllers {
 
   Future<void> deleteOne(String id) async {
     try {
-      
       await _initializeDio();
       EasyLoading.show(status: 'Eliminando usuario...');
-      Response response = await _dio.delete('/api/users/$id', 
-        options: Options(validateStatus: (status) => true));
-        
+      Response response = await _dio.delete('/api/users/$id', options: Options(validateStatus: (status) => true));
+
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El usuario ha sido eliminado correctamente');
         return;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
@@ -256,5 +235,4 @@ class UserControllers {
       return;
     }
   }
-
 }

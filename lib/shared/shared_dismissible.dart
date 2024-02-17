@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
 class CommonDismissible extends StatelessWidget {
-  const CommonDismissible({super.key,
-    required this.valueKey,
-    required this.text,
-    required this.child,
-    required this.onDismissed,
-    required this.canDissmis
-  });
+  const CommonDismissible(
+      {super.key,
+      required this.valueKey,
+      required this.text,
+      required this.child,
+      required this.onDismissed,
+      required this.canDissmis});
 
   final String valueKey;
   final String text;
@@ -19,11 +19,12 @@ class CommonDismissible extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key( valueKey ),
+      key: Key(valueKey),
       background: backgroundContainer(),
-      direction: ( canDissmis ) ? DismissDirection.endToStart : DismissDirection.none,
-      onDismissed: onDismissed, 
-      child: child,);
+      direction: (canDissmis) ? DismissDirection.endToStart : DismissDirection.none,
+      onDismissed: onDismissed,
+      child: child,
+    );
   }
 
   Container backgroundContainer() {
@@ -36,8 +37,7 @@ class CommonDismissible extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          dosisText(text, size: 18, 
-            fontWeight: FontWeight.w600, color: Colors.white),
+          dosisText(text, size: 18, fontWeight: FontWeight.w600, color: Colors.white),
           const Icon(Icons.delete_forever_outlined, color: Colors.white)
         ],
       ),

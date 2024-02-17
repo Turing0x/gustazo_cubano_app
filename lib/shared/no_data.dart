@@ -9,17 +9,10 @@ Widget noData(BuildContext context, String text) {
     children: [
       Container(
         height: size.height * 0.3,
-        margin: EdgeInsets.only(
-            left: size.width * .07,
-            right: size.width * .07,
-            bottom: 20),
+        margin: EdgeInsets.only(left: size.width * .07, right: size.width * .07, bottom: 20),
         child: Image.asset('lib/assets/images/empty_list.jpg'),
       ),
-
-      dosisText(
-        text, 
-        size: 18, maxLines: 3, textAlign: TextAlign.center),
-      
+      dosisText(text, size: 18, maxLines: 3, textAlign: TextAlign.center),
     ],
   ));
 }

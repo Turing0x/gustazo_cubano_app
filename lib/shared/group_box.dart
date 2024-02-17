@@ -12,8 +12,7 @@ Container customGroupBox(String labelText, List<Widget> widgets) {
             borderRadius: BorderRadius.circular(5),
           ),
           contentPadding: const EdgeInsets.all(25)),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, children: widgets),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: widgets),
     ),
   );
 }

@@ -204,8 +204,7 @@ void _loginDataAttach(IsarCollection<dynamic> col, Id id, LoginData object) {
   object.id = id;
 }
 
-extension LoginDataQueryWhereSort
-    on QueryBuilder<LoginData, LoginData, QWhere> {
+extension LoginDataQueryWhereSort on QueryBuilder<LoginData, LoginData, QWhere> {
   QueryBuilder<LoginData, LoginData, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
@@ -213,8 +212,7 @@ extension LoginDataQueryWhereSort
   }
 }
 
-extension LoginDataQueryWhere
-    on QueryBuilder<LoginData, LoginData, QWhereClause> {
+extension LoginDataQueryWhere on QueryBuilder<LoginData, LoginData, QWhereClause> {
   QueryBuilder<LoginData, LoginData, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -246,8 +244,7 @@ extension LoginDataQueryWhere
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<LoginData, LoginData, QAfterWhereClause> idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -255,8 +252,7 @@ extension LoginDataQueryWhere
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<LoginData, LoginData, QAfterWhereClause> idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -281,8 +277,7 @@ extension LoginDataQueryWhere
   }
 }
 
-extension LoginDataQueryFilter
-    on QueryBuilder<LoginData, LoginData, QFilterCondition> {
+extension LoginDataQueryFilter on QueryBuilder<LoginData, LoginData, QFilterCondition> {
   QueryBuilder<LoginData, LoginData, QAfterFilterCondition> addressIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -387,9 +382,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> addressContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> addressContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'address',
@@ -399,8 +392,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> addressMatches(
-      String pattern,
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> addressMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -420,8 +412,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      addressIsNotEmpty() {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> addressIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'address',
@@ -534,9 +525,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> ciContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> ciContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'ci',
@@ -546,9 +535,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> ciMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> ciMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'ci',
@@ -576,8 +563,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeIsNull() {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'commercialCode',
@@ -585,8 +571,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeIsNotNull() {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'commercialCode',
@@ -594,8 +579,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeEqualTo(
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -608,8 +592,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeGreaterThan(
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -624,8 +607,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeLessThan(
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -640,8 +622,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeBetween(
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -660,8 +641,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeStartsWith(
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -674,8 +654,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeEndsWith(
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -688,8 +667,8 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeContains(String value, {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeContains(String value,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'commercialCode',
@@ -699,8 +678,8 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeMatches(String pattern, {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeMatches(String pattern,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'commercialCode',
@@ -710,8 +689,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeIsEmpty() {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'commercialCode',
@@ -720,8 +698,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      commercialCodeIsNotEmpty() {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> commercialCodeIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'commercialCode',
@@ -738,8 +715,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      fullNameIsNotNull() {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> fullNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'fullName',
@@ -835,8 +811,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> fullNameContains(
-      String value,
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> fullNameContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -847,8 +822,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> fullNameMatches(
-      String pattern,
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> fullNameMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -868,8 +842,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition>
-      fullNameIsNotEmpty() {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> fullNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'fullName',
@@ -878,8 +851,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> idEqualTo(
-      Id value) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -1035,9 +1007,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> phoneContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> phoneContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'phone',
@@ -1047,9 +1017,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> phoneMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> phoneMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'phone',
@@ -1181,9 +1149,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> roleContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> roleContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'role',
@@ -1193,9 +1159,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> roleMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> roleMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'role',
@@ -1327,9 +1291,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> tokenContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> tokenContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'token',
@@ -1339,9 +1301,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> tokenMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> tokenMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'token',
@@ -1473,9 +1433,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> userIDContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> userIDContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'userID',
@@ -1485,9 +1443,7 @@ extension LoginDataQueryFilter
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> userIDMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QAfterFilterCondition> userIDMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'userID',
@@ -1516,11 +1472,9 @@ extension LoginDataQueryFilter
   }
 }
 
-extension LoginDataQueryObject
-    on QueryBuilder<LoginData, LoginData, QFilterCondition> {}
+extension LoginDataQueryObject on QueryBuilder<LoginData, LoginData, QFilterCondition> {}
 
-extension LoginDataQueryLinks
-    on QueryBuilder<LoginData, LoginData, QFilterCondition> {}
+extension LoginDataQueryLinks on QueryBuilder<LoginData, LoginData, QFilterCondition> {}
 
 extension LoginDataQuerySortBy on QueryBuilder<LoginData, LoginData, QSortBy> {
   QueryBuilder<LoginData, LoginData, QAfterSortBy> sortByAddress() {
@@ -1620,8 +1574,7 @@ extension LoginDataQuerySortBy on QueryBuilder<LoginData, LoginData, QSortBy> {
   }
 }
 
-extension LoginDataQuerySortThenBy
-    on QueryBuilder<LoginData, LoginData, QSortThenBy> {
+extension LoginDataQuerySortThenBy on QueryBuilder<LoginData, LoginData, QSortThenBy> {
   QueryBuilder<LoginData, LoginData, QAfterSortBy> thenByAddress() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'address', Sort.asc);
@@ -1731,68 +1684,57 @@ extension LoginDataQuerySortThenBy
   }
 }
 
-extension LoginDataQueryWhereDistinct
-    on QueryBuilder<LoginData, LoginData, QDistinct> {
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByAddress(
-      {bool caseSensitive = true}) {
+extension LoginDataQueryWhereDistinct on QueryBuilder<LoginData, LoginData, QDistinct> {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByAddress({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'address', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByCi(
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByCi({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'ci', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByCommercialCode(
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByCommercialCode({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'commercialCode',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'commercialCode', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByFullName(
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByFullName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'fullName', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByPhone(
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByPhone({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'phone', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByRole(
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByRole({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'role', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByToken(
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByToken({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'token', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LoginData, LoginData, QDistinct> distinctByUserID(
-      {bool caseSensitive = true}) {
+  QueryBuilder<LoginData, LoginData, QDistinct> distinctByUserID({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'userID', caseSensitive: caseSensitive);
     });
   }
 }
 
-extension LoginDataQueryProperty
-    on QueryBuilder<LoginData, LoginData, QQueryProperty> {
+extension LoginDataQueryProperty on QueryBuilder<LoginData, LoginData, QQueryProperty> {
   QueryBuilder<LoginData, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');

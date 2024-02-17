@@ -10,10 +10,8 @@ ValueNotifier<bool> reloadUsers = ValueNotifier<bool>(false);
 ValueNotifier<bool> reloadPending = ValueNotifier<bool>(false);
 ValueNotifier<bool> cambioListas = ValueNotifier<bool>(false);
 
-final janddateR = StateNotifierProvider<JAndDateProvider, JAndDateModel>(
-    (ref) => JAndDateProvider());
+final janddateR = StateNotifierProvider<JAndDateProvider, JAndDateModel>((ref) => JAndDateProvider());
 
-final coinPrices = StateNotifierProvider<CoinPricesProvider, CoinPricesModel>(
-    (ref) => CoinPricesProvider());
+final coinPrices = StateNotifierProvider<CoinPricesProvider, CoinPricesModel>((ref) => CoinPricesProvider());
 
 final btnManagerR = StateProvider<bool>((ref) => false);

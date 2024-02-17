@@ -36,46 +36,44 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-    id: json["_id"] ?? '',
-    name: json["name"] ?? '',
-    description: json["description"] ?? '',
-    provider: json["provider"] ?? '',
-    photo: json["photo"] ?? '',
-    coin: json["coin"] ?? 'CUP',
-    price: json["price"]?.toDouble() ?? 0,
-    commission: json["commission"]?.toDouble() ?? 0,
-    commissionDiscount: json["commissionDiscount"]?.toDouble() ?? 0,
-    discount: json["discount"]?.toDouble() ?? 0,
-    moreThan: json["more_than"]?.toInt() ?? 0,
-    inStock: json["in_stock"]?.toInt() ?? 0,
-    cantToBuy: json["cantToBuy"]?.toInt() ?? 1,
-  );
+        id: json["_id"] ?? '',
+        name: json["name"] ?? '',
+        description: json["description"] ?? '',
+        provider: json["provider"] ?? '',
+        photo: json["photo"] ?? '',
+        coin: json["coin"] ?? 'CUP',
+        price: json["price"]?.toDouble() ?? 0,
+        commission: json["commission"]?.toDouble() ?? 0,
+        commissionDiscount: json["commissionDiscount"]?.toDouble() ?? 0,
+        discount: json["discount"]?.toDouble() ?? 0,
+        moreThan: json["more_than"]?.toInt() ?? 0,
+        inStock: json["in_stock"]?.toInt() ?? 0,
+        cantToBuy: json["cantToBuy"]?.toInt() ?? 1,
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "description": description,
-    "provider": provider,
-    "photo": photo,
-    "coin": coin,
-    "price": price,
-    "in_stock": inStock,
-    "commission": commission,
-    "commissionDiscount": commissionDiscount,
-    "more_than": moreThan,
-    "discount": discount,
-    "cantToBuy": cantToBuy,
-  };
+        "_id": id,
+        "name": name,
+        "description": description,
+        "provider": provider,
+        "photo": photo,
+        "coin": coin,
+        "price": price,
+        "in_stock": inStock,
+        "commission": commission,
+        "commissionDiscount": commissionDiscount,
+        "more_than": moreThan,
+        "discount": discount,
+        "cantToBuy": cantToBuy,
+      };
 
   @override
   String toString() {
     return 'Product: { \nid: $id, \nname: $name, \ndescription: $description, \nprovider: $provider, \ncoin: $coin, \nphoto: $photo, \nprice: $price, \ninStock: $inStock, \ncantToBuy: $cantToBuy, \nmoreThan: $moreThan, \ncommission: $commission, \ndiscount: $discount}';
   }
-  
 }
 
 class ProductCart {
-
   final String name;
   final double price;
   final int cantToBuy;
@@ -87,20 +85,19 @@ class ProductCart {
   });
 
   factory ProductCart.fromJson(Map<String, dynamic> json) => ProductCart(
-    name: json["name"],
-    price: json["price"]?.toDouble(),
-    cantToBuy: json["cantToBuy"]?.toInt(),
-  );
+        name: json["name"],
+        price: json["price"]?.toDouble(),
+        cantToBuy: json["cantToBuy"]?.toInt(),
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "price": price,
-    "cantToBuy": cantToBuy,
-  };
+        "name": name,
+        "price": price,
+        "cantToBuy": cantToBuy,
+      };
 
   @override
   String toString() {
     return 'ProductCart: {name: $name, price: $price, cantToBuy: $cantToBuy}';
   }
-
 }

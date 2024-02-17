@@ -10,7 +10,6 @@ class ChangeAccessPass extends StatefulWidget {
 }
 
 class _ChangeAccessPassState extends State<ChangeAccessPass> {
-
   TextEditingController actualPass = TextEditingController();
   TextEditingController newPass = TextEditingController();
 
@@ -25,62 +24,40 @@ class _ChangeAccessPassState extends State<ChangeAccessPass> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-          
               Align(
                 alignment: Alignment.centerLeft,
-                child: IconButton(
-                  onPressed: () => Navigator.pop(context), 
-                  icon: const Icon(Icons.arrow_back_ios_new)),
+                child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_ios_new)),
               ),
-              
               Container(
                 height: size.height * 0.45,
-                margin: EdgeInsets.only(
-                  left: size.width * .05,
-                  right: size.width * .05,
-                  bottom: 10),
+                margin: EdgeInsets.only(left: size.width * .05, right: size.width * .05, bottom: 10),
                 child: Image.asset('lib/assets/images/change_pass.jpg'),
               ),
-              
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                child: dosisText(
-                  'Proporcione la información necesaria para cambiar su contaseña', 
-                  size: 18, maxLines: 4, textAlign: TextAlign.center),
+                child: dosisText('Proporcione la información necesaria para cambiar su contaseña',
+                    size: 18, maxLines: 4, textAlign: TextAlign.center),
               ),
-              
               Container(
                 margin: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
-                child: FormTxt(
-                  controller: actualPass, 
-                  keyboardType: TextInputType.name,
-                  label: 'Contraseña Actual'),
+                child: FormTxt(controller: actualPass, keyboardType: TextInputType.name, label: 'Contraseña Actual'),
               ),
-          
               Container(
                 margin: const EdgeInsets.only(left: 40, right: 40, bottom: 10),
-                child: FormTxt(
-                  controller: newPass, 
-                  keyboardType: TextInputType.name,
-                  label: 'Nueva Contraseña'),
+                child: FormTxt(controller: newPass, keyboardType: TextInputType.name, label: 'Nueva Contraseña'),
               ),
-          
               const SizedBox(height: 10),
-
               ElevatedButton.icon(
-                onPressed: () async{
-                  final userCtrl = UserControllers();
+                  onPressed: () async {
+                    final userCtrl = UserControllers();
                     bool status = await userCtrl.changePass(actualPass.text, newPass.text);
-                  
-                    if(status){
+
+                    if (status) {
                       nav.pushNamedAndRemoveUntil('auth_page', (route) => false);
                     }
-
-                }, 
-                icon: const Icon(Icons.done_outline_rounded, color: Colors.green), 
-                label: dosisText('Confirmar', fontWeight: FontWeight.bold)
-              )
-
+                  },
+                  icon: const Icon(Icons.done_outline_rounded, color: Colors.green),
+                  label: dosisText('Confirmar', fontWeight: FontWeight.bold))
             ],
           ),
         ),
@@ -108,16 +85,13 @@ class FormTxt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      textCapitalization: TextCapitalization.words,
-      keyboardType: keyboardType,
-      maxLength: maxLength,
-      decoration: InputDecoration(
-        labelStyle: const TextStyle(
-          fontFamily: 'Dosis',
-          fontWeight: FontWeight.bold),
-        labelText: label,
-      )
-    );
+        controller: controller,
+        textCapitalization: TextCapitalization.words,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
+        decoration: InputDecoration(
+          labelStyle: const TextStyle(fontFamily: 'Dosis', fontWeight: FontWeight.bold),
+          labelText: label,
+        ));
   }
 }

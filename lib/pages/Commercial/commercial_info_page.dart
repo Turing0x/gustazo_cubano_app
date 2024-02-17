@@ -19,7 +19,6 @@ class CommercialInfoPage extends StatelessWidget {
             dosisText(commercial.personalInfo.fullName, size: 23),
             dosisBold('Código de comercial: ', commercial.commercialCode, 23),
             dosisBold('Nombre de usuario: ', commercial.username, 23),
-
             dosisBold('Carnet de identidad: ', commercial.personalInfo.ci, 23),
             dosisBold('Dirección particular: ', commercial.personalInfo.address, 23),
             dosisBold('Número de celular: ', commercial.personalInfo.phone, 23),

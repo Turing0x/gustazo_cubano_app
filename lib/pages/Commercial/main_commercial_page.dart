@@ -15,13 +15,11 @@ class MainCommercialPage extends ConsumerStatefulWidget {
 }
 
 class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
-
   String commercialCode = '';
   @override
   void initState() {
-    
     final prices = ref.read(coinPrices.notifier);
-    
+
     LoginDataService().getCommercialCode().then((value) {
       setState(() {
         commercialCode = value!;
@@ -29,7 +27,7 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
     });
 
     CoinControllers().getAllCoins().then((value) {
-      if(value.isNotEmpty){
+      if (value.isNotEmpty) {
         setState(() {
           prices.setMlc(value[0].mlc);
           prices.setUsd(value[0].usd);
@@ -45,73 +43,38 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
     return Scaffold(
       appBar: showAppBar('Principal', actions: [
         IconButton(
-          onPressed: ()async {
-        
-            final rProdList = ShoppingCartProvider();
+            onPressed: () async {
+              final rProdList = ShoppingCartProvider();
 
-            final contex = Navigator.of(context);
+              final contex = Navigator.of(context);
 
-            LoginDataService().deleteData();
+              LoginDataService().deleteData();
 
-            rProdList.cleanCart();
+              rProdList.cleanCart();
 
-            contex.pushNamedAndRemoveUntil(
-                'auth_page', (Route<dynamic> route) => false);
-          },
-          icon: const Icon(Icons.logout))
+              contex.pushNamedAndRemoveUntil('auth_page', (Route<dynamic> route) => false);
+            },
+            icon: const Icon(Icons.logout))
       ]),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.only(top: 20),
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
-          
             children: [
-          
-              optListTile(
-                Icons.shopping_cart_outlined,
-                'Hacer carrito',
-                'LLenar el carrito de la compra',
-                () => Navigator.pushNamed(context, 'to_make_shopping_cart_page'),
-                true),
-          
-              optListTile(
-                Icons.pending_actions_outlined,
-                'Mis pedidos',
-                'Pedidos aun pendientes',
-                () => Navigator.pushNamed(context, 'my_pending_today_page', arguments: [
-                  commercialCode
-                ]),
-                true),
-      
-              optListTile(
-                Icons.work_outline_outlined,
-                'Mis Órdenes',
-                'Historial de órdenes pasadas',
-                () => Navigator.pushNamed(context, 'my_orders_history_page', arguments: [
-                  commercialCode
-                ]),
-                true),
-
-              optListTile(
-                Icons.document_scanner_outlined,
-                'Mis PDFs',
-                'PDFs Generados de órdenes y pedidos',
-                () => Navigator.pushNamed(context, 'internal_storage_page'),
-                true),
-
-              optListTile(
-                Icons.change_circle_outlined,
-                'Cambiar contraseña',
-                'Cambie su contraseña actual',
-                () => Navigator.pushNamed(context, 'change_password'),
-                true),
+              optListTile(Icons.shopping_cart_outlined, 'Hacer carrito', 'LLenar el carrito de la compra',
+                  () => Navigator.pushNamed(context, 'to_make_shopping_cart_page'), true),
+              optListTile(Icons.pending_actions_outlined, 'Mis pedidos', 'Pedidos aun pendientes',
+                  () => Navigator.pushNamed(context, 'my_pending_today_page', arguments: [commercialCode]), true),
+              optListTile(Icons.work_outline_outlined, 'Mis Órdenes', 'Historial de órdenes pasadas',
+                  () => Navigator.pushNamed(context, 'my_orders_history_page', arguments: [commercialCode]), true),
+              optListTile(Icons.document_scanner_outlined, 'Mis PDFs', 'PDFs Generados de órdenes y pedidos',
+                  () => Navigator.pushNamed(context, 'internal_storage_page'), true),
+              optListTile(Icons.change_circle_outlined, 'Cambiar contraseña', 'Cambie su contraseña actual',
+                  () => Navigator.pushNamed(context, 'change_password'), true),
             ],
-          
           ),
-      
         ),
-      
       ),
     );
   }
