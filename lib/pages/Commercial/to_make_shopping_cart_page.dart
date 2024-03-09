@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gustazo_cubano_app/config/controllers/products_controllers.dart';
-import 'package:gustazo_cubano_app/config/extensions/string_extensions.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
-import 'package:gustazo_cubano_app/helpers/check_url.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class ToMakeShoppingCartPage extends ConsumerStatefulWidget {
+class ToMakeShoppingCartPage extends StatefulWidget {
   const ToMakeShoppingCartPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ToMakeShoppingCartPageState();
+  State<ToMakeShoppingCartPage> createState() => _ToMakeShoppingCartPageState();
 }
 
-class _ToMakeShoppingCartPageState extends ConsumerState<ToMakeShoppingCartPage> {
+class _ToMakeShoppingCartPageState extends State<ToMakeShoppingCartPage> {
   List<Product> products = [];
 
   @override
@@ -74,16 +72,16 @@ class _ToMakeShoppingCartPageState extends ConsumerState<ToMakeShoppingCartPage>
   }
 }
 
-class ShowList extends ConsumerStatefulWidget {
+class ShowList extends StatefulWidget {
   const ShowList({super.key, required this.products});
 
   final List<Product> products;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ShowListState();
+  State<ShowList> createState() => _ShowListState();
 }
 
-class _ShowListState extends ConsumerState<ShowList> {
+class _ShowListState extends State<ShowList> {
   TextEditingController controller = TextEditingController();
   late List<Product> list;
 
@@ -112,41 +110,18 @@ class _ShowListState extends ConsumerState<ShowList> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, 'product_details_page', arguments: [list[index]]),
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
-                    padding: const EdgeInsets.only(left: 10, top: 10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1)]),
-                    child: Column(
-                      children: [
-                        bodyProd(index),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 200,
-                              child: Text(
-                                list[index].description,
-                                style:
-                                    const TextStyle(overflow: TextOverflow.ellipsis, fontSize: 18, fontFamily: 'Dosis'),
-                              ),
-                            ),
-                            addBuyBtn(list[index]),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              }),
+          child: GridView.builder(
+            itemCount: list.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisExtent: 250
+            ),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () => Navigator.pushNamed(context, 'product_details_page', arguments: [list[index]]),
+                child: ProductCard(product: list[index],));
+            },
+          )
         ),
       ],
     ));
@@ -169,37 +144,58 @@ class _ShowListState extends ConsumerState<ShowList> {
     setState(() => list = suggestions);
   }
 
-  Row bodyProd(int index) {
-    return Row(
-      children: [
-        SizedBox(
-            height: 70,
-            child: (list[index].photo.isNotEmpty && checkUrl(list[index].photo))
-                ? productPhoto(list[index].photo)
-                : Image.asset('lib/assets/images/6720387.jpg')),
-        productInfo(list[index].name, list[index].price.toString().intPart, list[index].coin,
-            list[index].inStock.toStringAsFixed(0)),
-      ],
-    );
-  }
+}
 
-  Container productInfo(String name, String price, String coin, String stock) {
-    return Container(
-        margin: const EdgeInsets.only(left: 10),
+class ProductCard extends ConsumerStatefulWidget {
+
+  const ProductCard({super.key, required this.product});
+
+  final Product product;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends ConsumerState<ProductCard> {
+  @override
+  Widget build(BuildContext context) {
+
+    return Card(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 200,
-              child: Text(name,
-                  style: const TextStyle(
-                      fontFamily: 'Dosis', fontSize: 18, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis)),
+          children: <Widget>[
+            const SizedBox(height: 30),
+            Center(
+              child: SizedBox(
+                height: 70,
+                child: Image.asset('lib/assets/images/6720387.jpg')),
             ),
-            dosisText('\$$price $coin', color: Colors.blue),
-            dosisText('Stock: $stock', color: Colors.green),
+            const Spacer(),
+            dosisText(widget.product.name, fontWeight: FontWeight.bold),
+            Container(
+              height: 50,
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.only(left: 15),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  dosisText('\$${widget.product.price}'),
+                  addBuyBtn(widget.product)
+                ],
+              ),
+            )
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   ClipRRect productPhoto(String photo) {
@@ -228,32 +224,27 @@ class _ShowListState extends ConsumerState<ShowList> {
     );
   }
 
-  Container addBuyBtn(Product product) {
+  CircleAvatar addBuyBtn(Product product) {
     final productList = StateNotifierProvider<ShoppingCartProvider, Product>((ref) => ShoppingCartProvider());
     final rProdList = ref.read(productList.notifier);
 
-    return Container(
-        width: 80,
-        height: 40,
-        decoration: BoxDecoration(
-            color: Colors.green[100],
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(5), bottomRight: Radius.circular(10)),
-            boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1)]),
-        child: IconButton(
-            highlightColor: Colors.transparent,
-            onPressed: () {
-              if (!rProdList.isInCart(product.id)) {
-                setState(() {
-                  rProdList.addProductToList(product);
-                });
-              } else {
-                setState(() {
-                  rProdList.removeProductFromList(product.id);
-                });
-              }
-            },
-            icon: (rProdList.isInCart(product.id))
-                ? const Icon(Icons.remove_shopping_cart_outlined, color: Colors.red)
-                : const Icon(Icons.add_shopping_cart_outlined, color: Colors.green)));
+    return CircleAvatar(
+      backgroundColor: Colors.green[100],
+      child: IconButton(
+        highlightColor: Colors.transparent,
+        onPressed: () {
+          if (!rProdList.isInCart(product.id)) {
+            setState(() {
+              rProdList.addProductToList(product);
+            });
+          } else {
+            setState(() {
+              rProdList.removeProductFromList(product.id);
+            });
+          }
+        },
+        icon: (rProdList.isInCart(product.id))
+            ? const Icon(Icons.remove_shopping_cart_outlined, color: Colors.red)
+            : const Icon(Icons.add_shopping_cart_outlined, color: Colors.green)));
   }
 }

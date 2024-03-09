@@ -41,7 +41,7 @@ class ShoppingCartProvider extends StateNotifier<Product> {
     final prices = ref.watch(coinPrices);
 
     _productList.forEach((key, value) {
-      double commission = value.cantToBuy >= value.moreThan ? value.commissionDiscount : value.commission;
+      double commission = (value.cantToBuy >= value.moreThan ? value.commissionDiscount : value.commission) as double;
 
       commissionMoney += (value.coin == 'CUP')
           ? value.cantToBuy * commission
@@ -60,20 +60,24 @@ class ShoppingCartProvider extends StateNotifier<Product> {
 
     if (_productList.containsKey(product.id)) {
       _productList.update(
-          product.id,
-          (value) => Product(
-              id: value.id,
-              name: value.name,
-              description: value.description,
-              moreThan: value.moreThan,
-              photo: value.photo,
-              price: value.price,
-              coin: value.coin,
-              inStock: value.inStock,
-              commission: value.commission,
-              commissionDiscount: value.commissionDiscount,
-              discount: value.discount,
-              cantToBuy: value.cantToBuy + 1));
+        product.id,
+        (value) => Product(
+          id: value.id,
+          name: value.name,
+          description: value.description,
+          moreThan: value.moreThan,
+          sellType: value.sellType,
+          box: value.box,
+          weigth: value.weigth,
+          weigthType: value.weigthType,
+          photo: value.photo,
+          price: value.price,
+          coin: value.coin,
+          inStock: value.inStock,
+          commission: value.commission,
+          commissionDiscount: value.commissionDiscount,
+          discount: value.discount,
+          cantToBuy: value.cantToBuy + 1));
     } else {
       _productList.addAll({product.id: product});
     }
@@ -96,6 +100,10 @@ class ShoppingCartProvider extends StateNotifier<Product> {
               name: value.name,
               description: value.description,
               moreThan: value.moreThan,
+              sellType: value.sellType,
+              box: value.box,
+              weigth: value.weigth,
+              weigthType: value.weigthType,
               photo: value.photo,
               price: value.price,
               coin: value.coin,
@@ -116,6 +124,10 @@ class ShoppingCartProvider extends StateNotifier<Product> {
               name: value.name,
               description: value.description,
               moreThan: value.moreThan,
+              sellType: value.sellType,
+              box: value.box,
+              weigth: value.weigth,
+              weigthType: value.weigthType,
               photo: value.photo,
               price: value.price,
               coin: value.coin,
@@ -138,6 +150,10 @@ class ShoppingCartProvider extends StateNotifier<Product> {
             name: value.name,
             description: value.description,
             moreThan: value.moreThan,
+            sellType: value.sellType,
+            box: value.box,
+            weigth: value.weigth,
+            weigthType: value.weigthType,
             photo: value.photo,
             price: value.price,
             coin: value.coin,
