@@ -64,16 +64,16 @@ class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
         IconButton(
             onPressed: () {
               List list = [];
-              rProdList.products.forEach((key, value) {
+              for (var value in rProdList.items) {
                 list.add(value);
-              });
+              }
 
               Map<String, dynamic> order = {
                 'date': DateTime.now().toString(),
                 'product_list': list,
                 'total_amount': rProdList.totalAmount,
                 'type_coin': widget.coin,
-                'commission': rProdList.totalCommissionMoney(ref).toStringAsFixed(2),
+                'commission': rProdList.totalCommission.toStringAsFixed(2),
                 'seller': {
                   'commercial_code': referralCode,
                   'ci': ci,
@@ -130,7 +130,7 @@ class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              dosisBold('Total de productos: ', rProdList.productsCant.toString(), 20),
+              dosisBold('Total de productos: ', rProdList.items.toString(), 20),
               dosisBold(
                   'Monto: \$',
                   '${(rProdList.whatCoin() == widget.coin) ? rProdList.totalAmount : calculatePurchaseAmount(ref, widget.coin, rProdList.totalAmount)}',
@@ -166,9 +166,9 @@ class _ListCartViewState extends ConsumerState<ListCartView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemCount: widget.rProdList.products.length,
+        itemCount: widget.rProdList.items.length,
         itemBuilder: (context, index) {
-          Product product = widget.rProdList.products.values.elementAt(index);
+          Product product = widget.rProdList.items[index].product;
 
           return ListTile(
             title: dosisText(product.name, fontWeight: FontWeight.bold),

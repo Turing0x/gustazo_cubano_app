@@ -6,6 +6,8 @@ import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/helpers/determinate_amount.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
+import 'package:gustazo_cubano_app/pages/Product/to_box.dart';
+import 'package:gustazo_cubano_app/pages/Product/to_weitgh.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -49,7 +51,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
 
   @override
   Widget build(BuildContext context) {
-    final rProdList = ShoppingCartProvider();
+    final rProdList = ref.watch(cartProvider);
     final size = MediaQuery.of(context).size;
     final prices = ref.watch(coinPrices);
 
@@ -57,7 +59,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
       appBar: showAppBar('Carrito de la compra', actions: [
         IconButton(
             onPressed: () {
-              if (rProdList.products.isNotEmpty) {
+              if (rProdList.items.isNotEmpty) {
                 Navigator.pushNamed(context, 'finish_order_page', arguments: [coinType, prices.mlc, prices.usd]);
               }
             },
@@ -74,14 +76,14 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
                 children: [dosisText('Moneda de pago: ', size: 20, fontWeight: FontWeight.bold), popupMenuButton()],
               ),
               customGroupBox('Información del carrito', [
-                dosisBold('Cantidad de productos: ', rProdList.productsCant.toString(), 20),
+                dosisBold('Cantidad de productos: ', rProdList.totalProductCount.toString(), 20),
                 dosisBold(
                     'Monto de la compra: ',
                     '${(rProdList.whatCoin() == coinType) ? rProdList.totalAmount : calculatePurchaseAmount(ref, coinType, rProdList.totalAmount)} $coinType',
                     20),
-                dosisBold('Comisión: ', '${rProdList.totalCommissionMoney(ref)} CUP', 20)
+                dosisBold('Comisión: ', '${rProdList.totalCommission} CUP', 20)
               ]),
-              (rProdList.products.isEmpty) ? emptyCart(size) : Flexible(child: shoppingCartList(rProdList))
+              (rProdList.items.isEmpty) ? emptyCart(size) : Flexible(child: shoppingCartList(rProdList))
             ],
           )),
     );
@@ -90,12 +92,12 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
   ListView shoppingCartList(ShoppingCartProvider rProdList) {
     return ListView.builder(
       controller: _controller,
-      itemCount: rProdList.products.length,
+      itemCount: rProdList.items.length,
       itemBuilder: (context, index) {
-        Product product = rProdList.products.values.elementAt(index);
+        Product product = rProdList.items[index].product;
 
         if(product.sellType == 'unity'){
-          return baseContainer(250, ToMakeUnityDesign(
+          return baseContainer(270, ToMakeUnityDesign(
             product: product,
           ));
         }
@@ -105,7 +107,7 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
           ));
         }
         if(product.sellType == 'weight'){
-          return baseContainer(270, ToMakeWeightDesign(
+          return baseContainer(270, ToMakeUnityDesign(
             product: product,
           )); 
         }
@@ -193,230 +195,4 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
     );
   }
 
-}
-
-class ToMakeUnityDesign extends ConsumerStatefulWidget {
-  const ToMakeUnityDesign({super.key, required this.product});
-
-  final Product product;
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ToMakeUnityDesignState();
-}
-
-class _ToMakeUnityDesignState extends ConsumerState<ToMakeUnityDesign> {
-  @override
-  Widget build(BuildContext context) {
-
-    final rProdList = ShoppingCartProvider();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(width: 80, height: 80, child: Image.asset('lib/assets/images/6720387.jpg')),
-            const Spacer(),
-            addBuyBtn(widget.product.id)
-          ],
-        ),
-        const SizedBox(height: 10),
-        productInfo(
-          widget.product.name, 
-          widget.product.coin, 
-          widget.product.price, 
-          widget.product.inStock.toStringAsFixed(0),
-          widget.product.sellType, 
-          widget.product.box, 
-          ),
-        const Spacer(),
-        btnCant(rProdList, widget.product)
-      ],
-    );
-  }
-
-  Column productInfo(String name, String coin, double price, String stock, String type, int cant) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        dosisText(name, fontWeight: FontWeight.bold),
-        dosisText('Lote de $cant unidades'),
-        dosisText('Precio: \$${(coin == coinType) 
-          ? price 
-          : calculatePurchaseAmount(ref, coinType, price)} $coin',
-            color: Colors.blue),
-        dosisText('Stock: $stock', color: Colors.green)
-      ],
-    );
-  }
-
-  Container addBuyBtn(String productId) {
-    final productList = StateNotifierProvider<ShoppingCartProvider, Product>((ref) => ShoppingCartProvider());
-    final rProdList = ref.read(productList.notifier);
-
-    return Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(100),
-            boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1)]),
-        child: Center(
-            child: dosisText(rProdList.cantOfAProduct(productId).toString(),
-                color: Colors.blue, fontWeight: FontWeight.bold)));
-  }
-
-  Row btnCant(ShoppingCartProvider rProdList, Product product) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.decreaseTenCantToBuyOfAProduct(product.id);
-            });
-          },
-          icon: dosisText('-10', fontWeight: FontWeight.bold)),
-      IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.decreaseCantToBuyOfAProduct(product.id);
-            });
-          },
-          icon: const Icon(Icons.remove, color: Colors.red)),
-      IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.addProductToList(product);
-            });
-          },
-          icon: const Icon(Icons.add, color: Colors.green)),
-      IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.addTenCantToBuyOfAProduct(product.id);
-            });
-          },
-          icon: dosisText('+10', fontWeight: FontWeight.bold)),
-    ],
-  );
-}
-
-}
-
-class ToMakeWeightDesign extends ConsumerStatefulWidget {
-  const ToMakeWeightDesign({super.key, required this.product});
-
-  final Product product;
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ToMakeWeightDesignState();
-}
-
-class _ToMakeWeightDesignState extends ConsumerState<ToMakeWeightDesign> {
-  @override
-  Widget build(BuildContext context) {
-    final rProdList = ShoppingCartProvider();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(width: 80, height: 80, child: Image.asset('lib/assets/images/6720387.jpg')),
-            const Spacer(),
-            addBuyBtn(widget.product.id)
-          ],
-        ),
-        const SizedBox(height: 10),
-        productInfo(
-          widget.product.name, 
-          widget.product.coin, 
-          widget.product.price, 
-          widget.product.inStock.toStringAsFixed(0),
-          widget.product.sellType, 
-          widget.product.box, 
-          ),
-        const Spacer(),
-        btnCant(rProdList, widget.product)
-      ],
-    );
-  }
-
-  Column productInfo(String name, String coin, double price, String stock, String type, int cant) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        dosisText(name, fontWeight: FontWeight.bold),
-        dosisText('Lote de $cant unidades'),
-        dosisText('Precio: \$${(coin == coinType) 
-          ? price 
-          : calculatePurchaseAmount(ref, coinType, price)} $coin',
-            color: Colors.blue),
-        dosisText('Stock: $stock', color: Colors.green)
-      ],
-    );
-  }
-
-  Container addBuyBtn(String productId) {
-    final productList = StateNotifierProvider<ShoppingCartProvider, Product>((ref) => ShoppingCartProvider());
-    final rProdList = ref.read(productList.notifier);
-
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(100),
-          boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1)]),
-      child: Center(
-          child: dosisText(rProdList.cantOfAProduct(productId).toString(),
-              color: Colors.blue, fontWeight: FontWeight.bold)));
-  }
-
-  Row btnCant(ShoppingCartProvider rProdList, Product product) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.decreaseTenCantToBuyOfAProduct(product.id);
-            });
-          },
-          icon: dosisText('-10', fontWeight: FontWeight.bold)),
-      IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.decreaseCantToBuyOfAProduct(product.id);
-            });
-          },
-          icon: const Icon(Icons.remove, color: Colors.red)),
-      IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.addProductToList(product);
-            });
-          },
-          icon: const Icon(Icons.add, color: Colors.green)),
-      IconButton(
-          style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-          onPressed: () {
-            setState(() {
-              rProdList.addTenCantToBuyOfAProduct(product.id);
-            });
-          },
-          icon: dosisText('+10', fontWeight: FontWeight.bold)),
-      ],
-    );
-  }
 }

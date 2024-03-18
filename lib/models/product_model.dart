@@ -41,7 +41,7 @@ class Product {
     this.commissionDiscount = 0,
     this.moreThan = 0,
     this.discount = 0,
-    this.cantToBuy = 0,
+    this.cantToBuy = 1,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -61,7 +61,7 @@ class Product {
       commissionDiscount: json["commissionDiscount"] ?? '',
       moreThan: json["more_than"] ?? '',
       discount: json["discount"]?.toDouble() ?? 0,
-      cantToBuy: json["cantToBuy"] ?? 0,
+      cantToBuy: json["cantToBuy"] ?? 1
   );
 
   Map<String, dynamic> toJson() => {

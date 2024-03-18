@@ -1,174 +1,112 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 
-Map<String, Product> _productList = {};
+final cartProvider = ChangeNotifierProvider((ref) => ShoppingCartProvider());
 
-class ShoppingCartProvider extends StateNotifier<Product> {
-  ShoppingCartProvider() : super(Product());
+class ShoppingCartProvider extends ChangeNotifier {
+  final List<CartItem> _items = [];
 
-  Map<String, Product> get products {
-    return {..._productList};
+  List<CartItem> get items => _items;
+
+  int get totalProductCount {
+    int totalCount = 0;
+    for (var item in _items) {
+      totalCount += item.product.cantToBuy * item.quantity;
+    }
+    return totalCount;
   }
 
-  int get productsCant {
-    int total = 0;
-    _productList.forEach((key, value) {
-      total += value.cantToBuy;
-    });
+  double get totalAmount {
+    double total = 0.0;
+    for (var item in _items) {
+      double itemPrice = item.product.price;
+      if (item.product.cantToBuy >= item.product.moreThan) {
+        itemPrice = item.product.discount;
+      }
+      if (item.product.sellType == 'Caja') {
+        itemPrice *= item.product.box;
+      } else if (item.product.sellType == 'Peso') {
+        itemPrice *= item.product.weigth;
+      }
+      total += itemPrice * item.quantity;
+    }
+    return total;
+  }
+
+  double get totalCommission {
+    double total = 0.0;
+    for (var item in _items) {
+      total += item.product.commission * item.quantity;
+    }
     return total;
   }
 
   String whatCoin() {
     List<String> coins = ['CUP', 'USD', 'MLC', 'ZELLE'];
     return coins.firstWhere(
-      (coin) => products.values.every((element) => element.coin == coin),
+      (coin) => _items.every((element) => element.product.coin == coin),
       orElse: () => 'CUP',
     );
   }
 
-  double get totalAmount {
-    double totalAmount = 0.0;
-    _productList.forEach((key, value) {
-      double price = value.cantToBuy >= value.moreThan ? value.discount : value.price;
-      totalAmount += price * value.cantToBuy;
-    });
-    return totalAmount;
+  void addToCart(Product product) {
+    _items.add(CartItem(product: product));
+    notifyListeners();
   }
 
-  double totalCommissionMoney(WidgetRef ref) {
-    double commissionMoney = 0.0;
-    final prices = ref.watch(coinPrices);
-
-    _productList.forEach((key, value) {
-      double commission = (value.cantToBuy >= value.moreThan ? value.commissionDiscount : value.commission) as double;
-
-      commissionMoney += (value.coin == 'CUP')
-          ? value.cantToBuy * commission
-          : (value.coin == 'MLC')
-              ? (value.cantToBuy * commission) * prices.mlc
-              : (value.cantToBuy * commission) * prices.usd;
-    });
-
-    return commissionMoney;
+  void removeFromCartById(String productId) {
+    _items.removeWhere((item) => item.product.id == productId);
+    notifyListeners();
   }
 
-  bool isInCart(String productId) => _productList.containsKey(productId);
+  void increaseQuantityById(String productId, {int amount = 1}) {
 
-  void addProductToList(Product product) {
-    if (product.inStock < product.cantToBuy + 1) return;
+    final item = _items.firstWhere((item) => 
+      item.product.id == productId, 
+      orElse: () => CartItem(product: Product(id: productId)));
 
-    if (_productList.containsKey(product.id)) {
-      _productList.update(
-        product.id,
-        (value) => Product(
-          id: value.id,
-          name: value.name,
-          description: value.description,
-          moreThan: value.moreThan,
-          sellType: value.sellType,
-          box: value.box,
-          weigth: value.weigth,
-          weigthType: value.weigthType,
-          photo: value.photo,
-          price: value.price,
-          coin: value.coin,
-          inStock: value.inStock,
-          commission: value.commission,
-          commissionDiscount: value.commissionDiscount,
-          discount: value.discount,
-          cantToBuy: value.cantToBuy + 1));
+    if (item.quantity + amount <= 10) {
+      item.quantity += amount;
     } else {
-      _productList.addAll({product.id: product});
+      item.quantity = 10;
     }
+    notifyListeners();
   }
 
-  void addProductToListOnEditing(Product product) {
-    _productList.addAll({product.id: product});
-  }
+  void decreaseQuantityById(String productId, {int amount = 1}) {
 
-  void removeProductFromList(String prodId) {
-    _productList.remove(prodId);
-  }
+    final item = _items.firstWhere((item) => 
+      item.product.id == productId, 
+      orElse: () => CartItem(product: Product(id: productId)));
 
-  void decreaseCantToBuyOfAProduct(String productId) {
-    if (_productList[productId]!.cantToBuy != 1) {
-      _productList.update(
-          productId,
-          (value) => Product(
-              id: value.id,
-              name: value.name,
-              description: value.description,
-              moreThan: value.moreThan,
-              sellType: value.sellType,
-              box: value.box,
-              weigth: value.weigth,
-              weigthType: value.weigthType,
-              photo: value.photo,
-              price: value.price,
-              coin: value.coin,
-              inStock: value.inStock,
-              commissionDiscount: value.commissionDiscount,
-              commission: value.commission,
-              discount: value.discount,
-              cantToBuy: value.cantToBuy - 1));
+    if (item.quantity - amount >= 1) {
+      item.quantity -= amount;
+    } else {
+      removeFromCartById(productId);
     }
+    notifyListeners();
   }
-
-  void decreaseTenCantToBuyOfAProduct(String productId) {
-    if (_productList[productId]!.cantToBuy - 10 > 1) {
-      _productList.update(
-          productId,
-          (value) => Product(
-              id: value.id,
-              name: value.name,
-              description: value.description,
-              moreThan: value.moreThan,
-              sellType: value.sellType,
-              box: value.box,
-              weigth: value.weigth,
-              weigthType: value.weigthType,
-              photo: value.photo,
-              price: value.price,
-              coin: value.coin,
-              inStock: value.inStock,
-              commissionDiscount: value.commissionDiscount,
-              commission: value.commission,
-              discount: value.discount,
-              cantToBuy: value.cantToBuy - 10));
-    }
-  }
-
-  void addTenCantToBuyOfAProduct(String productId) {
-    Product product = _productList[productId]!;
-    if (product.inStock < product.cantToBuy + 10) return;
-
-    _productList.update(
-        product.id,
-        (value) => Product(
-            id: value.id,
-            name: value.name,
-            description: value.description,
-            moreThan: value.moreThan,
-            sellType: value.sellType,
-            box: value.box,
-            weigth: value.weigth,
-            weigthType: value.weigthType,
-            photo: value.photo,
-            price: value.price,
-            coin: value.coin,
-            inStock: value.inStock,
-            commissionDiscount: value.commissionDiscount,
-            commission: value.commission,
-            discount: value.discount,
-            cantToBuy: value.cantToBuy + 10));
-  }
-
+  
   int cantOfAProduct(String productId) {
-    Product product = _productList[productId]!;
-    return product.cantToBuy;
+    final item = _items.firstWhere((item) => item.product.id == productId, 
+      orElse: () => CartItem(product: Product(id: productId)));
+    return item.quantity;
   }
 
-  void cleanCart() => _productList = {};
-  bool isEmpty() => _productList.isEmpty;
+  bool isInCart(String productId) {
+    return _items.any((item) => item.product.id == productId);
+  }
+
+  void clearCart() {
+    _items.clear();
+    notifyListeners();
+  }
+}
+
+class CartItem {
+  final Product product;
+  int quantity;
+
+  CartItem({required this.product, this.quantity = 1});
 }

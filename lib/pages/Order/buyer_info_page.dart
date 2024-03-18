@@ -237,7 +237,7 @@ class _BuyerInfoPageState extends State<BuyerInfoPage> with TickerProviderStateM
           }
 
           await orderCrtl.saveOrder(widget.dataOrder);
-          rProdList.cleanCart();
+          rProdList.clearCart();
           nav.pushReplacementNamed('main_commercial_page');
         },
         icon: const Icon(Icons.done_outline_rounded, color: Colors.green),

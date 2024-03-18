@@ -28,9 +28,9 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
   @override
   void initState() {
     final rProdList = ShoppingCartProvider();
-    for (var order in widget.order.productList) {
+    for (var product in widget.order.productList) {
       setState(() {
-        rProdList.addProductToListOnEditing(order);
+        rProdList.addToCart(product);
       });
     }
 
@@ -67,7 +67,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
       appBar: showAppBar('Carrito', centerTitle: false, actions: [
         IconButton(
           onPressed: () {
-            if (rProdList.products.isNotEmpty) {
+            if (rProdList.items.isNotEmpty) {
               Navigator.pushNamed(context, 'add_products_on_editing');
             }
           },
@@ -78,9 +78,9 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
             final orderCtrl = OrderControllers();
 
             List<Product> list = [];
-            rProdList.products.forEach((key, value) {
-              list.add(value);
-            });
+            for (var value in rProdList.items) {
+              list.add(value.product);
+            }
 
             Map<String, dynamic> order = {
               'product_list': list,
@@ -103,11 +103,11 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               customGroupBox('Información del carrito', [
-                dosisBold('Cantidad de productos: ', rProdList.productsCant.toString(), 20),
+                dosisBold('Cantidad de productos: ', rProdList.totalProductCount.toString(), 20),
                 dosisBold('Monto de la compra: ', rProdList.totalAmount.toStringAsFixed(2), 20),
-                dosisBold('Comisión por la compra: ', rProdList.totalCommissionMoney(ref).toStringAsFixed(2), 20)
+                dosisBold('Comisión por la compra: ', rProdList.totalCommission.toStringAsFixed(2), 20)
               ]),
-              (rProdList.products.isEmpty)
+              (rProdList.items.isEmpty)
                   ? emptyCart(size)
                   : Flexible(
                       child: ValueListenableBuilder(
@@ -123,9 +123,9 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
   ListView shoppingCartList(ShoppingCartProvider rProdList) {
     return ListView.builder(
         controller: _controller,
-        itemCount: rProdList.products.length,
+        itemCount: rProdList.items.length,
         itemBuilder: (context, index) {
-          Product product = rProdList.products.values.elementAt(index);
+          Product product = rProdList.items[index].product;
           return Container(
             height: 160,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -155,7 +155,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
                               padding: const EdgeInsets.all(0), side: const BorderSide(color: Colors.transparent)),
                           onPressed: () {
                             setState(() {
-                              rProdList.removeProductFromList(product.id);
+                              rProdList.removeFromCartById(product.id);
                             });
                           },
                           icon: const Icon(
@@ -169,7 +169,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
                           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                           onPressed: () {
                             setState(() {
-                              rProdList.decreaseTenCantToBuyOfAProduct(product.id);
+                              rProdList.decreaseQuantityById(product.id, amount: 10);
                             });
                           },
                           icon: dosisText('-10', fontWeight: FontWeight.bold)),
@@ -177,7 +177,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
                           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                           onPressed: () {
                             setState(() {
-                              rProdList.decreaseCantToBuyOfAProduct(product.id);
+                              rProdList.decreaseQuantityById(product.id);
                             });
                           },
                           icon: const Icon(Icons.remove, color: Colors.red)),
@@ -185,7 +185,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
                           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                           onPressed: () {
                             setState(() {
-                              rProdList.addProductToList(product);
+                              rProdList.increaseQuantityById(product.id);
                             });
                           },
                           icon: const Icon(Icons.add, color: Colors.green)),
@@ -193,7 +193,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
                           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                           onPressed: () {
                             setState(() {
-                              rProdList.addTenCantToBuyOfAProduct(product.id);
+                              rProdList.increaseQuantityById(product.id, amount: 10);
                             });
                           },
                           icon: dosisText('+10', fontWeight: FontWeight.bold)),
@@ -262,8 +262,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
   }
 
   Container addBuyBtn(String productId) {
-    final productList = StateNotifierProvider<ShoppingCartProvider, Product>((ref) => ShoppingCartProvider());
-    final rProdList = ref.read(productList.notifier);
+    final rProdList = ref.read(cartProvider);
 
     return Container(
         width: 40,

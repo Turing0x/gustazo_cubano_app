@@ -109,8 +109,7 @@ class _ShowListState extends ConsumerState<ShowList> {
   }
 
   Container addBuyBtn(Product product) {
-    final productList = StateNotifierProvider<ShoppingCartProvider, Product>((ref) => ShoppingCartProvider());
-    final rProdList = ref.read(productList.notifier);
+    final rProdList = ref.read(cartProvider);
 
     return Container(
         width: 40,
@@ -123,11 +122,11 @@ class _ShowListState extends ConsumerState<ShowList> {
             onPressed: () {
               if (!rProdList.isInCart(product.id)) {
                 setState(() {
-                  rProdList.addProductToList(product);
+                  rProdList.addToCart(product);
                 });
               } else {
                 setState(() {
-                  rProdList.removeProductFromList(product.id);
+                  rProdList.removeFromCartById(product.id);
                 });
               }
             },

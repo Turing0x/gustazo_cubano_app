@@ -50,7 +50,7 @@ class _MainCommercialPageState extends ConsumerState<MainCommercialPage> {
 
               LoginDataService().deleteData();
 
-              rProdList.cleanCart();
+              rProdList.clearCart();
 
               contex.pushNamedAndRemoveUntil('auth_page', (Route<dynamic> route) => false);
             },

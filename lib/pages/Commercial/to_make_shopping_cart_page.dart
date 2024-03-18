@@ -7,19 +7,19 @@ import 'package:gustazo_cubano_app/shared/no_data.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class ToMakeShoppingCartPage extends StatefulWidget {
+class ToMakeShoppingCartPage extends ConsumerStatefulWidget {
   const ToMakeShoppingCartPage({super.key});
 
   @override
-  State<ToMakeShoppingCartPage> createState() => _ToMakeShoppingCartPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ToMakeShoppingCartPageState();
 }
 
-class _ToMakeShoppingCartPageState extends State<ToMakeShoppingCartPage> {
+class _ToMakeShoppingCartPageState extends ConsumerState<ToMakeShoppingCartPage> {
   List<Product> products = [];
 
   @override
   void initState() {
-    ShoppingCartProvider().cleanCart();
+    ShoppingCartProvider().clearCart();
 
     ProductControllers().getAllProducts().then((value) {
       if (value.isNotEmpty) {
@@ -36,7 +36,6 @@ class _ToMakeShoppingCartPageState extends State<ToMakeShoppingCartPage> {
 
   @override
   Widget build(BuildContext context) {
-    final rProdList = ShoppingCartProvider();
 
     return Scaffold(
       appBar: showAppBar('Productos en stock', centerTitle: false, actions: [
@@ -46,7 +45,8 @@ class _ToMakeShoppingCartPageState extends State<ToMakeShoppingCartPage> {
               color: Colors.transparent,
             )),
             onPressed: () {
-              if (rProdList.isEmpty()) {
+              final provider = ref.watch(cartProvider);
+              if (provider.items.isEmpty) {
                 simpleMessageSnackBar(context, texto: 'EL carrito de la compra esta vacío', typeMessage: false);
                 return;
               }
@@ -225,8 +225,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
   }
 
   CircleAvatar addBuyBtn(Product product) {
-    final productList = StateNotifierProvider<ShoppingCartProvider, Product>((ref) => ShoppingCartProvider());
-    final rProdList = ref.read(productList.notifier);
+    final rProdList = ref.read(cartProvider);
 
     return CircleAvatar(
       backgroundColor: Colors.green[100],
@@ -235,11 +234,11 @@ class _ProductCardState extends ConsumerState<ProductCard> {
         onPressed: () {
           if (!rProdList.isInCart(product.id)) {
             setState(() {
-              rProdList.addProductToList(product);
+              rProdList.addToCart(product);
             });
           } else {
             setState(() {
-              rProdList.removeProductFromList(product.id);
+              rProdList.removeFromCartById(product.id);
             });
           }
         },
