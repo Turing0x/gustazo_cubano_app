@@ -53,7 +53,7 @@ class _ToMakeUnityDesignState extends ConsumerState<ToMakeUnityDesign> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         dosisText(name, fontWeight: FontWeight.bold),
-        dosisText('Lote de $cant unidades'),
+        // dosisText('Lote de $cant unidades'),
         dosisText('Precio: \$${(coin == coinType) 
           ? price 
           : calculatePurchaseAmount(ref, coinType, price)} $coin',

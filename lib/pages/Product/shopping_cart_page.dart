@@ -7,7 +7,6 @@ import 'package:gustazo_cubano_app/config/riverpod/shopping_cart_provider.dart';
 import 'package:gustazo_cubano_app/helpers/determinate_amount.dart';
 import 'package:gustazo_cubano_app/models/product_model.dart';
 import 'package:gustazo_cubano_app/pages/Product/to_box.dart';
-import 'package:gustazo_cubano_app/pages/Product/to_weitgh.dart';
 import 'package:gustazo_cubano_app/shared/group_box.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -97,17 +96,17 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
         Product product = rProdList.items[index].product;
 
         if(product.sellType == 'unity'){
-          return baseContainer(270, ToMakeUnityDesign(
+          return baseContainer(240, ToMakeUnityDesign(
             product: product,
           ));
         }
         if(product.sellType == 'box'){
-          return baseContainer(270, ToMakeUnityDesign(
+          return baseContainer(240, ToMakeUnityDesign(
             product: product,
           ));
         }
         if(product.sellType == 'weight'){
-          return baseContainer(270, ToMakeUnityDesign(
+          return baseContainer(240, ToMakeUnityDesign(
             product: product,
           )); 
         }
