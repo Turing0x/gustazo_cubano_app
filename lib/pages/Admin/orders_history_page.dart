@@ -27,14 +27,15 @@ class OrdersHistoryPage extends ConsumerStatefulWidget {
 }
 
 class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
-
   bool show = false;
 
   @override
   void initState() {
     LoginDataService().getRole().then((value) {
-      if(value == 'admin'){
-        setState(() {show = true;});
+      if (value == 'admin') {
+        setState(() {
+          show = true;
+        });
       }
     });
     super.initState();
@@ -42,41 +43,25 @@ class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: showAppBar('Historial de órdenes', actions: [
-        menu()
-      ]),
+      appBar: showAppBar('Historial de órdenes', actions: [menu()]),
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
-      
-          children: [
-      
-            CustomDateSelect(),
-
-            Expanded(child: ShowList())
-      
-          ],
-      
+          children: [CustomDateSelect(), Expanded(child: ShowList())],
         ),
-      
       ),
-
     );
-
   }
 
-  void makePDF() async{
-
+  void makePDF() async {
     DateTime date = listToPdf[0].date;
     String fecha = '${date.day}/${date.month}/${date.year}';
-    Map<String, dynamic> itsDone =
-      await GenerateAdminPdfCommission.generate(listToPdf, fecha);
+    Map<String, dynamic> itsDone = await GenerateAdminPdfCommission.generate(listToPdf, fecha);
 
-    if(itsDone['done'] == true){
+    if (itsDone['done'] == true) {
       OpenFile.open(itsDone['path']);
-    } else{
+    } else {
       simpleMessageSnackBar(context, texto: itsDone['path'], typeMessage: true);
       return;
     }
@@ -84,20 +69,18 @@ class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
     simpleMessageSnackBar(context, texto: 'Factura exportada exitosamente', typeMessage: true);
   }
 
-  void makeDailyPDF() async{
-
+  void makeDailyPDF() async {
     DateTime date = listToPdf[0].date;
     String fecha = DateFormat.MMMd('en').format(date);
 
     List<Product> list = await ProductControllers().getDataForDaily(fecha);
-    if(list.isEmpty) return;
-    
-    Map<String, dynamic> itsDone =
-      await GenerateAdminPdfDaily.generate([], fecha);
+    if (list.isEmpty) return;
 
-    if(itsDone['done'] == true){
+    Map<String, dynamic> itsDone = await GenerateAdminPdfDaily.generate([], fecha);
+
+    if (itsDone['done'] == true) {
       OpenFile.open(itsDone['path']);
-    } else{
+    } else {
       simpleMessageSnackBar(context, texto: itsDone['path'], typeMessage: true);
       return;
     }
@@ -105,29 +88,24 @@ class _OrdersHistoryPageState extends ConsumerState<OrdersHistoryPage> {
     simpleMessageSnackBar(context, texto: 'Factura exportada exitosamente', typeMessage: true);
   }
 
-  PopupMenuButton menu(){
+  PopupMenuButton menu() {
     return PopupMenuButton(
-      icon: const Icon(Icons.more_vert),
-      onSelected: (value) async {
-        Map<String, void Function()> methods = {
-          'commi': () => makePDF() ,
-          'daily': () => makeDailyPDF(),
-        };
-        methods[value]!.call();
-      },
-      itemBuilder: (BuildContext context) => [
-        PopupMenuItem(
-          value: 'commi',
-          child: dosisText('Cálculo de comisiones', size: 18)
-        ),
-        PopupMenuItem(
-          value: 'daily',
-          child: dosisText('Resúmen del día', size: 18),
-        )
-      ]
-    );
+        icon: const Icon(Icons.more_vert),
+        onSelected: (value) async {
+          Map<String, void Function()> methods = {
+            'commi': () => makePDF(),
+            'daily': () => makeDailyPDF(),
+          };
+          methods[value]!.call();
+        },
+        itemBuilder: (BuildContext context) => [
+              PopupMenuItem(value: 'commi', child: dosisText('Cálculo de comisiones', size: 18)),
+              PopupMenuItem(
+                value: 'daily',
+                child: dosisText('Resúmen del día', size: 18),
+              )
+            ]);
   }
-
 }
 
 class ShowList extends ConsumerStatefulWidget {
@@ -138,17 +116,14 @@ class ShowList extends ConsumerStatefulWidget {
 }
 
 class _ShowListState extends ConsumerState<ShowList> {
-
   @override
   Widget build(BuildContext context) {
-
     final janddate = ref.watch(janddateR);
 
     return Scaffold(
       body: FutureBuilder(
         future: OrderControllers().getAllOrders(true, date: janddate.currentDate),
         builder: (context, snapshot) {
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -158,25 +133,18 @@ class _ShowListState extends ConsumerState<ShowList> {
 
           final list = snapshot.data;
           listToPdf = list!;
-          
+
           return ListView.builder(
-      
             itemCount: list.length,
             itemBuilder: (context, index) {
-
               Order order = list[index];
-              
+
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [BoxShadow(
-                    color: Colors.black12,
-                    spreadRadius: 1,
-                    blurRadius: 1
-                  )]
-                ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 1)]),
                 child: ListTile(
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,27 +153,15 @@ class _ShowListState extends ConsumerState<ShowList> {
                       dosisText('Comercial: ${order.seller.fullName.split(' ')[0]}'),
                     ],
                   ),
-                  subtitle: dosisBold('Factura: ', 
-                    order.invoiceNumber, 18),
+                  subtitle: dosisBold('Factura: ', order.invoiceNumber, 18),
                   trailing: const Icon(Icons.arrow_right_rounded),
-                  onTap: () => Navigator.pushNamed(context, 'order_details_page', arguments: [
-                    order
-                  ]),
-
+                  onTap: () => Navigator.pushNamed(context, 'order_details_page', arguments: [order]),
                 ),
-
               );
-
             },
-          
           );
-          
         },
-
       ),
-
     );
-
   }
-
 }

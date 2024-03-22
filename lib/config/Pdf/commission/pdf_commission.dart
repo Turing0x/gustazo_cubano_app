@@ -13,9 +13,7 @@ import 'package:pdf/widgets.dart';
 
 class GeneratePdfCommission {
   static Future<Map<String, dynamic>> generate(CommissionInvoice invoice) async {
-
     try {
-
       final pdf = Document();
 
       final image = pw.MemoryImage(
@@ -29,19 +27,15 @@ class GeneratePdfCommission {
       final fileName = 'COMISION-$formatedDate';
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
-      Directory directory =
-        await Directory('${appDocDirectory?.path}/PDFDocs')
-          .create(recursive: true);
+      Directory directory = await Directory('${appDocDirectory?.path}/PDFDocs').create(recursive: true);
 
       final file = File('${directory.path}/$fileName.pdf');
       await file.writeAsBytes(await pdf.save());
 
       return {'done': true, 'path': file.path};
-
     } catch (onError) {
       return {'done': false, 'path': onError.toString()};
     }
-
   }
 
   static pw.MultiPage multiPage(CommissionInvoice invoice, MemoryImage image) {
@@ -49,75 +43,51 @@ class GeneratePdfCommission {
       pageFormat: const PdfPageFormat(1500, 1500),
       build: (context) => [
         pw.Container(
-          margin: const EdgeInsets.symmetric(horizontal: 100, vertical: 80),
-          child: pw.Column(
-            children: [
-
+            margin: const EdgeInsets.symmetric(horizontal: 100, vertical: 80),
+            child: pw.Column(children: [
               topRow(invoice.title, image, invoice.address),
-              
               pw.SizedBox(height: 100),
-
               pw.SizedBox(height: 50),
-              
               infoRow(invoice),
-
               pw.SizedBox(height: 100),
               buildInvoice(invoice),
-
               pw.SizedBox(height: 100),
-
-            ]
-          )
-        )
+            ]))
       ],
     );
   }
 
-  static Row topRow( String title, MemoryImage image, String address ){
-    return pw.Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        pw.Image(image),
-        pw.Column(
-          children: [
-            pwtextoDosis(title, 28, fontWeight: pw.FontWeight.bold),
-            pwtextoDosis(address, 25),
-          ]
-        )
-      ]
-    );
+  static Row topRow(String title, MemoryImage image, String address) {
+    return pw.Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      pw.Image(image),
+      pw.Column(children: [
+        pwtextoDosis(title, 28, fontWeight: pw.FontWeight.bold),
+        pwtextoDosis(address, 25),
+      ])
+    ]);
   }
-  
-  static Row infoRow( CommissionInvoice invoice ){
 
-    double foldedCommision = invoice.orderList.fold(0, 
-      (previousValue, element) => previousValue + element.commission);
+  static Row infoRow(CommissionInvoice invoice) {
+    double foldedCommision = invoice.orderList.fold(0, (previousValue, element) => previousValue + element.commission);
 
     return pw.Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             pwtextoDosis('Información de Comercial', 25, fontWeight: pw.FontWeight.bold),
             pwboldLabel('Nombre Completo: ', invoice.userName, 23),
             pwboldLabel('Carnet de Identidad: ', invoice.userCi, 23),
             pwboldLabel('Dirección: ', invoice.userAddress, 23),
             pwboldLabel('Teléfono de Contacto: ', invoice.userPhone, 23),
-          ]
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          ]),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             pwtextoDosis('Información de venta', 25, fontWeight: pw.FontWeight.bold),
-            pwboldLabel( 'Ventas logradas: ', '${invoice.orderList.length}', 23),
-            pwboldLabel( 'Ganancia Total: ', '${foldedCommision.numFormat} CUP', 23),
-            pwboldLabel( 'Rebaja del 5%: ', '${(foldedCommision - foldedCommision * 0.05).numFormat} CUP', 23)
-          ]
-        )
-      ]
-    );
+            pwboldLabel('Ventas logradas: ', '${invoice.orderList.length}', 23),
+            pwboldLabel('Ganancia Total: ', '${foldedCommision.numFormat} CUP', 23),
+            pwboldLabel('Rebaja del 5%: ', '${(foldedCommision - foldedCommision * 0.05).numFormat} CUP', 23)
+          ])
+        ]);
   }
 
   static Widget buildInvoice(CommissionInvoice invoice) {
@@ -129,7 +99,6 @@ class GeneratePdfCommission {
     ];
 
     final data = invoice.orderList.map((item) {
-
       return [
         Container(child: pwtextoDosis('${item.pendingNumber} - ${item.invoiceNumber}', 23)),
         Container(child: pwtextoDosis(item.date.toString(), 23)),
@@ -152,5 +121,4 @@ class GeneratePdfCommission {
       },
     );
   }
-
 }

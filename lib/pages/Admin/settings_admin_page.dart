@@ -12,46 +12,24 @@ class SettingAdminPage extends StatelessWidget {
       appBar: showAppBar('Configuraciones'),
       body: Column(
         children: [
-          
-          optListTile(
-            Icons.groups_2_outlined,
-            'Equipo de trabajo',
-            'Empleados del negocio',
-            () => Navigator.pushNamed(context, 'commercials_control_page'),
-            true),
-          optListTile(
-            Icons.monitor_heart_outlined,
-            'Cálculos de monedas',
-            'Cambio con respeto al CUP',
-            () => Navigator.pushNamed(context, 'change_coins_page'),
-            true),
-
-          optListTile(
-            Icons.document_scanner_outlined,
-            'Mis PDFs',
-            'PDFs Generados de órdenes y pedidos',
-            () => Navigator.pushNamed(context, 'internal_storage_page'),
-            true),
-
-          optListTile(
-            Icons.change_circle_outlined,
-            'Cambiar contraseña',
-            'Cambie su contraseña actual',
-            () => Navigator.pushNamed(context, 'change_password'),
-            true),
-
+          optListTile(Icons.groups_2_outlined, 'Equipo de trabajo', 'Empleados del negocio',
+              () => Navigator.pushNamed(context, 'commercials_control_page'), true),
+          optListTile(Icons.monitor_heart_outlined, 'Cálculos de monedas', 'Cambio con respeto al CUP',
+              () => Navigator.pushNamed(context, 'change_coins_page'), true),
+          optListTile(Icons.document_scanner_outlined, 'Mis PDFs', 'PDFs Generados de órdenes y pedidos',
+              () => Navigator.pushNamed(context, 'internal_storage_page'), true),
+          optListTile(Icons.change_circle_outlined, 'Cambiar contraseña', 'Cambie su contraseña actual',
+              () => Navigator.pushNamed(context, 'change_password'), true),
           OutlinedButton.icon(
-            onPressed: () {
-              final contex = Navigator.of(context);
+              onPressed: () {
+                final contex = Navigator.of(context);
 
-              LoginDataService().deleteData();
+                LoginDataService().deleteData();
 
-              contex.pushNamedAndRemoveUntil(
-                  'auth_page', (Route<dynamic> route) => false);
-            }, 
-            icon: const Icon(Icons.logout), 
-            label: dosisText('Cerrar Sesión'))
-          
+                contex.pushNamedAndRemoveUntil('auth_page', (Route<dynamic> route) => false);
+              },
+              icon: const Icon(Icons.logout),
+              label: dosisText('Cerrar Sesión'))
         ],
       ),
     );

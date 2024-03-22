@@ -30,25 +30,19 @@ class _InternalStoragePageState extends State<InternalStoragePage> {
               Icons.folder_delete_outlined,
               color: Colors.white,
             ),
-            onPressed: () async{
-              Directory? appDocDirectory =
-                  await getExternalStorageDirectory();
+            onPressed: () async {
+              Directory? appDocDirectory = await getExternalStorageDirectory();
               final filePath = Directory(appDocDirectory!.path);
 
               filePath.deleteSync(recursive: true);
 
               // ignore: use_build_context_synchronously
-              simpleMessageSnackBar(context, texto: 'Todo los documentos fueron eliminados',
-                  typeMessage: true);
+              simpleMessageSnackBar(context, texto: 'Todo los documentos fueron eliminados', typeMessage: true);
               navigator.pop();
               cambioListas.value = !cambioListas.value;
-            }
-        )
+            })
       ]),
-      body: SizedBox(
-        height: size.height * 0.7,
-        width: double.infinity,
-        child: showFolderList(size)),
+      body: SizedBox(height: size.height * 0.7, width: double.infinity, child: showFolderList(size)),
     );
   }
 
@@ -69,20 +63,15 @@ class _InternalStoragePageState extends State<InternalStoragePage> {
             child: ListView.builder(
               itemCount: list.length,
               itemBuilder: (context, index) {
-                final color =
-                    (index % 2 != 0) ? Colors.grey[200] : Colors.grey[50];
+                final color = (index % 2 != 0) ? Colors.grey[200] : Colors.grey[50];
 
                 return ListTile(
                   tileColor: color,
                   minLeadingWidth: 20,
-                  title: dosisText(list[index].split('/')[9], size: 20,
-                      fontWeight: FontWeight.bold),
+                  title: dosisText(list[index].split('/')[9], size: 20, fontWeight: FontWeight.bold),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      openFile(list[index]),
-                      deleteFile(list[index])
-                    ],
+                    children: [openFile(list[index]), deleteFile(list[index])],
                   ),
                 );
               },
@@ -98,17 +87,15 @@ class _InternalStoragePageState extends State<InternalStoragePage> {
       List<String> paths = [];
 
       Directory? appDocDirectory = await getExternalStorageDirectory();
-      if( !Directory('${appDocDirectory?.path}/PDFDocs').existsSync() ) return [];
+      if (!Directory('${appDocDirectory?.path}/PDFDocs').existsSync()) return [];
 
       final dir = Directory('${appDocDirectory?.path}/PDFDocs');
-      if( dir.existsSync() ){
-
+      if (dir.existsSync()) {
         final fileList = Directory('${appDocDirectory?.path}/PDFDocs').listSync();
-        
+
         for (var file in fileList) {
           paths.add(file.path);
         }
-
       }
 
       return paths;
@@ -146,8 +133,7 @@ class _InternalStoragePageState extends State<InternalStoragePage> {
 
   IconButton deleteFolder(String path) {
     return IconButton(
-        icon:
-            const Icon(Icons.delete_forever_outlined, color: Colors.redAccent),
+        icon: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent),
         onPressed: () {
           final folder = Directory(path);
           try {

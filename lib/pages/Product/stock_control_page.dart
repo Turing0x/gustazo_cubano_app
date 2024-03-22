@@ -19,14 +19,13 @@ class _StockControlPageState extends State<StockControlPage> {
     return Scaffold(
       appBar: showAppBar('Control de productos', actions: [
         IconButton(
-          onPressed: () => Navigator.pushNamed(context, 'create_product_page'), 
-          icon: const Icon(Icons.playlist_add_outlined))
+            onPressed: () => Navigator.pushNamed(context, 'create_product_page'),
+            icon: const Icon(Icons.playlist_add_outlined))
       ]),
       body: Container(
-        margin: const EdgeInsets.only(top: 20),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: const ShowList()
-      ),
+          margin: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: const ShowList()),
     );
   }
 }
@@ -34,73 +33,60 @@ class _StockControlPageState extends State<StockControlPage> {
 class ShowList extends ConsumerStatefulWidget {
   const ShowList({super.key});
 
-
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ShowListState();
 }
 
 class _ShowListState extends ConsumerState<ShowList> {
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: ListenableBuilder(
-        listenable: reloadProducts,
-        builder: (context, child) {
-          return FutureBuilder(
-            future: ProductControllers().getAllProducts(), 
-            builder: (context, snapshot) {
-          
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return noData(context, 
-                  'Sin productos en stock. Para agregar, pinche el ícono de la esquina superior derecha');
-              }
-          
-              final list = snapshot.data;
-          
-              return ListView.builder(
-                itemCount: list!.length,
-                itemBuilder: (context, index) {
-                  return CommonDismissible(
-                    canDissmis: true,
-                    text: 'Eliminar producto',
-                    valueKey: list[index].id,
-                    onDismissed: (direction) async{
-                      await ProductControllers().deleteOne(list[index].id);
-                      reloadProducts.value = !reloadProducts.value;
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 1,
-                            blurRadius: 2
-                          )
-                        ]
-                      ),
-                      child: ListTile(
-                        leading: const Icon(Icons.sell_outlined),
-                        title: dosisText(list[index].name, fontWeight: FontWeight.bold),
-                        subtitle: dosisText('En stock: ${list[index].inStock}'),
-                        trailing: const Icon(Icons.arrow_right_rounded),
-                        onTap: () => Navigator.pushNamed(context, 'product_detail_page', arguments: [list[index]]),
-                      )
-                    )
-                  );
-                });
-            },
-          );
-        }
-      )
-    );
-  }
+        body: ListenableBuilder(
+            listenable: reloadProducts,
+            builder: (context, child) {
+              return FutureBuilder(
+                future: ProductControllers().getAllProducts(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return noData(context,
+                        'Sin productos en stock. Para agregar, pinche el ícono de la esquina superior derecha');
+                  }
 
+                  final list = snapshot.data;
+
+                  return ListView.builder(
+                      itemCount: list!.length,
+                      itemBuilder: (context, index) {
+                        return CommonDismissible(
+                            canDissmis: true,
+                            text: 'Eliminar producto',
+                            valueKey: list[index].id,
+                            onDismissed: (direction) async {
+                              await ProductControllers().deleteOne(list[index].id);
+                              reloadProducts.value = !reloadProducts.value;
+                            },
+                            child: Container(
+                                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: const [
+                                      BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 2)
+                                    ]),
+                                child: ListTile(
+                                  leading: const Icon(Icons.sell_outlined),
+                                  title: dosisText(list[index].name, fontWeight: FontWeight.bold),
+                                  subtitle: dosisText('En stock: ${list[index].inStock}'),
+                                  trailing: const Icon(Icons.arrow_right_rounded),
+                                  onTap: () =>
+                                      Navigator.pushNamed(context, 'product_detail_page', arguments: [list[index]]),
+                                )));
+                      });
+                },
+              );
+            }));
+  }
 }

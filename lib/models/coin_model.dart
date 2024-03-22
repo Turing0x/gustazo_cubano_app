@@ -16,14 +16,14 @@ class Coin {
   });
 
   factory Coin.fromJson(Map<String, dynamic> json) => Coin(
-    id: json["_id"] ?? '',
-    mlc: json["mlc"].toDouble() ?? 0.0,
-    usd: json["usd"].toDouble() ?? 0.0,
-  );
+        id: json["_id"] ?? '',
+        mlc: json["mlc"].toDouble() ?? 0.0,
+        usd: json["usd"].toDouble() ?? 0.0,
+      );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
-    "mlc": mlc,
-    "usd": usd,
-  };
+        "_id": id,
+        "mlc": mlc,
+        "usd": usd,
+      };
 }

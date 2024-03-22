@@ -33,6 +33,7 @@ extension StringExtension on String {
 extension IntExtension on int {
   String get numFormat => NumberFormat('#,###').format(this);
 }
+
 extension DoubleExtension on double {
   String get numFormat => NumberFormat('#,###').format(this);
 }

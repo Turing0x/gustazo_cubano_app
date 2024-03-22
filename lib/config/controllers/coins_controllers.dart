@@ -7,7 +7,6 @@ import 'package:gustazo_cubano_app/config/database/entities/login_data_service.d
 import 'package:gustazo_cubano_app/models/coin_model.dart';
 
 class CoinControllers {
-
   late Dio _dio;
 
   CoinControllers() {
@@ -19,7 +18,7 @@ class CoinControllers {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: Uri.https(dotenv.env['SERVER_URL']!).toString(),
+        baseUrl: Uri.http(dotenv.env['SERVER_URL']!).toString(),
         headers: {
           'Content-Type': 'application/json',
           'access-token': token,
@@ -29,19 +28,16 @@ class CoinControllers {
     );
   }
 
-  Future<List<Coin>> getAllCoins() async{
-
+  Future<List<Coin>> getAllCoins() async {
     try {
-
       await _initializeDio();
-      Response response = await _dio.get('/api/coins',
-        options: Options(validateStatus: (status) => true));
+      Response response = await _dio.get('/api/coins', options: Options(validateStatus: (status) => true));
 
-      if( response.statusCode == 500 ) {
+      if (response.statusCode == 500) {
         return [];
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         return [];
       }
 
@@ -53,28 +49,24 @@ class CoinControllers {
       });
 
       return list;
-      
     } catch (_) {
       return [];
     }
-
   }
 
   Future<void> saveCoins(Map<String, dynamic> coin) async {
     try {
-
       await _initializeDio();
       EasyLoading.show(status: 'Guardando información...');
-      Response response = await _dio.post('/api/coins', 
-        data: jsonEncode(coin), 
-        options: Options(validateStatus: (status) => true) );
+      Response response =
+          await _dio.post('/api/coins', data: jsonEncode(coin), options: Options(validateStatus: (status) => true));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('La información a sido guardada correctamente');
         return;
       }
 
-      if( response.statusCode == 401 ) {
+      if (response.statusCode == 401) {
         EasyLoading.showError('Por favor, reinicie su sesión actual, su token ha expirado');
         return;
       }
@@ -85,5 +77,4 @@ class CoinControllers {
       EasyLoading.showError('No se ha podido guardar la información');
     }
   }
-
 }

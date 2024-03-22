@@ -25,23 +25,17 @@ pw.Widget numeroRedondo({
   return pw.Container(
     decoration: pw.BoxDecoration(
         shape: pw.BoxShape.circle,
-        color: _tieneBorde(mostrarBorde: mostrarBorde, numero: numero)
-            ? PdfColors.black
-            : PdfColors.white),
+        color: _tieneBorde(mostrarBorde: mostrarBorde, numero: numero) ? PdfColors.black : PdfColors.white),
     width: !isParles ? 40 : null,
     height: !isParles ? 40 : null,
     child: pw.Container(
       margin: pw.EdgeInsets.all(margin),
       decoration: pw.BoxDecoration(
         shape: pw.BoxShape.circle,
-        color: _tieneBorde(mostrarBorde: mostrarBorde, numero: numero)
-            ? color ?? PdfColors.white
-            : PdfColors.white,
+        color: _tieneBorde(mostrarBorde: mostrarBorde, numero: numero) ? color ?? PdfColors.white : PdfColors.white,
       ),
       child: pw.Center(
-          child: pwtextoDosis(
-              numero?.toStringAsFixed(0).rellenarCon0(lenght) ?? '',
-              _tamLetra(numero),
+          child: pwtextoDosis(numero?.toStringAsFixed(0).rellenarCon0(lenght) ?? '', _tamLetra(numero),
               fontWeight: fontWeight)),
     ),
   );
