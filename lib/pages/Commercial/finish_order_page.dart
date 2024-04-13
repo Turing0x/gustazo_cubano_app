@@ -57,12 +57,14 @@ class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    final rProdList = ShoppingCartProvider();
 
     return Scaffold(
       appBar: showAppBar('Revisar pedido', actions: [
         IconButton(
             onPressed: () {
+
+              final rProdList = ref.watch(cartProvider);
+              
               List list = [];
               for (var value in rProdList.items) {
                 list.add(value);
@@ -91,12 +93,11 @@ class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            topInfo(rProdList),
+            topInfo(),
             Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 height: MediaQuery.of(context).size.height * 0.65,
                 child: ListCartView(
-                  rProdList: rProdList,
                   coinType: widget.coin,
                   mlc: widget.mlc,
                   usd: widget.usd,
@@ -107,7 +108,9 @@ class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
     );
   }
 
-  Container topInfo(ShoppingCartProvider rProdList) {
+  Container topInfo() {
+    final rProdList = ref.watch(cartProvider);
+
     return Container(
       height: 130,
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -130,7 +133,7 @@ class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              dosisBold('Total de productos: ', rProdList.items.toString(), 20),
+              dosisBold('Total de productos: ', rProdList.totalProductCount.toString(), 20),
               dosisBold(
                   'Monto: \$',
                   '${(rProdList.whatCoin() == widget.coin) ? rProdList.totalAmount : calculatePurchaseAmount(ref, widget.coin, rProdList.totalAmount)}',
@@ -146,13 +149,11 @@ class _FinishOrderPageState extends ConsumerState<FinishOrderPage> {
 class ListCartView extends ConsumerStatefulWidget {
   const ListCartView({
     super.key,
-    required this.rProdList,
     required this.coinType,
     required this.mlc,
     required this.usd,
   });
 
-  final ShoppingCartProvider rProdList;
   final String coinType;
   final double mlc;
   final double usd;
@@ -164,11 +165,13 @@ class ListCartView extends ConsumerStatefulWidget {
 class _ListCartViewState extends ConsumerState<ListCartView> {
   @override
   Widget build(BuildContext context) {
+
+    final rProdList = ref.watch(cartProvider);
     return Scaffold(
       body: ListView.builder(
-        itemCount: widget.rProdList.items.length,
+        itemCount: rProdList.items.length,
         itemBuilder: (context, index) {
-          Product product = widget.rProdList.items[index].product;
+          Product product = rProdList.items[index];
 
           return ListTile(
             title: dosisText(product.name, fontWeight: FontWeight.bold),
