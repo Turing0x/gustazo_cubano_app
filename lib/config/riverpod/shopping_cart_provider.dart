@@ -5,39 +5,40 @@ import 'package:gustazo_cubano_app/models/product_model.dart';
 final cartProvider = ChangeNotifierProvider((ref) => ShoppingCartProvider());
 
 class ShoppingCartProvider extends ChangeNotifier {
-  final List<CartItem> _items = [];
+  final List<Product> _items = [];
 
-  List<CartItem> get items => _items;
+  List<Product> get items => _items;
 
   int get totalProductCount {
     int totalCount = 0;
     for (var item in _items) {
-      totalCount += item.product.cantToBuy * item.quantity;
+      totalCount += item.cantToBuy;
     }
     return totalCount;
   }
 
   double get totalAmount {
-    double total = 0.0;
-    for (var item in _items) {
-      double itemPrice = item.product.price;
-      if (item.product.cantToBuy >= item.product.moreThan) {
-        itemPrice = item.product.discount;
+   double total = 0.0;
+   for (var item in _items) {
+      double itemPrice = item.price;
+      if (item.cantToBuy >= item.moreThan) {
+        itemPrice = item.discount;
       }
-      if (item.product.sellType == 'Caja') {
-        itemPrice *= item.product.box;
-      } else if (item.product.sellType == 'Peso') {
-        itemPrice *= item.product.weigth;
+      if(item.sellType == 'weight'){
+        itemPrice *= item.weigth;
       }
-      total += itemPrice * item.quantity;
-    }
-    return total;
+      if(item.sellType == 'box'){
+        itemPrice *= item.box;
+      }
+      total += itemPrice * item.cantToBuy;
+   }
+   return total;
   }
 
   double get totalCommission {
     double total = 0.0;
     for (var item in _items) {
-      total += item.product.commission * item.quantity;
+      total += item.commission * item.cantToBuy;
     }
     return total;
   }
@@ -45,31 +46,31 @@ class ShoppingCartProvider extends ChangeNotifier {
   String whatCoin() {
     List<String> coins = ['CUP', 'USD', 'MLC', 'ZELLE'];
     return coins.firstWhere(
-      (coin) => _items.every((element) => element.product.coin == coin),
+      (coin) => _items.every((element) => element.coin == coin),
       orElse: () => 'CUP',
     );
   }
 
   void addToCart(Product product) {
-    _items.add(CartItem(product: product));
+    _items.add(product);
     notifyListeners();
   }
 
   void removeFromCartById(String productId) {
-    _items.removeWhere((item) => item.product.id == productId);
+    _items.removeWhere((item) => item.id == productId);
     notifyListeners();
   }
 
   void increaseQuantityById(String productId, {int amount = 1}) {
 
     final item = _items.firstWhere((item) => 
-      item.product.id == productId, 
-      orElse: () => CartItem(product: Product(id: productId)));
+      item.id == productId, 
+      orElse: () => Product(id: productId));
 
-    if (item.quantity + amount <= 10) {
-      item.quantity += amount;
+    if (item.cantToBuy + amount <= 10) {
+      item.cantToBuy += amount;
     } else {
-      item.quantity = 10;
+      item.cantToBuy = 10;
     }
     notifyListeners();
   }
@@ -77,11 +78,11 @@ class ShoppingCartProvider extends ChangeNotifier {
   void decreaseQuantityById(String productId, {int amount = 1}) {
 
     final item = _items.firstWhere((item) => 
-      item.product.id == productId, 
-      orElse: () => CartItem(product: Product(id: productId)));
+      item.id == productId, 
+      orElse: () => Product(id: productId));
 
-    if (item.quantity - amount >= 1) {
-      item.quantity -= amount;
+    if (item.cantToBuy - amount >= 1) {
+      item.cantToBuy -= amount;
     } else {
       removeFromCartById(productId);
     }
@@ -89,13 +90,13 @@ class ShoppingCartProvider extends ChangeNotifier {
   }
   
   int cantOfAProduct(String productId) {
-    final item = _items.firstWhere((item) => item.product.id == productId, 
-      orElse: () => CartItem(product: Product(id: productId)));
-    return item.quantity;
+    final item = _items.firstWhere((item) => item.id == productId, 
+      orElse: () => Product(id: productId));
+    return item.cantToBuy;
   }
 
   bool isInCart(String productId) {
-    return _items.any((item) => item.product.id == productId);
+    return _items.any((item) => item.id == productId);
   }
 
   void clearCart() {
@@ -104,9 +105,3 @@ class ShoppingCartProvider extends ChangeNotifier {
   }
 }
 
-class CartItem {
-  final Product product;
-  int quantity;
-
-  CartItem({required this.product, this.quantity = 1});
-}

@@ -20,10 +20,9 @@ class _ToMakeUnityDesignState extends ConsumerState<ToMakeUnityDesign> {
   @override
   Widget build(BuildContext context) {
 
-    final rProdList = ShoppingCartProvider();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -41,9 +40,9 @@ class _ToMakeUnityDesignState extends ConsumerState<ToMakeUnityDesign> {
           widget.product.inStock.toStringAsFixed(0),
           widget.product.sellType, 
           widget.product.box, 
-          ),
+        ),
         const Spacer(),
-        btnCant(rProdList, widget.product)
+        btnCant(widget.product)
       ],
     );
   }
@@ -53,18 +52,20 @@ class _ToMakeUnityDesignState extends ConsumerState<ToMakeUnityDesign> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         dosisText(name, fontWeight: FontWeight.bold),
-        // dosisText('Lote de $cant unidades'),
         dosisText('Precio: \$${(coin == coinType) 
           ? price 
           : calculatePurchaseAmount(ref, coinType, price)} $coin',
             color: Colors.blue),
+        Visibility(
+          visible: cant != 0,
+          child: dosisText('Caja de $cant unidades', color: Colors.blue)),
         dosisText('Stock: $stock', color: Colors.green)
       ],
     );
   }
 
   Container addBuyBtn(String productId) {
-    final rProdList = ref.read(cartProvider);
+    final rProdList = ref.watch(cartProvider);
 
     return Container(
         width: 40,
@@ -78,40 +79,35 @@ class _ToMakeUnityDesignState extends ConsumerState<ToMakeUnityDesign> {
                 color: Colors.blue, fontWeight: FontWeight.bold)));
   }
 
-  Row btnCant(ShoppingCartProvider rProdList, Product product) {
+  Row btnCant(Product product) {
+
+    final rProdList = ref.watch(cartProvider);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
           onPressed: () {
-            setState(() {
-              rProdList.decreaseQuantityById(product.id, amount: 10);
-            });
+            rProdList.decreaseQuantityById(product.id, amount: 10);
           },
           icon: dosisText('-10', fontWeight: FontWeight.bold)),
-      IconButton(
+        IconButton(
           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
           onPressed: () {
-            setState(() {
-              rProdList.decreaseQuantityById(product.id);
-            });
+            rProdList.decreaseQuantityById(product.id);
           },
           icon: const Icon(Icons.remove, color: Colors.red)),
-      IconButton(
+        IconButton(
           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
           onPressed: () {
-            setState(() {
-              rProdList.addToCart(product);
-            });
+            rProdList.increaseQuantityById(product.id);
           },
           icon: const Icon(Icons.add, color: Colors.green)),
-      IconButton(
+        IconButton(
           style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
           onPressed: () {
-            setState(() {
-              rProdList.increaseQuantityById(product.id, amount: 10);
-            });
+            rProdList.increaseQuantityById(product.id, amount: 10);
           },
           icon: dosisText('+10', fontWeight: FontWeight.bold)),
     ],

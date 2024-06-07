@@ -22,7 +22,7 @@ class Product {
   final int commission;
   final int commissionDiscount;
   final int moreThan;
-  final int cantToBuy;
+  int cantToBuy;
 
   Product({
     this.id = '',

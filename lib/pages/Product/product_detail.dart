@@ -360,7 +360,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           suffixIcon: const Icon(Icons.numbers_outlined),
           controller: inStockCtrl,
           keyboardType: TextInputType.number,
-          label: 'Total de $weightValue en stock'),
+          label: 'Total de paquetes en stock'),
       ]),
     );
   }

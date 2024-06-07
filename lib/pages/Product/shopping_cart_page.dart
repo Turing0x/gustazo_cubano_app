@@ -93,25 +93,10 @@ class _ShoppingCartPageState extends ConsumerState<ShoppingCartPage> {
       controller: _controller,
       itemCount: rProdList.items.length,
       itemBuilder: (context, index) {
-        Product product = rProdList.items[index].product;
-
-        if(product.sellType == 'unity'){
-          return baseContainer(240, ToMakeUnityDesign(
-            product: product,
-          ));
-        }
-        if(product.sellType == 'box'){
-          return baseContainer(240, ToMakeUnityDesign(
-            product: product,
-          ));
-        }
-        if(product.sellType == 'weight'){
-          return baseContainer(240, ToMakeUnityDesign(
-            product: product,
-          )); 
-        }
-
-        return Container();
+        Product product = rProdList.items[index];
+        return baseContainer(260, ToMakeUnityDesign(
+          product: product,
+        ));
       }
     );
   }

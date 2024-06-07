@@ -79,7 +79,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
 
             List<Product> list = [];
             for (var value in rProdList.items) {
-              list.add(value.product);
+              list.add(value);
             }
 
             Map<String, dynamic> order = {
@@ -125,7 +125,7 @@ class _EditPendingPageState extends ConsumerState<EditPendingPage> {
         controller: _controller,
         itemCount: rProdList.items.length,
         itemBuilder: (context, index) {
-          Product product = rProdList.items[index].product;
+          Product product = rProdList.items[index];
           return Container(
             height: 160,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
