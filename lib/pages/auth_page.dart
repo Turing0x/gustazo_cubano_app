@@ -145,6 +145,7 @@ class _AuthFormState extends ConsumerState<AuthForm> {
                         }
                         btnManagerM.state = false;
                       }).catchError((error) {
+                        print(error);
                         simpleMessageSnackBar(context,
                             texto:
                                 'Ha ocurrido un error al conectar con el servidor. Por favor, revise su conexión a internet');

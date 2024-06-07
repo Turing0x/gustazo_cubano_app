@@ -80,10 +80,10 @@ class UserControllers {
         String getrole = response.data['data']['role'];
         String getuserID = response.data['data']['userID'];
         String getcommercialCode = response.data['data']['commercialCode'];
-        String getCi = response.data['data']['info']['ci'];
-        String getfullName = response.data['data']['info']['full_name'];
-        String getPhone = response.data['data']['info']['phone'];
-        String getAddress = response.data['data']['info']['address'];
+        String getCi = response.data['data']['ci'];
+        String getfullName = response.data['data']['full_name'];
+        String getPhone = response.data['data']['phone'];
+        String getAddress = response.data['data']['address'];
         String gettoken = response.data['data']['token'];
 
         final LoginData loginData = LoginData()
