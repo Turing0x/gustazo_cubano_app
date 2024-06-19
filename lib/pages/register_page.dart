@@ -5,14 +5,14 @@ import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
 import 'package:gustazo_cubano_app/shared/show_snackbar.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
-class AuthPage extends ConsumerStatefulWidget {
-  const AuthPage({super.key});
+class RegisterPage extends ConsumerStatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AuthPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _RegisterPageState();
 }
 
-class _AuthPageState extends ConsumerState<AuthPage> {
+class _RegisterPageState extends ConsumerState<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,19 +30,14 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                 const SizedBox(height: 50),
                 mainTitle(),
                 dosisText('SIEMPRE CONTIGO', size: 20, color: Colors.white),
-                const SizedBox(height: 50),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: dosisText('Complete los campos para acceder al sistema',
-                      size: 22, textAlign: TextAlign.center, maxLines: 2, color: Colors.white),
-                ),
+                const SizedBox(height: 30),
                 const AuthForm(),
                 const SizedBox(height: 30),
-                dosisText('Quieres hacer tu registro?', color: Colors.black),
+                dosisText('Ya tienes cuenta?', color: Colors.black),
                 OutlinedButton.icon(
-                    icon: const Icon(Icons.camera_front_rounded),
-                    onPressed: () => Navigator.pushNamed(context, 'register_page'),
-                    label: dosisText('Vamos allá', color: Colors.black)),
+                    icon: const Icon(Icons.next_plan_outlined),
+                    onPressed: () => Navigator.pushNamed(context, 'auth_page'),
+                    label: dosisText('Iniciar Sesión', color: Colors.black)),
                 const SizedBox(height: 30),
               ],
             ),
@@ -73,31 +68,31 @@ class AuthForm extends ConsumerStatefulWidget {
 }
 
 class _AuthFormState extends ConsumerState<AuthForm> {
-  TextEditingController username = TextEditingController();
-  TextEditingController password = TextEditingController();
+
+  TextEditingController fullName = TextEditingController();
+  TextEditingController ci = TextEditingController();
+  TextEditingController phone = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final btnManager = ref.watch(btnManagerR);
 
-    Map<String, void Function()> routesByRole = {
-      'admin': () => Navigator.pushReplacementNamed(context, 'main_admin_page'),
-      'storage': () => Navigator.pushReplacementNamed(context, 'main_storage_page'),
-      'commercial': () => Navigator.pushReplacementNamed(context, 'main_commercial_page'),
-    };
-
     return Container(
       margin: const EdgeInsets.only(top: 20),
       width: size.width * .8,
-      height: size.height * .43,
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30), boxShadow: const [
-        BoxShadow(
-          color: Colors.black38,
-          spreadRadius: 1,
-          blurRadius: 3,
-        )
-      ]),
+      height: size.height * .5,
+      decoration: BoxDecoration(
+        color: Colors.white, 
+        borderRadius: BorderRadius.circular(30), 
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black38,
+            spreadRadius: 1,
+            blurRadius: 3,
+          )
+        ]
+      ),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
@@ -105,9 +100,11 @@ class _AuthFormState extends ConsumerState<AuthForm> {
             children: [
               dosisText('Cuenta de acceso', size: 25, fontWeight: FontWeight.bold, color: Colors.black),
               const SizedBox(height: 15),
-              FormTxt(username: username, obscureText: false, label: 'Nombre de usuario'),
+              FormTxt(txtCtrl: ci, obscureText: true, label: 'Número de Identidad'),
               const SizedBox(height: 10),
-              FormTxt(username: password, obscureText: true, label: 'Contraseña'),
+              FormTxt(txtCtrl: fullName, obscureText: false, label: 'Nombre Completo'),
+              const SizedBox(height: 10),
+              FormTxt(txtCtrl: phone, obscureText: true, label: 'Número de Teléfono'),	
               AbsorbPointer(
                 absorbing: btnManager,
                 child: Container(
@@ -123,34 +120,28 @@ class _AuthFormState extends ConsumerState<AuthForm> {
                       color: Colors.white,
                       size: 20,
                     ),
-                    label: dosisText((!btnManager) ? 'Acceder' : 'Accediendo...',
+                    label: dosisText((!btnManager) ? 'Crear' : 'Creando...',
                         fontWeight: FontWeight.w500, size: 20, color: Colors.white),
-                    onPressed: () {
+                    onPressed: () async{
                       final authService = UserControllers();
                       final btnManagerM = ref.read(btnManagerR.notifier);
 
                       btnManagerM.state = true;
                       FocusScope.of(context).unfocus();
 
-                      if (username.text.isEmpty || password.text.isEmpty) {
+                      if (fullName.text.isEmpty || 
+                          ci.text.isEmpty ||
+                          phone.text.isEmpty) {
                         btnManagerM.state = false;
                         return simpleMessageSnackBar(context, texto: 'Debe completar la información de registro');
                       }
 
-                      final typeRole = authService.login(username.text.trim(), password.text.trim());
+                      await authService.saveUser(
+                        fullName.text.trim(), 
+                        ci.text.trim(), 
+                        phone.text.trim(), ''
+                      );
 
-                      typeRole.then((value) {
-                        if (value != '') {
-                          routesByRole[value]!.call();
-                        }
-                        btnManagerM.state = false;
-                      }).catchError((error) {
-                        simpleMessageSnackBar(context,
-                            texto:
-                                'Ha ocurrido un error al conectar con el servidor. Por favor, revise su conexión a internet');
-                        btnManagerM.state = false;
-                        return error;
-                      });
                     },
                   ),
                 ),
@@ -166,19 +157,19 @@ class _AuthFormState extends ConsumerState<AuthForm> {
 class FormTxt extends StatelessWidget {
   const FormTxt({
     super.key,
-    required this.username,
+    required this.txtCtrl,
     required this.label,
     required this.obscureText,
   });
 
-  final TextEditingController username;
+  final TextEditingController txtCtrl;
   final String label;
   final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-        controller: username,
+        controller: txtCtrl,
         obscureText: obscureText,
         decoration: InputDecoration(
           labelStyle: const TextStyle(fontFamily: 'Dosis', fontWeight: FontWeight.bold),

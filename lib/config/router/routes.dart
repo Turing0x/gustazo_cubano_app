@@ -21,9 +21,11 @@ import 'package:gustazo_cubano_app/pages/Commercial/main_commercial_page.dart';
 
 import 'package:gustazo_cubano_app/pages/Product/stock_control_page.dart';
 import 'package:gustazo_cubano_app/pages/Product/create_product_page.dart';
+import 'package:gustazo_cubano_app/pages/register_page.dart';
 
 final Map<String, Widget Function(BuildContext)> appRoutes = {
   'auth_page': (_) => const AuthPage(),
+  'register_page': (_) => const RegisterPage(),
   'change_password': (_) => const ChangeAccessPass(),
   'main_admin_page': (_) => const MainAdminPage(),
   'main_storage_page': (_) => const MainStoragePage(),

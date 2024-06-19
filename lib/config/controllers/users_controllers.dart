@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:gustazo_cubano_app/config/database/entities/login_data.dart';
-import 'package:gustazo_cubano_app/config/database/entities/login_data_service.dart';
 import 'package:gustazo_cubano_app/config/riverpod/declarations.dart';
+import 'package:gustazo_cubano_app/config/utils/local_storage.dart';
 import 'package:gustazo_cubano_app/models/user_model.dart';
 import 'package:gustazo_cubano_app/shared/widgets.dart';
 
@@ -17,7 +16,7 @@ class UserControllers {
   }
 
   Future<void> _initializeDio() async {
-    final token = await LoginDataService().getToken();
+    final token = await LocalStorage.getToken();
 
     _dio = Dio(
       BaseOptions(
@@ -71,32 +70,24 @@ class UserControllers {
   Future<String> login(String username, String pass) async {
     authStatus.value = true;
     try {
+      final localStorage = LocalStorage();
+
       await _initializeDio();
       Response response =
           await _dio.post('/api/users/signin', data: jsonEncode({'username': username, 'password': pass}));
       authStatus.value = false;
 
       if (response.statusCode == 200) {
+
         String getrole = response.data['data']['role'];
-        String getuserID = response.data['data']['userID'];
-        String getcommercialCode = response.data['data']['commercialCode'];
-        String getCi = response.data['data']['ci'];
-        String getfullName = response.data['data']['full_name'];
-        String getPhone = response.data['data']['phone'];
-        String getAddress = response.data['data']['address'];
-        String gettoken = response.data['data']['token'];
 
-        final LoginData loginData = LoginData()
-          ..role = getrole
-          ..userID = getuserID
-          ..ci = getCi
-          ..fullName = getfullName
-          ..phone = getPhone
-          ..address = getAddress
-          ..commercialCode = getcommercialCode
-          ..token = gettoken;
-
-        LoginDataService().saveData(loginData);
+        localStorage.roleSave(getrole);
+        localStorage.userIdSave(response.data['data']['userID']);
+        localStorage.commercialCodeSave(response.data['data']['commercialCode']);
+        localStorage.ciSave(response.data['data']['ci']);
+        localStorage.fullNameSave(response.data['data']['full_name']);
+        localStorage.phoneSave(response.data['data']['phone']);
+        localStorage.tokenSave(response.data['data']['token']);
 
         return getrole;
       }
@@ -136,12 +127,16 @@ class UserControllers {
     }
   }
 
-  Future<void> saveUser(String fullname, String ci, String address, String phoneNumber) async {
+  Future<void> saveUser(String fullName, String ci, String phone, String owner) async {
     try {
       await _initializeDio();
       EasyLoading.show(status: 'Creando usuario...');
       Response response = await _dio.post('/api/users',
-          data: jsonEncode({'fullname': fullname, 'ci': ci, 'address': address, 'phoneNumber': phoneNumber}));
+        data: jsonEncode({
+          'fullName': fullName, 
+          'ci': ci, 
+          'phone': phone,
+          'owner': owner}));
 
       if (response.statusCode == 200) {
         EasyLoading.showSuccess('El usuario ha sido creado correctamente');
